@@ -6,7 +6,13 @@ class Building(BlueprintBuilding):
     
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        
+    
+    def move(self, dx, dy, dz = 0):
+        self.x += dx
+        self.y += dy
+        self.x2 += dx
+        self.y2 += dy
+    
 class AssemblingMachineMkIII(Building):
     def __init__(self, index, x, y, z, yaw = Yaw.North, recipe_id = 0):
         super().__init__()
@@ -92,10 +98,7 @@ class Belt(Building):
         
         # Move the belt back 0.2 spaces
         dx, dy = direction_to_unit_vector(self.yaw)
-        self.x -= dx * 0.2
-        self.x2 -= dx * 0.2
-        self.y -= dy * 0.2
-        self.y2 -= dy * 0.2
+        self.move(-dx * 0.2, -dy * 0.2)
 
     def connect_to_sorter(self, sorter):
         pass
@@ -167,10 +170,7 @@ class Splitter(Building):
             belt.input_from_slot += 1
         
         dx, dy = direction_to_unit_vector(belt.yaw)
-        belt.x += dx * 0.2
-        belt.x2 += dx * 0.2
-        belt.y += dy * 0.2
-        belt.y2 += dy * 0.2
+        belt.move(dx * 0.2, dy * 0.2)
         
 class TeslaTower(Building):
     def __init__(self, index, x, y):

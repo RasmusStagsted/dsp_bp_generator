@@ -193,7 +193,7 @@ def generate_blueprint_buildings():
 
     factory = Factory()
 
-    output_flow = [ItemFlow(ItemEnum.MagneticCoil, 3.0), ItemFlow(ItemEnum.IronIngot, 2.0)]
+    output_flow = [ItemFlow(ItemEnum.MagneticCoil, 2.0)]
     factory.set_tartget_output_flow(output_flow, debug = False)
     factory.generate_factories(buildings, debug = False)
 

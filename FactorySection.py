@@ -9,7 +9,7 @@ class FactorySection:
         
         # Create factory_line
         self.factory_line = FactoryLine(buildings, x + self.router_width, y, len(selector_belts), product_count, factory_type, recipe, factory_count)
-        
+                
         # Create router
         self.router = BeltRouter(buildings, x, y, input_count, output_count, product_count, selector_belts, self.factory_line.height)
         self.connect_factory_line_to_router(len(selector_belts), product_count)

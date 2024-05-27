@@ -17,10 +17,17 @@ class FactoryLine:
             
         assert output_count == 1, "recipes with multiple outputs isn't supported yet."
         
-        self._factory_width = 3
+        if ((factory_type == ItemEnum.AssemblingMachineMkI) or \
+            (factory_type == ItemEnum.AssemblingMachineMkII) or \
+            (factory_type == ItemEnum.AssemblingMachineMkIII)):
+            self._factory_width = 4
+        elif (factory_type == ItemEnum.Smelter):
+            self._factory_width = 3
+        
         self._factory_height = 3
         
-        belt_length = int(factory_count * self._factory_width + 1)
+        belt_length = int(factory_count * self._factory_width + 1) + (math.ceil(factory_count / 4))
+        print("Belt length:", belt_length)
         self.height = self._factory_height + input_count + output_count + 1
         
         # Generate input-/output belts
@@ -31,34 +38,43 @@ class FactoryLine:
         
         # Generate the factories
         factory_offset = 4
+        power_pole_frequency = 0
         if factory_type == ItemEnum.Smelter:
             factory_offset = 3
-        factory_idicies = self._generate_factory_line_factories(buildings, x, y, factory_count, factory_offset, factory_type, recipe)
+            power_pole_frequency = 4
+        factory_idicies = self._generate_factory_line_factories(buildings, x, y, factory_count, factory_offset, factory_type, recipe, power_pole_frequency)
         
         # Generate the sorters
         input_sorter_x = x
         input_sorter_y = y + self._factory_height // 2 + 1
-        self._generate_factory_line_input_sorters(buildings, input_sorter_x, input_sorter_y, input_belts, factory_count, factory_offset, factory_idicies)
+        self._generate_factory_line_input_sorters(buildings, input_sorter_x, input_sorter_y, input_belts, factory_count, factory_offset, factory_idicies, power_pole_frequency)
         output_sorter_x = x
         output_sorter_y = y - self._factory_height // 2 - 1
-        self._generate_factory_line_output_sorters(buildings, output_sorter_x, output_sorter_y, output_belts, factory_count, factory_offset, factory_idicies)
-                    
+        self._generate_factory_line_output_sorters(buildings, output_sorter_x, output_sorter_y, output_belts, factory_count, factory_offset, factory_idicies, power_pole_frequency)
+        
         # Generate the power poles
         if factory_type == ItemEnum.Smelter:
-            pass
+            for i in range(math.ceil(factory_count / 4)):
+                buildings.append(Buildings.TeslaTower(
+                    index = len(buildings),
+                    x = x + 13 * i + 7,
+                    y = y
+                ))
+            if factory_count % 4 == 1:
+                buildings[-1].move(-3, 0)
         else:
             for i in range(math.ceil(factory_count / 4)):
                 buildings.append(Buildings.TeslaTower(
                     index = len(buildings),
-                    x = x,
+                    x = x + 16 * i + 8,
                     y = y
                 ))
-            if factory_count % 4 == 3:
-                buildings[-1].x -= 4
-                buildings[-1].x2 -= 4
+            if factory_count % 4 == 1:
+                buildings[-1].move(-4, 0)
 
         # Generate prolifirator
         # TODO
+            
         
     def _generate_input_belts(self, buildings, x, y, input_count, belt_length):
         if input_count > 3:
@@ -94,16 +110,19 @@ class FactoryLine:
             
         return output_belts
 
-    def _generate_factory_line_factories(self, buildings, x, y, factory_count, factory_offset, factory_type, recipe):
+    def _generate_factory_line_factories(self, buildings, x, y, factory_count, factory_offset, factory_type, recipe, power_pole_frequency):
         factory_idicies = []
         for i in range(factory_count):
             factory_idicies.append(len(buildings))
             if factory_type == ItemEnum.Smelter:
                 factory_height = 3
+                pos_x = x + 2 + factory_offset * i
+                if power_pole_frequency != 0:
+                    pos_x += math.ceil((i - 1) / power_pole_frequency)
                 buildings.append(
                     Buildings.Smelter(
                         len(buildings),
-                        x = x + 2 + factory_offset * i,
+                        x = pos_x,
                         y = y,
                         z = 0,
                         yaw = Yaw.North,
@@ -126,17 +145,20 @@ class FactoryLine:
                 assert True, f"Factory type is not supported {factory_type}"
         return factory_idicies
 
-    def _generate_factory_line_input_sorters(self, buildings, x, y, input_belts, factory_count, factory_offset, factory_idicies):
+    def _generate_factory_line_input_sorters(self, buildings, x, y, input_belts, factory_count, factory_offset, factory_idicies, power_pole_frequency):
         sorter_x_offset = [1.2, 2, 2.8]
         for i in range(len(input_belts)):
             for j in range(factory_count):
+                x_pos = sorter_x_offset[i] + j * factory_offset
+                if power_pole_frequency != 0:
+                    x_pos += math.ceil((j - 1) / power_pole_frequency)
                 buildings.append(
                     Buildings.Sorter(
                         index = len(buildings),
-                        x1 = x + sorter_x_offset[i] + j * factory_offset,
+                        x1 = x + x_pos,
                         y1 = y + i,
                         z1 = 0.0,
-                        x2 = x + sorter_x_offset[i] + j * factory_offset,
+                        x2 = x + x_pos,
                         y2 = y - 1.2,
                         z2 = 0.0,
                         yaw = Yaw.South,
@@ -152,17 +174,20 @@ class FactoryLine:
                     )
                 )
 
-    def _generate_factory_line_output_sorters(self, buildings, x, y, output_belts, factory_count, factory_offset, factory_idicies):
+    def _generate_factory_line_output_sorters(self, buildings, x, y, output_belts, factory_count, factory_offset, factory_idicies, power_pole_frequency):
         sorter_x_offset = [1.2, 2, 2.8]
         for i in range(len(output_belts)):
             for j in range(factory_count):
+                pos_x = sorter_x_offset[i] + j * factory_offset
+                if power_pole_frequency != 0:
+                    pos_x += math.ceil((j - 1) / power_pole_frequency)
                 buildings.append(
                     Buildings.Sorter(
                         index = len(buildings),
-                        x1 = x + sorter_x_offset[i] + j * factory_offset,
+                        x1 = x + pos_x,
                         y1 = y + 1.2,
                         z1 = 0.0,
-                        x2 = x + sorter_x_offset[i] + j * factory_offset,
+                        x2 = x + pos_x,
                         y2 = y + i,
                         z2 = 0.0,
                         yaw = Yaw.South,
