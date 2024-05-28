@@ -135,3 +135,5 @@ class ItemEnum(enum.IntEnum):
 	GravityMatrix = 6005
 	UniverseMatrix = 6006
 	ProlifiratorMkI = 10001
+	ProlifiratorMkII = 10002
+	ProlifiratorMkIII = 10003

@@ -32,41 +32,53 @@ recipes = {
     ItemEnum.Steel: Recipe(ItemEnum.Steel, {ItemEnum.IronIngot: 3}, {ItemEnum.Steel: 1}, 3, "Smelting Facility", 63),
     ItemEnum.CircuitBoard: Recipe(ItemEnum.CircuitBoard, {ItemEnum.IronIngot: 2, ItemEnum.CopperIngot: 1}, {ItemEnum.CircuitBoard: 2}, 1, "Assembling machine", None),
     ItemEnum.Prism: Recipe(ItemEnum.Prism, {ItemEnum.Glass: 3}, {ItemEnum.Prism: 2}, 2, "Assembling machine", None),
-    ItemEnum.ElectricMotor: Recipe(ItemEnum.ElectricMotor, {ItemEnum.IronIngot: 2, ItemEnum.Gear: 1, ItemEnum.MagneticCoil: 1}, {"Electric Motor": 1}, 2, "Assembling machine", None),
+    ItemEnum.ElectricMotor: Recipe(ItemEnum.ElectricMotor, {ItemEnum.IronIngot: 2, ItemEnum.Gear: 1, ItemEnum.MagneticCoil: 1}, {ItemEnum.ElectricMotor: 1}, 2, "Assembling machine", None),
     ItemEnum.MicrocrystallineComponent: Recipe(ItemEnum.MicrocrystallineComponent, {ItemEnum.HighPuritySilicon: 2, ItemEnum.CopperIngot: 1}, {ItemEnum.MicrocrystallineComponent: 1}, 2, "Assembling machine", None),
     ItemEnum.ProlifiratorMkI: Recipe(ItemEnum.ProlifiratorMkI, {ItemEnum.Coal: 1}, {ItemEnum.ProlifiratorMkI: 1}, 0.5, "Assembling machine", None),
 
     ItemEnum.Gear: Recipe(ItemEnum.Gear, {ItemEnum.IronIngot: 1}, {ItemEnum.Gear: 1}, 1, "Assembling machine", 5),
-    "Plasma Exciter": Recipe("Plasma Exciter", {ItemEnum.MagneticCoil: 4, ItemEnum.Prism: 2}, {"Plasma Exciter": 1}, 2, "Assembling machine", None),
-    "Photon Combiner": Recipe("Photon Combiner", {ItemEnum.Prism: 2, "Electric Circuit": 1}, {"Photon Combiner": 1}, 3, "Assembling machine", None),
-    "Electromagnetic Turbine": Recipe("Electromagnetic Turbine", {ItemEnum.Gear: 2, ItemEnum.MagneticCoil: 2}, {"Electromagnetic Turbine": 1}, 2, "Assembling machine", None),
-    "Processor": Recipe("Processor", {ItemEnum.CircuitBoard: 2, ItemEnum.MicrocrystallineComponent: 2}, {"Processor": 1}, 3, "Assembling machine", None),
-    "Proliferator Mk.II": Recipe("Proliferator Mk.II", {ItemEnum.ProlifiratorMkI: 2, ItemEnum.Diamond: 1}, {"Proliferator Mk.II": 1}, 1, "Assembling machine", None),
+    ItemEnum.PlasmaExciter: Recipe(ItemEnum.PlasmaExciter, {ItemEnum.MagneticCoil: 4, ItemEnum.Prism: 2}, {ItemEnum.PlasmaExciter: 1}, 2, "Assembling machine", None),
+    ItemEnum.PhotonCombiner: Recipe(ItemEnum.PhotonCombiner, {ItemEnum.Prism: 2, ItemEnum.CircuitBoard: 1}, {ItemEnum.PhotonCombiner: 1}, 3, "Assembling machine", None),
+    ItemEnum.ElectromagneticTurbine: Recipe(ItemEnum.ElectromagneticTurbine, {ItemEnum.Gear: 2, ItemEnum.MagneticCoil: 2}, {ItemEnum.ElectromagneticTurbine: 1}, 2, "Assembling machine", None),
+    ItemEnum.Processor: Recipe(ItemEnum.Processor, {ItemEnum.CircuitBoard: 2, ItemEnum.MicrocrystallineComponent: 2}, {ItemEnum.Processor: 1}, 3, "Assembling machine", None),
+    ItemEnum.ProliferatorMkII: Recipe(ItemEnum.ProliferatorMkII, {ItemEnum.ProlifiratorMkI: 2, ItemEnum.Diamond: 1}, {ItemEnum.ProliferatorMkII: 1}, 1, "Assembling machine", None),
 
-    "Foundation": Recipe("Foundation", {ItemEnum.StoneBrick: 3, ItemEnum.Steel: 1}, {"Foundation": 1}, 1, "Assembling machine", None),
-    # Reserved for Critical Photon
-    "Particle Container": Recipe("Particle Container", {"Electromagnetic Turbine": 2, ItemEnum.IronIngot: 2, "Graphene": 2}, {"Particle Container": 1}, 4, "Assembling machine", None),
-    "Super-Magnetic Ring": Recipe("Super-Magnetic Ring", {"Electromagnetic Turbine": 2, ItemEnum.Magnet: 3, ItemEnum.EnergeticGraphite: 1}, {"Super Magnetic Ring": 1}, 3, "Assembling machine", None),
-    "Gravitation Lens": Recipe("Gravitation Lens", {ItemEnum.Diamond: 4, "Strange Matter": 1}, {"Gravitation Lens": 1}, 6, "Assembling machine", None),
-    "Proliferator Mk.III": Recipe("Proliferator Mk.III", {"Proliferator Mk.II": 2, "Carbon Nanotube": 1}, {"Proliferator Mk.III": 1}, 2, "Assembling machine", None),
+    ItemEnum.Engine: Recipe(ItemEnum.Engine, {ItemEnum.MagneticCoil: 2, ItemEnum.CopperIngot: 1}, {ItemEnum.Engine: 1}, 3, "Assembling machine", None),
+    ItemEnum.Thruster: Recipe(ItemEnum.Thruster, {ItemEnum.Steel: 2, ItemEnum.CopperIngot: 3}, {ItemEnum.Thruster: 1}, 4, "Assembling machine", None),
+    ItemEnum.ReinforcedThruster: Recipe(ItemEnum.ReinforcedThruster, {ItemEnum.TitaniumAlloy: 5, ItemEnum.ElectromagneticTurbine: 5}, {ItemEnum.ReinforcedThruster: 1}, 8, "Assembling machine", None),
+    ItemEnum.SuperMagneticRing: Recipe(ItemEnum.SuperMagneticRing, {ItemEnum.ElectromagneticTurbine: 2, ItemEnum.Magnet: 3, ItemEnum.EnergeticGraphite: 1}, {ItemEnum.SuperMagneticRing: 1}, 3, "Assembling machine", None),
+    ItemEnum.ParticleContainer: Recipe(ItemEnum.ParticleContainer, {ItemEnum.ElectromagneticTurbine: 2, ItemEnum.IronIngot: 2, "Graphene": 2}, {ItemEnum.ParticleContainer: 1}, 4, "Assembling machine", None),
+    ItemEnum.ProliferatorMkIII: Recipe(ItemEnum.ProliferatorMkIII, {ItemEnum.ProliferatorMkII: 2, "Carbon Nanotube": 1}, {ItemEnum.ProliferatorMkIII: 1}, 2, "Assembling machine", None),
 
-    "Electromagnetic Matrix": Recipe("Electromagnetic Matrix", {ItemEnum.MagneticCoil: 1, "Electronic Circuit": 1}, {"Electromagnetic Matrix": 1}, 3, "Assembling machine", None),
+    # Reserved for Logistic bot
+    # Reserved for Logistic drone
+    # Reserved for Interstellar Logistic Vessel
+    # Reserved for Space warper
+    ItemEnum.GravitationLens: Recipe(ItemEnum.GravitationLens, {ItemEnum.Diamond: 4, "Strange Matter": 1}, {ItemEnum.GravitationLens: 1}, 6, "Assembling machine", None),
+    ItemEnum.Foundation: Recipe(ItemEnum.Foundation, {ItemEnum.StoneBrick: 3, ItemEnum.Steel: 1}, {ItemEnum.Foundation: 1}, 1, "Assembling machine", None),
+    
+    ItemEnum.ElectromagneticMatrix: Recipe(ItemEnum.ElectromagneticMatrix, {ItemEnum.MagneticCoil: 1, "Electronic Circuit": 1}, {ItemEnum.ElectromagneticMatrix: 1}, 3, "Assembling machine", None),
+    ItemEnum.EnergyMatrix: Recipe(ItemEnum.EnergyMatrix, {ItemEnum.EnergeticGraphite: 2, ItemEnum.Hydrogen: 2}, {ItemEnum.EnergyMatrix}, 6, "Research facility", None),
+    # Reserved for Structure matrix
+    # Reserved for Information matrix
+    # Reserved for Gravity matrix
+    # Reserved for Universe matrix
 
+    """
     # Chemical Plant
-    "Plastic": Recipe("Plastic", {"Refined Oil": 2, ItemEnum.EnergeticGraphite: 1}, {"Plastic": 1}, 3, "Chemical Plant", None),
+    ItemEnum.Plastic: Recipe(ItemEnum.Plastic, {"Refined Oil": 2, ItemEnum.EnergeticGraphite: 1}, {ItemEnum.Plastic: 1}, 3, "Chemical Plant", None),
     "Sulfuric Acid": Recipe("Sulfuric Acid", {"Refined Oil": 6, ItemEnum.Stone: 8, "Water": 4}, {"Sulfuric Acid": 4}, 6, "Chemical Plant", None),
-    "Organic Crystal": Recipe("Organic Crystal", {"Plastic": 2, "Refined Oil": 1, "Water": 1}, {"Organic Crystal": 1}, 6, "Chemical Plant", None),
+    "Organic Crystal": Recipe("Organic Crystal", {ItemEnum.Plastic: 2, "Refined Oil": 1, "Water": 1}, {"Organic Crystal": 1}, 6, "Chemical Plant", None),
     "Graphene": Recipe("Graphene", {ItemEnum.EnergeticGraphite: 3, "Sulfuric Acid": 1}, {"Graphene": 2}, 3, "Chemical Plant", None),
     "Titanium Crystal": Recipe("Titanium Crystal", {ItemEnum.TitaniumIngot: 3, "Organic Crystal": 1}, {"Titanium Crystal": 1}, 4, "Chemical Plant", None),
 
     # Assembling machine
-    "Thruster": Recipe("Thruster", {ItemEnum.Steel: 2, ItemEnum.CopperIngot: 3}, {"Thruster": 1}, 4, "Assembling machine", None),
-    "Reinforced Thruster": Recipe("Reinforced Thruster", {ItemEnum.TitaniumAlloy: 5, "Electromagnetic Turbine": 5}, {"Reinforced Thruster": 1}, 8, "Assembling machine", None),
-
+    
     # Oil Refinery
     "Refined Oil": Recipe("Refined Oil", {"Crude Oil": 2}, {"Refined Oil": 2, "Hydrogen": 1}, 4, "Oil Refinery", None),
 
     # Particle Collider
     "Deuterium": Recipe("Deuterium", {"Hydrogen": 10}, {"Deuterium": 1}, 5, "Particle Collider", None),
-    "Strange Matter": Recipe("Strange Matter", {ItemEnum.IronIngot: 2, "Deuterium": 10, "Particle Container": 1}, {"Strange Matter": 1}, 8, "Particle Collider", None),
+    "Strange Matter": Recipe("Strange Matter", {ItemEnum.IronIngot: 2, "Deuterium": 10, ItemEnum.ParticleContainer: 1}, {"Strange Matter": 1}, 8, "Particle Collider", None),
+    """
 }
