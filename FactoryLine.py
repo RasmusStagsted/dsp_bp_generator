@@ -23,8 +23,10 @@ class FactoryLine:
             self._factory_width = 4
         elif (factory_type == ItemEnum.Smelter):
             self._factory_width = 3
-        
+        else:
+            print(factory_type)
         self._factory_height = 3
+        self.height = self._factory_height + input_count + output_count
         
         belt_length = int(factory_count * self._factory_width + 1) + (math.ceil(factory_count / 4))
         print("Belt length:", belt_length)
@@ -74,7 +76,29 @@ class FactoryLine:
 
         # Generate prolifirator
         # TODO
-            
+        #factory = self._generate_factory_block(buildings, x - 1, y, input_count, output_count, recipe)
+        #self.input_belts = factory["input_belts"]
+        #self.output_belts = factory["output_belts"]
+        
+    def _generate_factory_block(self, buildings, x, y, input_count, output_count, recipe):
+        factory = Buildings.Smelter(
+            len(buildings),
+            x = x + self._factory_width // 2,
+            y = y,
+            z = 0,
+            yaw = Yaw.North,
+            recipe_id = recipe
+        )
+        buildings.append(factory)
+        
+        input_belts = []
+        for i in range(input_count):
+            input_belts.append(generate_belt(buildings, x, y + (self._factory_height + 1) / 2 + i, 0, Yaw.East, self._factory_width - 1))
+        
+        output_belts = []
+        for i in range(output_count):
+            output_belts.append(generate_belt(buildings, x + self._factory_width - 1, y - (self._factory_height + 1) // 2 - i, 0, Yaw.West, self._factory_width - 1))
+        return {"input_belts": [input_belts[i][0] for i in range(input_count)], "output_belts": [output_belts[i][-1] for i in range(output_count)]}
         
     def _generate_input_belts(self, buildings, x, y, input_count, belt_length):
         if input_count > 3:

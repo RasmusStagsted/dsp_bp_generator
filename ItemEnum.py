@@ -73,7 +73,7 @@ class ItemEnum(enum.IntEnum):
 	OrganicCrystal = 1117
 	TitaniumCrystal = 1118
 	CasimirCrystal = 1126
-	GravitonLens = 1209
+	GravitationLens = 1209
 	SpaceWarper = 1210
 	AnnihilationConstraintSphere = 1403
 	Thruster = 1405
@@ -134,6 +134,8 @@ class ItemEnum(enum.IntEnum):
 	InformationMatrix = 6004
 	GravityMatrix = 6005
 	UniverseMatrix = 6006
-	ProlifiratorMkI = 10001
-	ProlifiratorMkII = 10002
-	ProlifiratorMkIII = 10003
+	ProliferatorMkI = 10001
+	ProliferatorMkII = 10002
+	ProliferatorMkIII = 10003
+	Engine = 11000
+	PileSorter = 11001
