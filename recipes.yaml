@@ -1,0 +1,538 @@
+---
+IronOre:
+CopperOre:
+Stone:
+Coal:
+SiliconOre:
+TitaniumOre:
+Water:
+CrudeOil:
+Hydrogen:
+  - name: Gaphene (Advanced)
+    input_items:
+      FireIce: 2
+    output_items:
+      Graphene: 2
+      Hydrogen: 1
+    time: 2
+    tool: Chemical Facility
+    recipe_id: None
+  - name: Deuterium Fractionation
+    input_items:
+      Hydrogen: 1
+    output_items:
+      Deuterium: 0.01
+      Hydrogen: 0.99
+    time: 0.017
+    tool: Fractionation Facility
+    recipe_id: None
+  - name: Mass-Energy Storage
+    input_items:
+      CriticalPhoton: 2
+    output_items:
+      Antimatter: 2
+      Hydrogen: 2
+    time: 2
+    tool: Particle Collider
+    recipe_id: None
+  - name: Plasma Refining
+    input_items:
+      CrudeOil: 2
+    output_items:
+      Hydrogen: 1
+      RefinedOil: 2
+    time: 4
+    tool: Refining Facility
+    recipe_id: None
+  - name: X-Ray Cracking
+    input_items:
+      RefinedOil: 1
+      Hydrogen: 2
+    output_items:
+      Hydrogen: 3
+      EnergeticGraphite: 1
+    time: 2
+    tool: Refining Facility
+    recipe_id: None
+Deuterium:
+  name: Deuterium Fractionation
+  input_items:
+    Hydrogen: 1
+  output_items:
+    Deuterium: 0.01
+    Hydrogen: 0.99
+  time: 0.017
+  tool: Fractionation Facility
+  recipe_id: None
+Antimatter:
+  name: Mass-Energy Storage
+  input_items:
+    CriticalPhoton: 2
+  output_items:
+    Antimatter: 2
+    Hydrogen: 2
+  time: 2
+  tool: Particle Collider
+  recipe_id: None
+CoreElement:
+CriticalPhoton:
+KimberliteOre:
+IronIngot:
+  name: Iron Ingot
+  input_items:
+    IronOre: 1
+  output_items:
+    IronIngot: 1
+  time: 1
+  tool: Smelting Facility
+  recipe_id: 1
+CopperIngot:
+  name: Copper Ingot
+  input_items:
+    CopperOre: 1
+  output_items:
+    CopperIngot: 1
+  time: 1
+  tool: Smelting Facility
+  recipe_id: 3
+StoneBrick:
+  name: Stone Brick
+  input_items:
+    Stone: 1
+  output_items:
+    StoneBrick: 1
+  time: 1
+  tool: Smelting Facility
+  recipe_id: None
+EnergeticGraphite:
+  name: Energetic Graphite
+  input_items:
+    Coal: 2
+  output_items:
+    EnergeticGraphite: 1
+  time: 2
+  tool: Smelting Facility
+  recipe_id: None
+HighPuritySilicon:
+  name: High Purity Silicon
+  input_items:
+    SiliconOre: 2
+  output_items:
+    HighPuritySilicon: 1
+  time: 2
+  tool: Smelting Facility
+  recipe_id: 59
+TitaniumIngot:
+  name: Titanium Ingot
+  input_items:
+    TitaniumOre: 2
+  output_items:
+    TitaniumIngot: 1
+  time: 2
+  tool: Smelting Facility
+  recipe_id: None
+SulfuricAcid:
+  name: Sulfuric Acid
+  input_items:
+    RefinedOil: 6
+    Stone: 8
+    Water: 4
+  output_items:
+    SulfuricAcid: 4
+  time: 6
+  tool: Chemical Plant
+  recipe_id: None
+RefinedOil:
+  - name: Plasma Refining
+    input_items:
+      CrudeOil: 2
+    output_items:
+      Hydrogen: 1
+      RefinedOil: 2
+    time: 4
+    tool: Refining Facility
+    recipe_id: None
+  - name: Reformed Refinement
+    input_items:
+      RefinedOil: 2
+      Hydrogen: 1
+      Coal: 1
+    output_items:
+      RefinedOil: 3
+    time: 4
+    tool: Refining Facility
+    recipe_id: None
+HydrogenFuelRod:
+  name: Hydrogen Fuel Rod
+  input_items:
+    TitaniumIngot: 1
+    Hydrogen: 10
+  output_items:
+    HydrogenFuelRod: 2
+  time: 6
+  tool: Assembler
+  recipe_id: None
+DeuteronFuelRod:
+  name: Deuteron Fuel Rod
+  input_items:
+    TitaniumAlloy: 1
+    Deuterium: 20
+    SuperMagneticRing: 1
+  output_items:
+    DeuteronFuelRod: 2
+  time: 12
+  tool: Assembler
+  recipe_id: None
+AntimatterFuelRod:
+  name: Antimatter Fuel Rod
+  input_items:
+    Antimatter: 12
+    Hydrogen: 12
+    AnnihilationConstraintSphere: 1
+    TitaniumAlloy: 1
+  output_items:
+    AntimatterFuelRod: 2
+  time: 24
+  tool: Assembler
+  recipe_id: None
+StrangeAnnihilationFuelRod:
+  name: Strange Annihilation Fuel Rod
+  input_items:
+    AntimatterFuelRod: 8
+    CoreElement: 1
+    StrangeMatter: 2
+    FrameMaterial: 1
+  output_items:
+    StrangeAnnihilationFuelRod: 1
+  time: 32
+  tool: Assembler
+  recipe_id: None
+MissileSet:
+  name: Missile Set
+  input_items:
+    CopperIngot: 6
+    CircuitBoard: 3
+    CombustibleUnit: 2
+    Engine: 1
+  output_items:
+    MissileSet: 1
+  time: 2
+  tool: Assembler
+  recipe_id: None
+FractalSilicon:
+Magnet:
+  name: Magnet
+  input_items:
+    IronOre: 1
+  output_items:
+    Magnet: 1
+  time: 1.5
+  tool: Smelting Facility
+  recipe_id: 2
+MagneticCoil:
+  name: Magnetic Coil
+  input_items:
+    Magnet: 2
+    CopperIngot: 1
+  output_items:
+    MagneticCoil: 2
+  time: 1
+  tool: Assembling machine
+  recipe_id: 6
+Glass:
+  name: Glass
+  input_items:
+    Stone: 2
+  output_items:
+    Glass: 1
+  time: 2
+  tool: Smelting Facility
+  recipe_id: None
+Diamond:
+  name: Diamond
+  input_items:
+    EnergeticGraphite: 1
+  output_items:
+    Diamond: 1
+  time: 2
+  tool: Smelting Facility
+  recipe_id: None
+CrystalSilicon:
+  name: Crystal Silicone
+  input_items:
+    HighPuritySilicon: 1
+  output_items:
+    CrystalSilicon: 1
+  time: 2
+  tool: Smelting Facility
+  recipe_id: 37
+TitaniumAlloy:
+  name: Titanium Alloy
+  input_items:
+    TitaniumIngot: 4
+    Steel: 4
+    SulfuricAcid: 8
+  output_items:
+    TitaniumAlloy: 4
+  time: 12
+  tool: Smelting Facility
+  recipe_id: None
+Steel:
+  name: Steel
+  input_items:
+    IronIngot: 3
+  output_items:
+    Steel: 1
+  time: 3
+  tool: Smelting Facility
+  recipe_id: 63
+CircuitBoard:
+  name: Circuit Board
+  input_items:
+    IronIngot: 2
+    CopperIngot: 1
+  output_items:
+    CircuitBoard: 2
+  time: 1
+  tool: Assembling machine
+  recipe_id: None
+Prism:
+  name: Prism
+  input_items:
+    Glass: 3
+  output_items:
+    Prism: 2
+  time: 2
+  tool: Assembling machine
+  recipe_id: None
+ElectricMotor:
+  name: Electric Motor
+  input_items:
+    IronIngot: 2
+    Gear: 1
+    MagneticCoil: 1
+  output_items:
+    ElectricMotor: 1
+  time: 2
+  tool: Assembling machine
+  recipe_id: None
+MicrocrystallineComponent:
+  name: Microcrystalline Component
+  input_items:
+    HighPuritySilicon: 2
+    CopperIngot: 1
+  output_items:
+    MicrocrystallineComponent: 1
+  time: 2
+  tool: Assembling machine
+  recipe_id: None
+ProliferatorMkI:
+  name: Proliferator Mk.I
+  input_items:
+    Coal: 1
+  output_items:
+    ProliferatorMkI: 1
+  time: 0.5
+  tool: Assembling machine
+  recipe_id: None
+Gear:
+  name: Gear
+  input_items:
+    IronIngot: 1
+  output_items:
+    Gear: 1
+  time: 1
+  tool: Assembling machine
+  recipe_id: 5
+PlasmaExciter:
+  name: Plasma Exciter
+  input_items:
+    MagneticCoil: 4
+    Prism: 2
+  output_items:
+    PlasmaExciter: 1
+  time: 2
+  tool: Assembling machine
+  recipe_id: None
+PhotonCombiner:
+  name: Photon Combiner
+  input_items:
+    Prism: 2
+    CircuitBoard: 1
+  output_items:
+    PhotonCombiner: 1
+  time: 3
+  tool: Assembling machine
+  recipe_id: None
+ElectromagneticTurbine:
+  name: Electromagnetic Turbine
+  input_items:
+    Gear: 2
+    MagneticCoil: 2
+  output_items:
+    ElectromagneticTurbine: 1
+  time: 2
+  tool: Assembling machine
+  recipe_id: None
+Processor:
+  name: Processor
+  input_items:
+    CircuitBoard: 2
+    MicrocrystallineComponent: 2
+  output_items:
+    Processor: 1
+  time: 3
+  tool: Assembling machine
+  recipe_id: None
+ProliferatorMkII:
+  name: Proliferator Mk.II
+  input_items:
+    ProliferatorMkI: 2
+    Diamond: 1
+  output_items:
+    ProliferatorMkII: 1
+  time: 1
+  tool: Assembling machine
+  recipe_id: None
+Engine:
+  name: Engine
+  input_items:
+    MagneticCoil: 2
+    CopperIngot: 1
+  output_items:
+    Engine: 1
+  time: 3
+  tool: Assembling machine
+  recipe_id: None
+Thruster:
+  name: Thruster
+  input_items:
+    Steel: 2
+    CopperIngot: 3
+  output_items:
+    Thruster: 1
+  time: 4
+  tool: Assembling machine
+  recipe_id: None
+ReinforcedThruster:
+  name: Reinforced Thruster
+  input_items:
+    TitaniumAlloy: 5
+    ElectromagneticTurbine: 5
+  output_items:
+    ReinforcedThruster: 1
+  time: 8
+  tool: Assembling machine
+  recipe_id: None
+SuperMagneticRing:
+  name: SuperMagnetic Ring
+  input_items:
+    ElectromagneticTurbine: 2
+    Magnet: 3
+    EnergeticGraphite: 1
+  output_items:
+    SuperMagneticRing: 1
+  time: 3
+  tool: Assembling machine
+  recipe_id: None
+ParticleContainer:
+  name: Particle Container
+  input_items:
+    ElectromagneticTurbine: 2
+    IronIngot: 2
+    Graphene: 2
+  output_items:
+    ParticleContainer: 1
+  time: 4
+  tool: Assembling machine
+  recipe_id: None
+ProliferatorMkIII:
+  name: Proliferator Mk.III
+  input_items:
+    ProliferatorMkII: 2
+    CarbonNanotube: 1
+  output_items:
+    ProliferatorMkIII: 1
+  time: 2
+  tool: Assembling machine
+  recipe_id: None
+GravitationLens:
+  name: Gravitation Lens
+  input_items:
+    Diamond: 4
+    StrangeMatter: 1
+  output_items:
+    GravitationLens: 1
+  time: 6
+  tool: Assembling machine
+  recipe_id: None
+Foundation:
+  name: Foundation
+  input_items:
+    StoneBrick: 3
+    Steel: 1
+  output_items:
+    Foundation: 1
+  time: 1
+  tool: Assembling machine
+  recipe_id: None
+ElectromagneticMatrix:
+  name: Electromagnetic Matrix
+  input_items:
+    MagneticCoil: 1
+    CircuitBoard: 1
+  output_items:
+    ElectromagneticMatrix: 1
+  time: 3
+  tool: Assembling machine
+  recipe_id: None
+EnergyMatrix:
+  name: Energy Matrix
+  input_items:
+    EnergeticGraphite: 2
+    Hydrogen: 2
+  output_items:
+    EnergyMatrix: 1
+  time: 6
+  tool: Research facility
+  recipe_id: None
+SorterMKI:
+  name: Sorter MK.I
+  input_items:
+    IronIngot: 1
+    CircuitBoard: 1
+  output_items:
+    SorterMKI: 2
+  time: 1
+  tool: Assembing machine
+  recipe_id: 85
+SorterMKII:
+  name: Sorter MK.II
+  input_items:
+    ElectricMotor: 1
+  output_items:
+    SorterMKII: 2
+  time: 1
+  tool: Assembing machine
+  recipe_id: 88
+SorterMKIII:
+  name: Sorter MK.III
+  input_items:
+    SorterMKII: 2
+    ElectromagneticTurbine: 1
+  output_items:
+    SorterMKIII: 2
+  time: 1
+  tool: Assembing machine
+  recipe_id: 90
+PileSorter:
+  name: Pile Sorter
+  input_items:
+    SorterMKIII: 2
+    SuperMagneticRing: 1
+    Processor: 1
+  output_items:
+    PileSorter: 1
+  time: 1
+  tool: Assembling machine
+  recipe_id: 160

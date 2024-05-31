@@ -25,6 +25,7 @@ Run generate_blueprint.py using python3
 TODO: create requirement.txt
 
 ## Limitations:
+ - Do only support one recipe per item
  - Does only support smelter- and assembler factories
  - Does only support single output recipies
  - Does not (fully) support prolifirator (Mk.I, Mk.II, Mk.III)

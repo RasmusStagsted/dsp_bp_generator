@@ -1,14 +1,14 @@
 import enum
 
 class Yaw:
-    North = 0.0
-    NorthEast = 45.0
-    East = 90.0
-    SouthEast = 135.0
-    South = 180.0
-    SouthWest = 225.0
-    West = 270.0
-    NorthWest = 315.0
+	North = 0.0
+	NorthEast = 45.0
+	East = 90.0
+	SouthEast = 135.0
+	South = 180.0
+	SouthWest = 225.0
+	West = 270.0
+	NorthWest = 315.0
 
 class ItemEnum(enum.IntEnum):
 	Lava = -1
@@ -137,5 +137,9 @@ class ItemEnum(enum.IntEnum):
 	ProliferatorMkI = 10001
 	ProliferatorMkII = 10002
 	ProliferatorMkIII = 10003
-	Engine = 11000
-	PileSorter = 11001
+	CoreElement = 10004
+	Engine = 10005
+	PileSorter = 10006
+	StrangeAnnihilationFuelRod = 10007
+	CombustibleUnit = 10008
+	MissileSet = 10009
