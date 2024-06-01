@@ -108,7 +108,7 @@ class ItemEnum(enum.IntEnum):
 	ThermalPowerStation = 2204
 	MiniFusionPowerStation = 2211
 	MiningMachine = 2301
-	Smelter = 2302
+	ArcSmelter = 2302
 	OilExtractor = 2307
 	OilRefinery = 2308
 	WaterPump = 2306

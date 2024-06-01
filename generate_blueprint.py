@@ -1,4 +1,3 @@
-import Blueprint
 from BlueprintStringHeader import BlueprintStringHeader
 from BlueprintArea import BlueprintArea
 from BlueprintHeader import BlueprintHeader
@@ -7,15 +6,12 @@ from BlueprintBuildingHeader import BlueprintBuildingHeader
 from FactoryLine import FactoryLine
 from BeltRouter import BeltRouter
 from FactorySection import FactorySection
-import Buildings
-
-import math
-
 from utils import generate_belt
-
-
 from recipes import recipes
 from ItemEnum import Yaw, ItemEnum
+import Blueprint
+import Buildings
+import math
 
 class ItemFlow:
 
@@ -102,7 +98,7 @@ class Factory:
             for item in self.target_output_flow:
                 print(f"\t{item.name}: {float(item.count_pr_sec)}/s")
 
-    def generate_factories(self, buildings, debug = False):
+    def generate_factories(self, debug = False):
         self.main_belts = []
         for item in self.input_flow:
             self.main_belts.append(item)
@@ -112,7 +108,7 @@ class Factory:
         if debug:
             print("Main belts:")
             for belt in self.main_belts:
-                print(f"\t{ItemEnum(belt.id).name}, {belt.count_pr_sec}/s")
+                print(f"\t{belt.name}, {belt.count_pr_sec}/s")
         
         self.factories = []
         input_count = len(self.input_flow)
@@ -124,13 +120,13 @@ class Factory:
                 continue
             print(recipes[product.name])
             if recipes[product.name]["tool"] == "Smelting Facility":
-                factory_type = ItemEnum.Smelter
+                factory_type = ItemEnum.ArcSmelter
             elif recipes[product.name]["tool"] == "Assembling machine":
                 factory_type = ItemEnum.AssemblingMachineMkIII
-                
+            
             recipe_id = recipes[product.name]["recipe_id"]
             assert recipe_id != None, "Recipe not supported"
-                
+            
             input_indicies = []
             for ingredient in product.get_ingredients(self.prolifirator):
                 for i in range(len(self.main_belts)):
@@ -144,11 +140,10 @@ class Factory:
                 print(f"\tOutputs: {output_count}")
                 print(f"\tBelt Selectors: {input_indicies}")
                 print(f"\tProduct count: {1}")
-                print(f"\tOutputs: {product.id.name}")
-        
+                print(f"\tOutputs: {product.name}")
+            
             self.factories.append(
                 FactorySection(
-                    buildings = buildings,
                     x = 0,
                     y = y,
                     input_count = input_count,
@@ -162,6 +157,7 @@ class Factory:
             )
             if len(self.factories) > 1:
                 self.factories[-2].connect_to_section(self.factories[-1])
+            
             output_count += 1
             factory_height = 3
             y += factory_height + len(input_indicies) + 1
@@ -184,26 +180,27 @@ def generate_blueprint_building_header(building_count):
 
 def generate_blueprint_buildings():
 
-    buildings = []
-
     factory = Factory()
 
-    output_flow = [ItemFlow("MagneticCoil", 2)]
+    output_flow = [ItemFlow("MagneticCoil", 2.0)]
     factory.set_tartget_output_flow(output_flow, debug = True)
-    factory.generate_factories(buildings, debug = False)
+    factory.generate_factories(debug = True)
 
-    return buildings, 20, 20
+    return 20, 20
 
 if __name__ == "__main__":
     
-    buildings, size_x, size_y = generate_blueprint_buildings()
+    size_x, size_y = generate_blueprint_buildings()
+        
+    for building in Buildings.Building.buildings:
+        print(building)
     
     blueprint_data = {
         "blueprint_string_header": generate_blueprint_string_header(),
         "blueprint_header": generate_blueprint_header(size_x, size_y),
         "blueprint_areas": generate_blueprint_areas(size_x, size_y),
-        "blueprint_building_header": generate_blueprint_building_header(len(buildings)),
-        "blueprint_buildings": buildings,
+        "blueprint_building_header": generate_blueprint_building_header(len(Buildings.Building.buildings)),
+        "blueprint_buildings": Buildings.Building.buildings,
     }
     
     output_bp_str = Blueprint.serialize(**blueprint_data)

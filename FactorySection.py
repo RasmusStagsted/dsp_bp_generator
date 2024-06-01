@@ -3,15 +3,15 @@ from BeltRouter import BeltRouter
 
 class FactorySection:
     
-    def __init__(self, buildings, x, y, input_count, output_count, selector_belts, product_count, factory_type, recipe, factory_count):
+    def __init__(self, x, y, input_count, output_count, selector_belts, product_count, factory_type, recipe, factory_count):
         
         self.router_width = 2 * (input_count + output_count + product_count) + 1
         
         # Create factory_line
-        self.factory_line = FactoryLine(buildings, x + self.router_width, y, len(selector_belts), product_count, factory_type, recipe, factory_count)
-                
+        self.factory_line = FactoryLine(x + self.router_width, y, len(selector_belts), product_count, factory_type, recipe, factory_count)
+        
         # Create router
-        self.router = BeltRouter(buildings, x, y, input_count, output_count, product_count, selector_belts, self.factory_line.height)
+        self.router = BeltRouter(x, y, input_count, output_count, product_count, selector_belts, self.factory_line.height)
         self.connect_factory_line_to_router(len(selector_belts), product_count)
         
     def connect_factory_line_to_router(self, facory_input_count, facory_output_count):

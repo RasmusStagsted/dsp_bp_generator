@@ -24,23 +24,20 @@ def direction_to_unit_vector(direction):
         return -1.0, 0.0
     return None
 
-def connect_cornor_belt(buildings, belt1, belt2):
+def connect_cornor_belt(belt1, belt2):
     dx1, dy1 = direction_to_unit_vector(belt1.yaw)
-    belt1.output_object_index = len(buildings)
+    belt1.output_object_index = Buildings.Building.count()
     belt1.output_to_slot = 1
-    buildings.append(
-        Buildings.Belt(
-            index = len(buildings),
-            x = belt1.x + dx1,
-            y = belt1.y + dy1,
-            z = belt1.z,
-            yaw = direction_average(belt1.yaw, belt2.yaw),
-            output_object_index = belt2.index,
-            output_to_slot = 1
-        )
+    Buildings.Belt(
+        x = belt1.x + dx1,
+        y = belt1.y + dy1,
+        z = belt1.z,
+        yaw = direction_average(belt1.yaw, belt2.yaw),
+        output_object_index = belt2.index,
+        output_to_slot = 1
     )
 
-def generate_belt(buildings, x, y, z, yaw, length):
+def generate_belt(x, y, z, yaw, length):
     
     if type(yaw) != list:
         yaw = [yaw]
@@ -55,24 +52,21 @@ def generate_belt(buildings, x, y, z, yaw, length):
     for i in range(len(yaw)):
         dx, dy = direction_to_unit_vector(yaw[i])
         for j in range(length[i]):
-            buildings.append(
-                Buildings.Belt(
-                    index = len(buildings),
-                    x = ptr_x,
-                    y = ptr_y,
-                    z = z,
-                    yaw = yaw[i],
-                    output_object_index = len(buildings) + 1,
-                    output_to_slot = 1
-                )
+            belt = Buildings.Belt(
+                x = ptr_x,
+                y = ptr_y,
+                z = z,
+                yaw = yaw[i],
+                output_object_index = Buildings.Building.count() + 1,
+                output_to_slot = 1
             )
-            belts.append(buildings[-1])
+            belts.append(belt)
             ptr_x += dx
             ptr_y += dy
         
         if (i != len(yaw) - 1):
-            buildings[-1].yaw = direction_average(yaw[i], yaw[i + 1])
+            belt.yaw = direction_average(yaw[i], yaw[i + 1])
         else:
-            buildings[-1].output_object_index = -1
-            buildings[-1].output_to_slot = -1
+            belt.output_object_index = -1
+            belt.output_to_slot = -1
     return belts
