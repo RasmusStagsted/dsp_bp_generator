@@ -1,19 +1,16 @@
 from Packet import Packet
 import struct
+from utils import Pos
 
 from ItemEnum import ItemEnum
 
 class BlueprintBuilding:
 
-    def __init__(self, index = 0, area_index = 0, x = 0, y = 0, z = 0, x2 = 0, y2 = 0, z2 = 0, yaw = 0, yaw2 = 0, item_id = 0, model_index = 0, output_object_index = -1, input_object_index = -1, output_to_slot = 0, input_from_slot = 0, output_from_slot = 0, input_to_slot = 0, output_offset = 0, input_offset = 0, recipe_id = 0, filter_id = 0, parameters = []):
+    def __init__(self, index = 0, area_index = 0, pos1 = Pos(0, 0, 0), pos2 = Pos(0, 0, 0), yaw = 0, yaw2 = 0, item_id = 0, model_index = 0, output_object_index = -1, input_object_index = -1, output_to_slot = 0, input_from_slot = 0, output_from_slot = 0, input_to_slot = 0, output_offset = 0, input_offset = 0, recipe_id = 0, filter_id = 0, parameters = []):
         self.index = index
         self.area_index = area_index
-        self.x = x
-        self.y = y
-        self.z = z
-        self.x2 = x2
-        self.y2 = y2
-        self.z2 = z2
+        self.pos1 = pos1
+        self.pos2 = pos2
         self.yaw = yaw
         self.yaw2 = yaw
         self.item_id = item_id
@@ -34,12 +31,12 @@ class BlueprintBuilding:
     def parse(self, packet):
         self.index = packet.parse_int()
         self.area_index = packet.parse_byte()
-        self.x = packet.parse_float()
-        self.y = packet.parse_float()
-        self.z = packet.parse_float()
-        self.x2 = packet.parse_float()
-        self.y2 = packet.parse_float()
-        self.z2 = packet.parse_float()
+        self.pos1.x = packet.parse_float()
+        self.pos1.y = packet.parse_float()
+        self.pos1.z = packet.parse_float()
+        self.pos2.x = packet.parse_float()
+        self.pos2.y = packet.parse_float()
+        self.pos2.z = packet.parse_float()
         self.yaw = packet.parse_float()
         self.yaw2 = packet.parse_float()
         self.item_id = packet.parse_half_word()
@@ -63,12 +60,12 @@ class BlueprintBuilding:
         packet = Packet()
         packet.serialize_int(self.index)
         packet.serialize_byte(self.area_index)
-        packet.serialize_float(self.x)
-        packet.serialize_float(self.y)
-        packet.serialize_float(self.z)
-        packet.serialize_float(self.x2)
-        packet.serialize_float(self.y2)
-        packet.serialize_float(self.z2)
+        packet.serialize_float(self.pos1.x)
+        packet.serialize_float(self.pos1.y)
+        packet.serialize_float(self.pos1.z)
+        packet.serialize_float(self.pos2.x)
+        packet.serialize_float(self.pos2.y)
+        packet.serialize_float(self.pos2.z)
         packet.serialize_float(self.yaw)
         packet.serialize_float(self.yaw2)
         packet.serialize_half_word(self.item_id)
@@ -96,12 +93,12 @@ Binary data: {self.serialize().data}
 ====================
 Index: {self.index}
 Area index: {self.area_index}
-Local offset x: {self.x}
-Local offset y: {self.y}
-Local offset z: {self.z}
-Local offset x2: {self.x2}
-Local offset y2: {self.y2}
-Local offset z2: {self.z2}
+position 1 x: {self.pos1.x}
+position 1 y: {self.pos1.y}
+position 1 z: {self.pos1.z}
+position 2 x: {self.pos2.x}
+position 2 y: {self.pos2.y}
+position 2 z: {self.pos2.z}
 Yaw: {self.yaw}
 Yaw2: {self.yaw2}
 Item ID: {str(ItemEnum(self.item_id))[9:]} ({self.item_id})

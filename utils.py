@@ -1,5 +1,50 @@
-from ItemEnum import Yaw
-import Buildings
+#import Buildings
+
+class Pos:
+    
+    def __init__(self, x, y, z = 0):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def move(self, offset):
+        self.x += offset.x
+        self.y += offset.y
+        self.z += offset.z
+
+    def __add__(pos1, pos2):
+        return Pos(pos1.x + pos2.x, pos1.y + pos2.y, pos1.z + pos2.z)
+
+class Yaw:
+    North = 0.0
+    NorthEast = 45.0
+    East = 90.0
+    SouthEast = 135.0
+    South = 180.0
+    SouthWest = 225.0
+    West = 270.0
+    NorthWest = 315.0
+    Unknown = None
+
+    def get_neares_90_degree(pos1, pos2):
+
+        angle = Yaw.get_angle(pos1, pos2)
+        angle = ((angle + 45) // 90) * 90
+        return angle
+
+    def get_angle(pos1, pos2):
+        delta_x = pos2.x - pos1.x
+        delta_y = pos2.y - pos1.y
+        
+        if delta_x == 0:
+            if delta_y > 0:
+                return Yaw.North
+            elif delta_y < 0:
+                return Yaw.South
+            else:
+                return Yaw.Unknown
+        return 180 + math.degrees(math.atan2(delta_x, delta_y))
+        
 
 def direction_average(dir1, dir2):
     if (dir1 == Yaw.North and dir2 == Yaw.East) or (dir1 == Yaw.East and dir2 == Yaw.North):
@@ -23,7 +68,7 @@ def direction_to_unit_vector(direction):
     elif direction == Yaw.West:
         return -1.0, 0.0
     return None
-
+"""
 def connect_cornor_belt(belt1, belt2):
     dx1, dy1 = direction_to_unit_vector(belt1.yaw)
     belt1.output_object_index = Buildings.Building.count()
@@ -37,36 +82,5 @@ def connect_cornor_belt(belt1, belt2):
         output_to_slot = 1
     )
 
-def generate_belt(x, y, z, yaw, length):
-    
-    if type(yaw) != list:
-        yaw = [yaw]
-    if type(length) != list:
-        length = [length]
-    assert len(yaw) == len(length), "\"yaw\" and \"length\" must have the same length"
 
-    ptr_x = x
-    ptr_y = y
-    
-    belts = []
-    for i in range(len(yaw)):
-        dx, dy = direction_to_unit_vector(yaw[i])
-        for j in range(length[i]):
-            belt = Buildings.Belt(
-                x = ptr_x,
-                y = ptr_y,
-                z = z,
-                yaw = yaw[i],
-                output_object_index = Buildings.Building.count() + 1,
-                output_to_slot = 1
-            )
-            belts.append(belt)
-            ptr_x += dx
-            ptr_y += dy
-        
-        if (i != len(yaw) - 1):
-            belt.yaw = direction_average(yaw[i], yaw[i + 1])
-        else:
-            belt.output_object_index = -1
-            belt.output_to_slot = -1
-    return belts
+    """

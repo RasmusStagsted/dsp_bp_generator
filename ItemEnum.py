@@ -1,15 +1,5 @@
 import enum
 
-class Yaw:
-	North = 0.0
-	NorthEast = 45.0
-	East = 90.0
-	SouthEast = 135.0
-	South = 180.0
-	SouthWest = 225.0
-	West = 270.0
-	NorthWest = 315.0
-
 class ItemEnum(enum.IntEnum):
 	Lava = -1
 	IronOre = 1001

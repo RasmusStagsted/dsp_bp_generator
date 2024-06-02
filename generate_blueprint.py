@@ -6,9 +6,9 @@ from BlueprintBuildingHeader import BlueprintBuildingHeader
 from FactoryLine import FactoryLine
 from BeltRouter import BeltRouter
 from FactorySection import FactorySection
-from utils import generate_belt
+from utils import Yaw, Pos
 from recipes import recipes
-from ItemEnum import Yaw, ItemEnum
+from ItemEnum import ItemEnum
 import Blueprint
 import Buildings
 import math
@@ -144,8 +144,7 @@ class Factory:
             
             self.factories.append(
                 FactorySection(
-                    x = 0,
-                    y = y,
+                    pos = Pos(0, y),
                     input_count = input_count,
                     output_count = output_count,
                     selector_belts = input_indicies,
@@ -192,8 +191,6 @@ if __name__ == "__main__":
     
     size_x, size_y = generate_blueprint_buildings()
         
-    for building in Buildings.Building.buildings:
-        print(building)
     
     blueprint_data = {
         "blueprint_string_header": generate_blueprint_string_header(),

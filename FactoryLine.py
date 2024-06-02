@@ -1,6 +1,6 @@
 import Buildings
-from ItemEnum import Yaw, ItemEnum
-from utils import generate_belt
+from ItemEnum import ItemEnum
+from utils import Yaw, Pos
 
 import math
 
@@ -21,25 +21,25 @@ class FactoryBlock:
     
     def __init__(self, x, y, input_count, output_count, factory_type, width, recipe):
 
-        input_belt_y = y + FactoryBlock._get_top_belt_y_offset(factory_type)
-        output_belt_y = y + FactoryBlock._get_buttom_belt_y_offset(factory_type)
-        factory_x = x + FactoryBlock._get_factory_x_offset(factory_type)
-        self.generate_input_belts(x, input_belt_y, input_count, width)
-        self.generate_output_belts(x, output_belt_y, output_count, width)
-        self.generate_factory(factory_x, y, factory_type, width, recipe)
+        input_belt_pos = Pos(x, y + FactoryBlock._get_top_belt_y_offset(factory_type))
+        output_belt_pos = Pos(x, y + FactoryBlock._get_buttom_belt_y_offset(factory_type))
+        factory_pos = Pos(x + FactoryBlock._get_factory_x_offset(factory_type), y)
+        self.generate_input_belts(input_belt_pos, input_count, width)
+        self.generate_output_belts(output_belt_pos, output_count, width)
+        self.generate_factory(factory_pos, factory_type, width, recipe)
 
-    def generate_input_belts(self, x, y, input_count, width):
+    def generate_input_belts(self, pos, input_count, width):
         self.input_belts = []
-        for i in range(input_count):
-            self.input_belts.append(generate_belt(x, y + i, 0, Yaw.East, width))
+        #for i in range(input_count):
+        #    self.input_belts.append(generate_belt(pos.x, pos.y + i, 0, Yaw.East, width))
             
-    def generate_output_belts(self, x, y, output_count, width):
+    def generate_output_belts(self, pos, output_count, width):
         self.output_belts = []
-        for i in range(output_count):
-            self.output_belts.append(generate_belt(x + width - 1, y - i, 0, Yaw.West, width))
+        #for i in range(output_count):
+        #    self.output_belts.append(generate_belt(pos.x + width - 1, pos.y - i, 0, Yaw.West, width))
     
-    def generate_factory(self, x, y, factory_type, width, recipe):
-        self.factory = Buildings.Smelter(x, y)
+    def generate_factory(self, pos, factory_type, width, recipe):
+        self.factory = Buildings.Smelter(pos)
     
     def generate_input_sorters(self):
         pass
@@ -167,8 +167,10 @@ class FactoryLine:
         for i in range(len(factory_blocks) - 1):
             factory_blocks[i].connect_to_factory_block(factory_blocks[i + 1])
         
-        self.input_belts = [factory_blocks[0].input_belts[i][0] for i in range(input_count)]
-        self.output_belts = [factory_blocks[0].output_belts[i][-1] for i in range(output_count)]
+        #self.input_belts = [factory_blocks[0].input_belts[i][0] for i in range(input_count)]
+        #self.output_belts = [factory_blocks[0].output_belts[i][-1] for i in range(output_count)]
+        self.input_belts = []
+        self.output_belts = []
             
     def _get_factory_width(factory_type):
         if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
