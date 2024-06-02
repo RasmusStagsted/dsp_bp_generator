@@ -141,7 +141,6 @@ class Factory:
                 print(f"\tBelt Selectors: {input_indicies}")
                 print(f"\tProduct count: {1}")
                 print(f"\tOutputs: {product.name}")
-            
             self.factories.append(
                 FactorySection(
                     pos = Pos(0, y),
@@ -154,6 +153,7 @@ class Factory:
                     factory_count = math.ceil(product.count_pr_sec * recipes[product.name]["time"])
                 )
             )
+            
             if len(self.factories) > 1:
                 self.factories[-2].connect_to_section(self.factories[-1])
             
@@ -189,9 +189,29 @@ def generate_blueprint_buildings():
 
 if __name__ == "__main__":
     
-    size_x, size_y = generate_blueprint_buildings()
-        
+    #size_x, size_y = generate_blueprint_buildings()
+    size_x = 5
+    size_y = 5
     
+    belts = Buildings.Belt.generate_belt(
+        name = "Belt",
+        pos = Pos(0, 2, 0),
+        yaw = Yaw.East,
+        length = 3
+    )    
+    factory = Buildings.AssemblingMachineMkIII(
+        name = "factory",
+        pos = Pos(1, 0, 0)
+    )
+    sorter = Buildings.Sorter.generate_sorter_from_belt_to_factory(
+        name = "Sorter",
+        belt = belts[1],
+        factory = factory
+    )
+    for belt in belts:
+        print(belt)
+    print(factory)
+    print(sorter)
     blueprint_data = {
         "blueprint_string_header": generate_blueprint_string_header(),
         "blueprint_header": generate_blueprint_header(size_x, size_y),

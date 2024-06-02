@@ -1,3 +1,5 @@
+import random
+
 class BlueprintStringHeader:
     SIZE = 10
 
@@ -11,7 +13,7 @@ class BlueprintStringHeader:
         self.icon4 = 0
         self.fixed0_2 = 0
         self.timestamp = 0
-        self.game_version = "0.10.29.22015"
+        self.game_version = "0.10.29." + str(random.randint(0, 10)) + str(random.randint(0, 10)) + str(random.randint(0, 10)) + str(random.randint(0, 10)) + str(random.randint(0, 10))
         self.short_desc = "New%20Blueprint"
 
     def parse(self, string):

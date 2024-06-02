@@ -1,6 +1,7 @@
 import Buildings
 from ItemEnum import ItemEnum
 from utils import Yaw, Pos
+from FactoryBlock import FactoryBlock
 
 import math
 
@@ -17,143 +18,10 @@ A factory block consist of:
  - One to three output belts
  - One to three output sorters
 """
-class FactoryBlock:
-    
-    def __init__(self, x, y, input_count, output_count, factory_type, width, recipe):
 
-        input_belt_pos = Pos(x, y + FactoryBlock._get_top_belt_y_offset(factory_type))
-        output_belt_pos = Pos(x, y + FactoryBlock._get_buttom_belt_y_offset(factory_type))
-        factory_pos = Pos(x + FactoryBlock._get_factory_x_offset(factory_type), y)
-        self.generate_input_belts(input_belt_pos, input_count, width)
-        self.generate_output_belts(output_belt_pos, output_count, width)
-        self.generate_factory(factory_pos, factory_type, width, recipe)
-
-    def generate_input_belts(self, pos, input_count, width):
-        self.input_belts = []
-        #for i in range(input_count):
-        #    self.input_belts.append(generate_belt(pos.x, pos.y + i, 0, Yaw.East, width))
-            
-    def generate_output_belts(self, pos, output_count, width):
-        self.output_belts = []
-        #for i in range(output_count):
-        #    self.output_belts.append(generate_belt(pos.x + width - 1, pos.y - i, 0, Yaw.West, width))
-    
-    def generate_factory(self, pos, factory_type, width, recipe):
-        self.factory = Buildings.Smelter(pos)
-    
-    def generate_input_sorters(self):
-        pass
-    
-    def connect_to_factory_block(self, factory_block2):
-        for i in range(len(self.input_belts)):
-            self.input_belts[i][-1].connect_to_belt(factory_block2.input_belts[i][0])
-        for i in range(len(self.output_belts)):
-            factory_block2.output_belts[i][-1].connect_to_belt(self.output_belts[i][0])
-        
-    def _get_inserter_offset(factory_type, side, index):
-        assert side == "top" or side == "buttom", "Side needs to be \"top\" or \"buttom\""
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
-            x = -0.8 + 0.8 * index
-            y = 1.2 if side == "top" else -1.2
-            return x, y
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
-            x = -0.8 + 0.8 * index
-            y = 1.2 if side == "buttom" else -1.2
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
-            assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
-            assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
-            assert True, "Chemical plants labs isn't supported yet"
-        else:
-            assert True, "Unsupported factory type: " + factory_type
-    
-    def _get_inserter_slot(factory_type, side, index):
-        assert side == "top" or side == "buttom" or side == "left" or side == "right", "Side needs to be \"top\", \"buttom\", \"left\" or \"right\""
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
-            if side == "top":
-                return index
-            else:
-                return 8 - index
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
-            if side == "buttom":
-                return index
-            else:
-                return 8 - index
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
-            assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
-            assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
-            assert True, "Chemical plants labs isn't supported yet"
-        else:
-            assert True, "Unsupported factory type: " + factory_type
-    
-    def _get_belt_index_offset(factory_type):
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
-            return 0
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
-            return 0
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
-            assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
-            assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
-            assert True, "Chemical plants labs isn't supported yet"
-        else:
-            assert True, "Unsupported factory type: " + factory_type
-    
-    def _get_belt_y_offset(factory_type, side):
-        if side == "top":
-            return self.get_top_belt_y_offset(factory_type)
-        elif side == "buttom":
-            return self.get_buttom_belt_y_offset(factory_type)
-    
-    def _get_top_belt_y_offset(factory_type):
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
-            return 2
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
-            return 2
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
-            assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
-            assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
-            assert True, "Chemical plants labs isn't supported yet"
-        else:
-            assert True, "Unsupported factory type: " + factory_type
-    
-    def _get_buttom_belt_y_offset(factory_type):
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
-            return -2
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
-            return -2
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
-            assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
-            assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
-            assert True, "Chemical plants labs isn't supported yet"
-        else:
-            assert True, "Unsupported factory type: " + factory_type
-        
-    def _get_factory_x_offset(factory_type):
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
-            return 1
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
-            return 1
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
-            assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
-            assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
-            assert True, "Chemical plants labs isn't supported yet"
-        else:
-            assert True, "Unsupported factory type: " + factory_type
-    
 class FactoryLine:
     
-    def __init__(self, x, y, input_count, output_count, factory_type, recipe, factory_count):
+    def __init__(self, pos, input_count, output_count, factory_type, recipe, factory_count):
         
         self.height = 6
         self.block_width = FactoryLine._get_factory_width(factory_type)
@@ -161,17 +29,17 @@ class FactoryLine:
         # Generate factory_blocks
         factory_blocks = []
         for i in range(factory_count):
-            factory_blocks.append(FactoryBlock(x + i * self.block_width, y, input_count, output_count, factory_type, self.block_width, recipe))
+            temp_pos = pos + Pos(x = i * self.block_width)
+            factory_block = FactoryBlock(temp_pos, input_count, output_count, factory_type, self.block_width, recipe)
+            factory_blocks.append(factory_block)
         
         # Connect factory_blocks
         for i in range(len(factory_blocks) - 1):
             factory_blocks[i].connect_to_factory_block(factory_blocks[i + 1])
         
-        #self.input_belts = [factory_blocks[0].input_belts[i][0] for i in range(input_count)]
-        #self.output_belts = [factory_blocks[0].output_belts[i][-1] for i in range(output_count)]
-        self.input_belts = []
-        self.output_belts = []
-            
+        self.input_belts = [factory_blocks[0].input_belts[i][0] for i in range(input_count)]
+        self.output_belts = [factory_blocks[0].output_belts[i][-1] for i in range(output_count)]
+    
     def _get_factory_width(factory_type):
         if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
             return 3

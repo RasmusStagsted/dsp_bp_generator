@@ -26,14 +26,14 @@ class Packet:
         self.data = self.data[2:]
         return value
 
-    def serialize_int(self, value):
+    def serialize_int(self, value: int):
         self.data += pack("i", value)
 
-    def serialize_float(self, value):
+    def serialize_float(self, value: float):
         self.data += pack("f", value)
 
     def serialize_byte(self, value):
         self.data += pack("b", value)
 
-    def serialize_half_word(self, value):
+    def serialize_half_word(self, value: int):
         self.data += pack("H", value)

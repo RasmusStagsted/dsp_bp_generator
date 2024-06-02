@@ -1,5 +1,6 @@
 from FactoryLine import FactoryLine
 from BeltRouter import BeltRouter
+from utils import Pos
 
 class FactorySection:
     
@@ -8,18 +9,19 @@ class FactorySection:
         self.router_width = 2 * (input_count + output_count + product_count) + 1
         
         # Create factory_line
-        self.factory_line = FactoryLine(pos.x + self.router_width, pos.y, len(selector_belts), product_count, factory_type, recipe, factory_count)
+        temp_pos = pos + Pos(x = self.router_width)
+        self.factory_line = FactoryLine(temp_pos, len(selector_belts), product_count, factory_type, recipe, factory_count)
         
         # Create router
         self.router = BeltRouter(pos, input_count, output_count, product_count, selector_belts, self.factory_line.height)
         
-        #self.connect_factory_line_to_router(len(selector_belts), product_count)
+        #self.connect_to_factory_line(len(selector_belts), product_count)
         
-    def connect_factory_line_to_router(self, facory_input_count, facory_output_count):
-        for i in range(facory_input_count):
+    def connect_to_factory_line(self, factory_input_count, factory_output_count):
+        for i in range(factory_input_count):
             self.router.selector_belts[i].connect_to_belt(self.factory_line.input_belts[i])
         
-        for i in range(facory_output_count):
+        for i in range(factory_output_count):
             self.factory_line.output_belts[i].connect_to_belt(self.router.production_belts[i])
             
     def connect_to_section(self, section2):

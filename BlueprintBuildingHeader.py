@@ -19,7 +19,7 @@ Blueprint Building Header:
 ==========================
 Binary data: {self.serialize().data}
 ==========================
-Index: {self.building_count}
+Count: {self.building_count}
 """
 
 if __name__ == "__main__":
