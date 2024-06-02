@@ -147,6 +147,39 @@ class Sorter(Building):
 
     def connect_to_belt(self, belt):
         pass
+    """
+    def generate_sorter_from_belt_to_factory(belt, factory, factory_slot):
+        return Sorter(
+            x1 = belt.x,
+            y1 = belt.y,
+            z1 = belt.z,
+            x2 = 
+            y2 = 
+            z2 = 0,
+            yaw = 
+            output_object_index = belt.index,
+            input_object_index = factory.index,
+            output_to_slot = 1
+            
+        )
+    
+    def generate_sorter_from_factory_to_belt(factory, belt, factory_slot):
+        
+        yaw = Yaw.get_nearest_90_degree_yaw(factory.pos, belt.pos)
+        return Sorter(
+            x1 = belt.x,
+            y1 = belt.y,
+            z1 = belt.z,
+            x2 = 
+            y2 = 
+            z2 = 0,
+            yaw = 
+            output_object_index = belt.index,
+            input_object_index = factory.index,
+            output_to_slot = 1
+            
+        )
+    """
 
 class Splitter(Building):
     def __init__(self, x, y, z, yaw):

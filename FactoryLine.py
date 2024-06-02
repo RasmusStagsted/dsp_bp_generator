@@ -9,46 +9,54 @@ class FactoryLineFlow:
     FlowRate = 1
     BeltIndex = 1
 
+"""
+A factory block consist of:
+ - A single factory of any type
+ - One to three input belts
+ - One to three input sorters
+ - One to three output belts
+ - One to three output sorters
+"""
 class FactoryBlock:
     
     def __init__(self, x, y, input_count, output_count, factory_type, width, recipe):
+
+        input_belt_y = y + FactoryBlock._get_top_belt_y_offset(factory_type)
+        output_belt_y = y + FactoryBlock._get_buttom_belt_y_offset(factory_type)
+        factory_x = x + FactoryBlock._get_factory_x_offset(factory_type)
+        self.generate_input_belts(x, input_belt_y, input_count, width)
+        self.generate_output_belts(x, output_belt_y, output_count, width)
+        self.generate_factory(factory_x, y, factory_type, width, recipe)
+
+    def generate_input_belts(self, x, y, input_count, width):
         self.input_belts = []
         for i in range(input_count):
-            y = FactoryLine._get_top_belt_y_offset(factory_type) + i
-            self.input_belts.append(generate_belt(x, y, input_count, Yaw.East, width))
+            self.input_belts.append(generate_belt(x, y + i, 0, Yaw.East, width))
+            
+    def generate_output_belts(self, x, y, output_count, width):
         self.output_belts = []
         for i in range(output_count):
-            y = FactoryLine._get_buttom_belt_y_offset(factory_type) - i
-            self.output_belts.append(generate_belt(x + width - 1, y, input_count, Yaw.West, width))
+            self.output_belts.append(generate_belt(x + width - 1, y - i, 0, Yaw.West, width))
+    
+    def generate_factory(self, x, y, factory_type, width, recipe):
         self.factory = Buildings.Smelter(x, y)
-        
-class FactoryLine:
     
-    def __init__(self, x, y, input_count, output_count, factory_type, recipe, factory_count):
-        
-        self.input_belts = [
-            Buildings.Belt(7.0, 2.0, 0, Yaw.East)
-        ]
-        self.output_belts = [
-            Buildings.Belt(7.0, -2.0, 0, Yaw.West)
-        ]
-        
-        self.height = 6        
-        self.block_width = FactoryLine._get_factory_width(factory_type)
-
-        factory_blocks = []
-        for i in range(factory_count):
-            factory_blocks.append(FactoryBlock(x, y, input_count, output_count, factory_type, recipe, self.block_width))
-        
-        
+    def generate_input_sorters(self):
+        pass
     
+    def connect_to_factory_block(self, factory_block2):
+        for i in range(len(self.input_belts)):
+            self.input_belts[i][-1].connect_to_belt(factory_block2.input_belts[i][0])
+        for i in range(len(self.output_belts)):
+            factory_block2.output_belts[i][-1].connect_to_belt(self.output_belts[i][0])
+        
     def _get_inserter_offset(factory_type, side, index):
         assert side == "top" or side == "buttom", "Side needs to be \"top\" or \"buttom\""
         if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
             x = -0.8 + 0.8 * index
             y = 1.2 if side == "top" else -1.2
             return x, y
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssembingMachineMkII or factory_type == ItemEnum.AssembingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
             x = -0.8 + 0.8 * index
             y = 1.2 if side == "buttom" else -1.2
         elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
@@ -67,7 +75,7 @@ class FactoryLine:
                 return index
             else:
                 return 8 - index
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssembingMachineMkII or factory_type == ItemEnum.AssembingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
             if side == "buttom":
                 return index
             else:
@@ -84,7 +92,7 @@ class FactoryLine:
     def _get_belt_index_offset(factory_type):
         if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
             return 0
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssembingMachineMkII or factory_type == ItemEnum.AssembingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
             return 0
         elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
@@ -104,7 +112,7 @@ class FactoryLine:
     def _get_top_belt_y_offset(factory_type):
         if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
             return 2
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssembingMachineMkII or factory_type == ItemEnum.AssembingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
             return 2
         elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
@@ -118,7 +126,7 @@ class FactoryLine:
     def _get_buttom_belt_y_offset(factory_type):
         if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
             return -2
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssembingMachineMkII or factory_type == ItemEnum.AssembingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
             return -2
         elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
@@ -128,11 +136,44 @@ class FactoryLine:
             assert True, "Chemical plants labs isn't supported yet"
         else:
             assert True, "Unsupported factory type: " + factory_type
+        
+    def _get_factory_x_offset(factory_type):
+        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
+            return 1
+        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+            return 1
+        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
+            assert True, "Matrix labs isn't supported yet"
+        elif factory_type == ItemEnum.OilRefinary:
+            assert True, "Oil refinaries isn't supported yet"
+        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
+            assert True, "Chemical plants labs isn't supported yet"
+        else:
+            assert True, "Unsupported factory type: " + factory_type
+    
+class FactoryLine:
+    
+    def __init__(self, x, y, input_count, output_count, factory_type, recipe, factory_count):
+        
+        self.height = 6
+        self.block_width = FactoryLine._get_factory_width(factory_type)
+        
+        # Generate factory_blocks
+        factory_blocks = []
+        for i in range(factory_count):
+            factory_blocks.append(FactoryBlock(x + i * self.block_width, y, input_count, output_count, factory_type, self.block_width, recipe))
+        
+        # Connect factory_blocks
+        for i in range(len(factory_blocks) - 1):
+            factory_blocks[i].connect_to_factory_block(factory_blocks[i + 1])
+        
+        self.input_belts = [factory_blocks[0].input_belts[i][0] for i in range(input_count)]
+        self.output_belts = [factory_blocks[0].output_belts[i][-1] for i in range(output_count)]
             
     def _get_factory_width(factory_type):
         if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
             return 3
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssembingMachineMkII or factory_type == ItemEnum.AssembingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
             return 3
         elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"

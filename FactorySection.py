@@ -12,7 +12,8 @@ class FactorySection:
         
         # Create router
         self.router = BeltRouter(x, y, input_count, output_count, product_count, selector_belts, self.factory_line.height)
-        self.connect_factory_line_to_router(len(selector_belts), product_count)
+        
+        #self.connect_factory_line_to_router(len(selector_belts), product_count)
         
     def connect_factory_line_to_router(self, facory_input_count, facory_output_count):
         for i in range(facory_input_count):

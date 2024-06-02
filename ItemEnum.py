@@ -143,3 +143,4 @@ class ItemEnum(enum.IntEnum):
 	StrangeAnnihilationFuelRod = 10007
 	CombustibleUnit = 10008
 	MissileSet = 10009
+	NegentrophySmelter = 10010
