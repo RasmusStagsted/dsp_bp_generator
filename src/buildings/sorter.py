@@ -1,6 +1,6 @@
 from .building import Building
-from utils import Pos, Yaw
-from ItemEnum import ItemEnum
+from ..utils import Pos, Yaw
+from ..ItemEnum import ItemEnum
 
 class Sorter(Building):
     def __init__(self, name, pos1: Pos, pos2: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = -1, input_from_slot: int = -1, output_from_slot: int = -1, input_to_slot: int = -1, output_offset: int = -1, input_offset: int = -1, parameters = []):
@@ -29,9 +29,6 @@ class Sorter(Building):
         yaw = Yaw.get_neares_90_degree(belt.pos1, factory.pos1)
         slot = factory.get_input_slot(belt.pos1)
         pos = factory.get_pos_from_slot(slot)
-        print(slot)
-        print(yaw)
-        print(pos)
         return Sorter(
             name = name,
             pos1 = belt.pos1,

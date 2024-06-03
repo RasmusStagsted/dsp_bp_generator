@@ -22,7 +22,7 @@ class Packet:
         return value
 
     def parse_half_word(self):
-        value = unpack("H", self.data[0:2])[0]
+        value = unpack("h", self.data[0:2])[0]
         self.data = self.data[2:]
         return value
 
@@ -36,4 +36,4 @@ class Packet:
         self.data += pack("b", value)
 
     def serialize_half_word(self, value: int):
-        self.data += pack("H", value)
+        self.data += pack("h", value)

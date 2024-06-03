@@ -1,6 +1,6 @@
-from BlueprintBuilding import BlueprintBuilding
-from utils import Pos, Yaw
-from ItemEnum import ItemEnum
+from ..blueprint import BlueprintBuilding
+from ..utils import Pos, Yaw
+from ..ItemEnum import ItemEnum
 
 class Building(BlueprintBuilding):
     
@@ -20,12 +20,6 @@ class Building(BlueprintBuilding):
     
     def get_building(index):
         return Building.buildings[index]
-    
-    def move(self, dx, dy, dz = 0):
-        self.pos1.x += dx
-        self.pos1.y += dy
-        self.pos2.x += dx
-        self.pos2.y += dy
     
     def __str__(self):
         string = f"""

@@ -1,6 +1,6 @@
 from .building import Building
 from .conveyer_belt import ConveyorBelt
-from utils import Pos, Yaw
+from ..utils import Pos, Yaw
 
 class Splitter(Building):
     def __init__(self, name, pos: Pos, yaw: Yaw):

@@ -1,17 +1,18 @@
-if __name__ != "__main__" and __name__ != "blueprint_area":
-    from .packet import Packet
+from .packet import Packet
+from ..utils import Pos
+import sys
 
 class BlueprintArea:
 
-    def __init__(self, width = 0, height = 0):
+    def __init__(self, size: Pos = Pos(), offset: Pos = Pos()):
         self.index = 0
         self.parent_index = -1
         self.tropic_anchor = 0
         self.area_segments = 200
-        self.anchor_local_offset_x = 0
-        self.anchor_local_offset_y = 0
-        self.width = width
-        self.height = height
+        self.anchor_local_offset_x = int(offset.x)
+        self.anchor_local_offset_y = int(offset.y)
+        self.width = int(size.x)
+        self.height = int(size.y)
 
     def parse(self, packet):
         self.index = packet.parse_byte()
@@ -34,6 +35,20 @@ class BlueprintArea:
         packet.serialize_half_word(self.width)
         packet.serialize_half_word(self.height)
         return packet
+    
+    def get_area_from_building_list(buildings):
+        min_x = 0x7fff
+        max_x = -0x7fff
+        min_y = 0x7fff
+        max_y = -0x7fff
+        for building in buildings:
+            min_x = min(min_x, min(building.pos1.x, building.pos2.x))
+            max_x = max(max_x, max(building.pos1.x, building.pos2.x))
+            min_y = min(min_y, min(building.pos1.y, building.pos2.y))
+            max_y = max(max_y, max(building.pos1.y, building.pos2.y))
+        size = Pos(max_x - min_x + 1, max_y - min_y + 1)
+        offset = Pos((max_x - min_x) // 2, (max_y - min_y) // 2)
+        return size, offset
 
     def __str__(self):
         return f"""
@@ -50,23 +65,3 @@ Anchor local offset Y: {self.anchor_local_offset_y}
 Width: {self.width}
 Height: {self.height}
 """
-
-if __name__ == "__main__":
-    from packet import Packet
-    from colorama import Fore, Style
-    
-    area = BlueprintArea()
-    input_data = b'\x00\xff\x00\x00\xc8\x00\x00\x00\x00\x00\x01\x00\x01\x00'
-    input_packet = Packet(input_data)
-    area.parse(input_packet)
-    
-    output_data = area.serialize().data
-    
-    print("Input data: ", input_data)
-    print("Output data:", output_data)
-    print(area)
-    print("Remaining data:", input_packet.data)
-    assert(len(input_packet.data) == 0)
-    assert(input_data == output_data)
-    print(Fore.GREEN + "Passed!")
-    Style.RESET_ALL

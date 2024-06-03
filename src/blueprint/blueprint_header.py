@@ -1,5 +1,4 @@
-if __name__ != "__main__":
-    from .packet import Packet
+from .packet import Packet
 
 class BlueprintHeader:
 
@@ -50,22 +49,3 @@ Dragbox size y: {self.dragbox_size_y}
 Primary area index: {self.primary_area_index}
 Area count: {self.area_count}
 """
-
-if __name__ == "__main__":
-    from packet import Packet
-    from colorama import Fore, Style
-    header = BlueprintHeader()
-    input_data = b'\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01'
-    input_packet = Packet(input_data)
-    header.parse(input_packet)
-    
-    output_data = header.serialize().data
-    
-    print("Input data: ", input_data)
-    print("Output data:", output_data)
-    print(header)
-    print("Remaining data:", input_packet.data)
-    assert(len(input_packet.data) == 0)
-    assert(input_data == output_data)
-    print(Fore.GREEN + "Passed!")
-    Style.RESET_ALL

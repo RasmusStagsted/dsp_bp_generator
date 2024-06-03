@@ -1,11 +1,10 @@
-if __name__ != "__main__":
-    from .md5 import MD5
-    from .blueprint_area import BlueprintArea
-    from .blueprint_building import BlueprintBuilding
-    from .blueprint_building_header import BlueprintBuildingHeader
-    from .blueprint_header import BlueprintHeader
-    from .blueprint_string_header import BlueprintStringHeader
-    from .packet import Packet
+from .md5 import MD5
+from .blueprint_area import BlueprintArea
+from .blueprint_building import BlueprintBuilding
+from .blueprint_building_header import BlueprintBuildingHeader
+from .blueprint_header import BlueprintHeader
+from .blueprint_string_header import BlueprintStringHeader
+from .packet import Packet
 import base64
 import gzip
 
@@ -21,8 +20,15 @@ class Blueprint:
     def parse(self, blueprint_string, debug = False, debug_raw_data = False):
 
         HASH_SIZE = 32
-
+        BLUEPRINT_STRING_HEADER_SIZE = 52
+        BLUEPRINT_HEADER_SIZE = 29
+        BLUEPRINT_AREA_SIZE = 14
+        BLUEPRINT_BUILDING_HEADER_SIZE = 4
+        BLUEPRINT_BUILDING_SIZE = 61
+        
         # Parse and validate MD5 hash
+        if len(blueprint_string) < HASH_SIZE:
+            return None
         self.hash_str = blueprint_string[-HASH_SIZE:].upper()
         if debug_raw_data:
             print("Hash str:")
@@ -38,6 +44,8 @@ class Blueprint:
         
         # Parse the blue print string header
         self.data_str = self.data_str.split(",\"")
+        if len(self.data_str) != 2:
+            return None
         header_str = self.data_str[0]
         if debug_raw_data:
             print("Header str:")
@@ -48,6 +56,8 @@ class Blueprint:
             print("Base64 data str:")
             print(self.data_str)
             print()
+        if len(header_str) < BLUEPRINT_STRING_HEADER_SIZE:
+            return None
         self.blueprint_string_header = BlueprintStringHeader()
         self.blueprint_string_header.parse(header_str)
         if debug:
@@ -67,12 +77,16 @@ class Blueprint:
         packet = Packet(data)
 
         # Parse the blue print header
+        if len(packet.data) < BLUEPRINT_HEADER_SIZE:
+            return None
         self.blueprint_header = BlueprintHeader()
         self.blueprint_header.parse(packet)
         if debug:
             print(self.blueprint_header)
 
         # Parse all areas
+        if len(packet.data) < BLUEPRINT_AREA_SIZE * self.blueprint_header.area_count:
+            return None
         self.blueprint_areas = []
         for i in range(self.blueprint_header.area_count):
             area = BlueprintArea()
@@ -82,12 +96,16 @@ class Blueprint:
                 print(area)
 
         # Parse building header
+        if len(packet.data) < BLUEPRINT_BUILDING_HEADER_SIZE:
+            return None
         self.blueprint_building_header = BlueprintBuildingHeader()
         self.blueprint_building_header.parse(packet)
         if debug:
             print(self.blueprint_building_header)
 
         # Parse all buildings
+        if len(packet.data) < BLUEPRINT_BUILDING_SIZE * self.blueprint_building_header.building_count:
+            return None
         self.blueprint_buildings = []
         for i in range(self.blueprint_building_header.building_count):
             blueprint_building = BlueprintBuilding()
@@ -114,12 +132,15 @@ class Blueprint:
         data = blueprint_buildings_data + data
 
         # Serialize building header
+        self.blueprint_building_header = BlueprintBuildingHeader(len(blueprint_buildings))
         blueprint_building_header_data = self.blueprint_building_header.serialize().data
         data = blueprint_building_header_data + data
         if debug:
             print(blueprint_building_header_data)
 
         # Serialize areas
+        size, offset = BlueprintArea.get_area_from_building_list(blueprint_buildings)
+        self.blueprint_areas = [BlueprintArea(size = size, offset = offset)]
         blueprint_areas_data = bytes()
         for blueprint_area in self.blueprint_areas:
             blueprint_areas_data += blueprint_area.serialize().data
@@ -128,6 +149,7 @@ class Blueprint:
         data = blueprint_areas_data + data
 
         # Serialize blueprint header
+        self.blueprint_header = BlueprintHeader()
         blueprint_header_data = self.blueprint_header.serialize().data
         data = blueprint_header_data + data
         if debug:
@@ -155,6 +177,7 @@ class Blueprint:
             print()
 
         # Append blueprint string header
+        self.blueprint_string_header = BlueprintStringHeader()
         blueprint_string_header_str = self.blueprint_string_header.serialize()
         data_str = blueprint_string_header_str + "\"" + data_str
         if debug_raw_data:
@@ -172,21 +195,3 @@ class Blueprint:
 
         # Return blueprint string
         return data_str
-
-if __name__ == "__main__":
-    from md5 import MD5
-    from blueprint_area import BlueprintArea
-    from blueprint_building import BlueprintBuilding
-    from blueprint_building_header import BlueprintBuildingHeader
-    from blueprint_header import BlueprintHeader
-    from blueprint_string_header import BlueprintStringHeader
-    from packet import Packet
-
-    blueprint_string = "BLUEPRINT:0,10,0,0,0,0,0,0,0,0.10.29.000510,New%20Blueprint,\"H4sIAAAAAAAAC2NkYGBggmIQYIViEGBk+M/AcAIqzAoXhgEHTPYWJxC+zK4K1MvA8B8IGBnATKh5YNBgj9CAzEZoZsKimQnJJgdMNkLzfxhA0syMZBsDJhvqPE5nBoReVEezYHP62TM+UENMnEH4Lrs2WDnINsb/IAQxACQGACcftR9oAQAAAA==\"05AF49CF05646AC8C1DF460BA0490E6B"
-    bp = Blueprint()
-    bp.parse(blueprint_string)
-    assert bp.validate_hash(), "Could not validate hash of input blueprint string"
-    bp.serialize(self.buildings)
-    assert bp.validate_hash(), "Could not validate hash of output blueprint string"    
-    new_blueprint_string = bp.get_blueprint_string()
-    assert new_blueprint_string == blueprint_string, "The input and output blueprint string did not match"

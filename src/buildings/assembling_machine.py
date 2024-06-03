@@ -1,6 +1,6 @@
 from .building import Building, Building3x3
-from utils import Pos, Yaw
-from ItemEnum import ItemEnum
+from ..utils import Pos, Yaw
+from ..ItemEnum import ItemEnum
 
 class AssemblingMachine(Building3x3):
     def __init__(self, name, pos: Pos, item_id: ItemEnum, model_index: int, recipe_id: int = 0):

@@ -1,7 +1,6 @@
-if __name__ != "__main__":
-    from .packet import Packet
-from utils import Pos
-from ItemEnum import ItemEnum
+from .packet import Packet
+from ..utils import Pos
+from ..ItemEnum import ItemEnum
 from copy import copy
 
 class BlueprintBuilding:
@@ -30,6 +29,22 @@ class BlueprintBuilding:
 
     def get_size(self):
         return 61 + 4 * self.parameter_count
+    
+    def move_relative(self, pos: Pos):
+        self.pos1.x += pos.x
+        self.pos1.y += pos.y
+        self.pos1.z += pos.z
+        self.pos2.x += pos.x
+        self.pos2.y += pos.y
+        self.pos2.z += pos.z
+
+    def move_absolute(self, pos: Pos):
+        self.pos1.x = pos.x
+        self.pos1.y = pos.y
+        self.pos1.z = pos.z
+        self.pos2.x = pos.x
+        self.pos2.y = pos.y
+        self.pos2.z = pos.z
 
     def parse(self, packet: Packet):
         start_size = len(packet.data)
@@ -127,26 +142,3 @@ Parameter count: {self.parameter_count}
         for i in range(self.parameter_count):
             string += f"\tParam_{i}: {self.parameters[i]}\n"
         return string
-
-if __name__ == "__main__":
-    from packet import Packet
-    from copy import copy
-    from colorama import Fore, Style
-    
-    building = BlueprintBuilding()
-    # iterable as source
-    input_data = bytearray([i for i in range(59)] + [0, 0])
-    #input_data = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x90\x197\x00\x00\x00\x00\x00\x00\x00\x00\x01\x90\x197\x00\x00\x00\x00\x00\x00\x00\x00\xe4\x07&\x00\xff\xff\xff\xff\xff\xff\xff\xff\x0e\x0f\x0f\x0e\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
-    input_packet = Packet(input_data)
-    building.parse(input_packet)
-    
-    output_data = building.serialize().data
-    
-    print("Input data: ", input_data)
-    print("Output data:", output_data)
-    print(building)
-    print("Remaining data:", input_packet.data)
-    assert(len(input_packet.data) == 0)
-    assert(input_data == output_data)
-    print(Fore.GREEN + "Passed!")
-    Style.RESET_ALL

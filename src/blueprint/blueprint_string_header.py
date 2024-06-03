@@ -1,5 +1,4 @@
-if __name__ != "__main__":
-    from .packet import Packet
+from .packet import Packet
 import random
 
 class BlueprintStringHeader:
@@ -53,18 +52,3 @@ Timestamp: {self.timestamp}
 Game version: {self.game_version}
 Description: {self.short_desc}
 """
-
-if __name__ == "__main__":
-    from packet import Packet
-    from colorama import Fore, Style
-    header = BlueprintStringHeader()
-    input_string = "BLUEPRINT:0,10,0,0,0,0,0,0,0,0.10.29.22015,New%20Blueprint"
-    header.parse(input_string)
-    
-    output_string = header.serialize()
-    
-    print("Input string: ", input_string)
-    print("Output string:", output_string)
-    print(header)
-    print(Fore.GREEN + "Passed!")
-    Style.RESET_ALL

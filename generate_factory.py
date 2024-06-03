@@ -1,15 +1,8 @@
-from BlueprintStringHeader import BlueprintStringHeader
-from BlueprintArea import BlueprintArea
-from BlueprintHeader import BlueprintHeader
-from BlueprintBuilding import BlueprintBuilding
-from BlueprintBuildingHeader import BlueprintBuildingHeader
-from FactoryLine import FactoryLine
-from BeltRouter import BeltRouter
-from FactorySection import FactorySection
+
 from utils import Yaw, Pos
 from recipes import recipes
 from ItemEnum import ItemEnum
-import Blueprint
+from blueprint import Blueprint
 import buildings
 import math
 
@@ -45,11 +38,6 @@ class ItemFlow:
     def get_waste_products(self):
         assert "Does not support recipes with multyple outputs"
         return []
-
-class FactoryProcess:
-
-    def __init__(self, input_count, output_count, time, tool):
-        pass
 
 class Factory:
 
@@ -142,7 +130,7 @@ class Factory:
                 print(f"\tProduct count: {1}")
                 print(f"\tOutputs: {product.name}")
             self.factories.append(
-                FactorySection(
+                factory_generator.FactorySection(
                     pos = Pos(0, y),
                     input_count = input_count,
                     output_count = output_count,
@@ -165,60 +153,13 @@ class Factory:
         for factory_process in self.factory_processes:
             print(factory_process)
 
-def generate_blueprint_string_header():
-    return BlueprintStringHeader()
-
-def generate_blueprint_header(size_x, size_y):
-    return BlueprintHeader(size_x, size_y)
-
-def generate_blueprint_areas(size_x, size_y):
-    return [BlueprintArea(size_x, size_y)]
-
-def generate_blueprint_building_header(building_count):
-    return BlueprintBuildingHeader(building_count)
-
-def generate_blueprint_buildings():
-
+if __name__ == "__main__":
+    
     factory = Factory()
 
     output_flow = [ItemFlow("MagneticCoil", 2.0)]
     factory.set_tartget_output_flow(output_flow, debug = True)
     factory.generate_factories(debug = True)
 
-    return 20, 20
-
-if __name__ == "__main__":
-    
-    #size_x, size_y = generate_blueprint_buildings()
-    size_x = 5
-    size_y = 5
-    
-    belts = buildings.ConveyorBeltMKIII.generate_belt(
-        name = "Belt",
-        pos = Pos(0, 2, 0),
-        yaw = Yaw.East,
-        length = 3
-    )    
-    factory = buildings.AssemblingMachineMkIII(
-        name = "factory",
-        pos = Pos(1, 0, 0)
-    )
-    sorter = buildings.Sorter.generate_sorter_from_belt_to_factory(
-        name = "Sorter",
-        belt = belts[1],
-        factory = factory
-    )
-    for belt in belts:
-        print(belt)
-    print(factory)
-    print(sorter)
-    blueprint_data = {
-        "blueprint_string_header": generate_blueprint_string_header(),
-        "blueprint_header": generate_blueprint_header(size_x, size_y),
-        "blueprint_areas": generate_blueprint_areas(size_x, size_y),
-        "blueprint_building_header": generate_blueprint_building_header(len(buildings.Building.buildings)),
-        "blueprint_buildings": buildings.Building.buildings,
-    }
-    
-    output_bp_str = Blueprint.serialize(**blueprint_data)
+    output_bp_str = Blueprint.serialize()
     print(output_bp_str)

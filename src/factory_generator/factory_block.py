@@ -22,8 +22,6 @@ class FactoryBlock:
     def generate_input_belts(self, pos, input_count, width):
         self.input_belts = []
         for i in range(input_count):
-            print("Pos:", i)
-            print(pos)
             belts = Buildings.Belt.generate_belt(
                 name = f"FactoryBlock:InputBelt:{i}",
                 pos = pos,

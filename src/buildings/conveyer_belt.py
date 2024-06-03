@@ -1,6 +1,6 @@
 from .building import Building
-from utils import Pos, Yaw
-from ItemEnum import ItemEnum
+from ..utils import Pos, Yaw
+from ..ItemEnum import ItemEnum
 
 class ConveyorBelt(Building):
     def __init__(self, name, pos: Pos, yaw: Yaw, item_id: ItemEnum, model_index: int, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
@@ -23,18 +23,7 @@ class ConveyorBelt(Building):
             belt1.output_object_index = belt2.index
             belt1.output_to_slot = 1
         else:
-            print("Belt 1 direction:")
-            print(f"dx: {dx}, dy: {dy}")
-            print("Belt 1")
-            print(belt1)
             dx, dy = direction_to_unit_vector(belt2.yaw)
-            print("Belt 2 direction:")
-            print(f"dx: {dx}, dy: {dy}")
-            print("Belt 2")
-            print(belt2)
-            print()
-            print(belt1.name)
-            print(belt2.name)
             assert False, "Wrong use of belt-to_belt connection"
             
     def connect_to_splitter(self, splitter):

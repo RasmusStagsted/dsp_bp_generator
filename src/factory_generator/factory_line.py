@@ -73,13 +73,10 @@ class FactoryLine2:
             self._factory_width = 4
         elif (factory_type == ItemEnum.Smelter):
             self._factory_width = 3
-        else:
-            print(factory_type)
         self._factory_height = 3
         self.height = self._factory_height + input_count + output_count
         
         belt_length = int(factory_count * self._factory_width + 1) + (math.ceil(factory_count / 4))
-        print("Belt length:", belt_length)
         self.height = self._factory_height + input_count + output_count + 1
         
         # Generate input-/output belts
