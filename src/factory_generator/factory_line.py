@@ -1,7 +1,7 @@
-import buildings
-from ItemEnum import ItemEnum
-from utils import Yaw, Pos
-from FactoryBlock import FactoryBlock
+from ..buildings import TeslaTower, ArcSmelter, ConveyorBeltMKI
+from ..ItemEnum import ItemEnum
+from ..utils import Yaw, Pos
+from .factory_block import FactoryBlock
 
 import math
 
@@ -30,7 +30,10 @@ class FactoryLine:
         factory_blocks = []
         for i in range(factory_count):
             temp_pos = pos + Pos(x = i * self.block_width)
-            factory_block = FactoryBlock(temp_pos, input_count, output_count, factory_type, self.block_width, recipe)
+            input_belt_types = [ConveyorBeltMKI for i in range(input_count)]
+            output_belt_types = [ConveyorBeltMKI for i in range(output_count)]
+            factory_type = ArcSmelter
+            factory_block = FactoryBlock(temp_pos, input_belt_types, output_belt_types, factory_type, self.block_width, recipe)
             factory_blocks.append(factory_block)
         
         # Connect factory_blocks

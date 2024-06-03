@@ -1,28 +1,33 @@
-from ItemEnum import ItemEnum
-from utils import Pos, Yaw
-import buildings
+from ..ItemEnum import ItemEnum
+from ..utils import Pos, Yaw
+from ..buildings import ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII
+from ..buildings import ArcSmelter, PlaneSmelter, NegentrophySmelter
+from ..buildings import AssemblingMachineMkI, AssemblingMachineMkII, AssemblingMachineMkIII, ReComposingAssembler
+from ..buildings import MatrixLab, SelfEvolutionLab
+from ..buildings import OilRefinary
+from ..buildings import ChemicalPlant, QuantumChemicalPlant
 
 class FactoryBlock:
     
-    def __init__(self, pos, input_count, output_count, factory_type, width, recipe):
+    def __init__(self, pos, input_belt_types, output_belt_types, factory_type, width, recipe):
 
         input_belt_pos = pos + FactoryBlock._get_top_belt_offset(factory_type)
-        self.generate_input_belts(input_belt_pos, input_count, width)
+        self.generate_input_belts(input_belt_pos, input_belt_types, width)
 
         output_belt_pos = pos + FactoryBlock._get_buttom_belt_offset(factory_type)
-        self.generate_output_belts(output_belt_pos, output_count, width)
+        self.generate_output_belts(output_belt_pos, output_belt_types, width)
 
         factory_pos = pos + FactoryBlock._get_factory_offset(factory_type)
         self.generate_factory(factory_pos, factory_type, width, recipe)
 
-        for i in range(input_count):
+        for i in range(len(input_belt_types)):
             belt = self.input_belts[i][i]
             #sorter = Buildings.Sorter.generate_sorter_from_belt_to_factory("InputSorter:{i}", belt, self.factory)
 
-    def generate_input_belts(self, pos, input_count, width):
+    def generate_input_belts(self, pos, belt_types, width):
         self.input_belts = []
-        for i in range(input_count):
-            belts = Buildings.Belt.generate_belt(
+        for i in range(len(belt_types)):
+            belts = belt_types[i].generate_belt(
                 name = f"FactoryBlock:InputBelt:{i}",
                 pos = pos,
                 yaw = Yaw.East,
@@ -31,11 +36,11 @@ class FactoryBlock:
             self.input_belts.append(belts)
             pos += Pos(y = 1)
     
-    def generate_output_belts(self, pos, output_count, width):
+    def generate_output_belts(self, pos, belt_types, width):
         self.output_belts = []
         pos += Pos(x = width - 1)
-        for i in range(output_count):
-            belts = Buildings.Belt.generate_belt(
+        for i in range(len(belt_types)):
+            belts = belt_types[i].generate_belt(
                 name = "FactoryBlockOutputBelt",
                 pos = pos,
                 yaw = Yaw.West,
@@ -45,7 +50,7 @@ class FactoryBlock:
             pos -= Pos(y = 1)
     
     def generate_factory(self, pos, factory_type, width, recipe):
-        self.factory = Buildings.Smelter(
+        self.factory = factory_type(
             name = "FactoryBlock",
             pos = pos
         )
@@ -122,43 +127,43 @@ class FactoryBlock:
             return Pos(y = self.get_buttom_belt_y_offset(factory_type))
     
     def _get_top_belt_offset(factory_type):
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
+        if factory_type == ArcSmelter or factory_type == PlaneSmelter or factory_type == NegentrophySmelter:
             return Pos(y = 2)
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == AssemblingMachineMkI or factory_type == AssemblingMachineMkII or factory_type == AssemblingMachineMkIII or factory_type == ReComposingAssembler:
             return Pos(y = 2)
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
+        elif factory_type == MatrixLab or factory_type == SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
+        elif factory_type == OilRefinary:
             assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
+        elif factory_type == ChemicalPlant or factory_type == QuantumChemicalPlant:
             assert True, "Chemical plants labs isn't supported yet"
         else:
             assert True, "Unsupported factory type: " + factory_type
     
     def _get_buttom_belt_offset(factory_type):
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
+        if factory_type == ArcSmelter or factory_type == PlaneSmelter or factory_type == NegentrophySmelter:
             return Pos(y = -2)
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == AssemblingMachineMkI or factory_type == AssemblingMachineMkII or factory_type == AssemblingMachineMkIII or factory_type == ReComposingAssembler:
             return Pos(y = -2)
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
+        elif factory_type == MatrixLab or factory_type == SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
+        elif factory_type == OilRefinary:
             assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
+        elif factory_type == ChemicalPlant or factory_type == QuantumChemicalPlant:
             assert True, "Chemical plants labs isn't supported yet"
         else:
             assert True, "Unsupported factory type: " + factory_type
         
     def _get_factory_offset(factory_type):
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
+        if factory_type == ArcSmelter or factory_type == PlaneSmelter or factory_type == NegentrophySmelter:
             return Pos(x = 1)
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == AssemblingMachineMkI or factory_type == AssemblingMachineMkII or factory_type == AssemblingMachineMkIII or factory_type == ReComposingAssembler:
             return Pos(x = 1)
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
+        elif factory_type == MatrixLab or factory_type == SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
+        elif factory_type == OilRefinary:
             assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
+        elif factory_type == ChemicalPlant or factory_type == QuantumChemicalPlant:
             assert True, "Chemical plants labs isn't supported yet"
         else:
             assert True, "Unsupported factory type: " + factory_type

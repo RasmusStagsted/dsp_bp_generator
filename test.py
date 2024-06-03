@@ -23,4 +23,4 @@ def run(cmd):
 run(["python", "parse.py", "--input_file=input.bp"])
 run(["python", "parse_edit_and_serialize.py", "--input_file=input.bp"])
 run(["python", "generate_and_serialize.py", "--input_file=input.bp"])
-run(["python", "generate_blueprint.py", "--input_file=input.bp"])
+run(["python", "generate_factory.py", "--input_file=input.bp"])

@@ -134,3 +134,7 @@ class ItemEnum(enum.IntEnum):
 	CombustibleUnit = 10008
 	MissileSet = 10009
 	NegentrophySmelter = 10010
+	ReComposingAssembler = 10011
+	SelfEvolutionLab = 10012
+	OilRefinary = 10013
+	QuantumChemicalPlant = 10014

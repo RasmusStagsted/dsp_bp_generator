@@ -1,6 +1,6 @@
-from FactoryLine import FactoryLine
-from BeltRouter import BeltRouter
-from utils import Pos
+from .factory_line import FactoryLine
+from .belt_router import BeltRouter
+from ..utils import Pos
 
 class FactorySection:
     

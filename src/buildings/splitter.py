@@ -1,6 +1,7 @@
 from .building import Building
 from .conveyer_belt import ConveyorBelt
 from ..utils import Pos, Yaw
+from ..ItemEnum import ItemEnum
 
 class Splitter(Building):
     def __init__(self, name, pos: Pos, yaw: Yaw):

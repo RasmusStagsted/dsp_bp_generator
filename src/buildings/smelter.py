@@ -1,4 +1,6 @@
-from .building import Building
+from .building import Building3x3
+from ..utils import Pos, Yaw
+from ..ItemEnum import ItemEnum
 
 class Smelter(Building3x3):
     def __init__(self, name: str, pos: Pos, recipe_id: int = 0):
@@ -15,7 +17,7 @@ class Smelter(Building3x3):
         self.parameter_count = 1
         self.parameters = [0]
         
-class ArchSmelter(Smelter):
+class ArcSmelter(Smelter):
     def __init__(self, name: str, pos: Pos, recipe_id: int = 0):
         super().__init__(name, pos, recipe_id)
         self.item_id = ItemEnum.ArcSmelter

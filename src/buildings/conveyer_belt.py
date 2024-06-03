@@ -18,12 +18,12 @@ class ConveyorBelt(Building):
         self.input_to_slot = 1
         
     def connect_to_belt(belt1, belt2):
-        dx, dy = direction_to_unit_vector(belt1.yaw)
+        dx, dy = Yaw.direction_to_unit_vector(belt1.yaw)
         if ((int(belt1.pos1.x + dx) == belt2.pos1.x) and (int(belt1.pos1.y + dy) == belt2.pos1.y) and belt1.yaw == belt2.yaw):
             belt1.output_object_index = belt2.index
             belt1.output_to_slot = 1
         else:
-            dx, dy = direction_to_unit_vector(belt2.yaw)
+            dx, dy = Yaw.direction_to_unit_vector(belt2.yaw)
             assert False, "Wrong use of belt-to_belt connection"
             
     def connect_to_splitter(self, splitter):
@@ -40,7 +40,7 @@ class ConveyorBelt(Building):
             self.output_to_slot += 1
         
         # Move the belt back 0.2 spaces
-        dx, dy = direction_to_unit_vector(self.yaw)
+        dx, dy = Yaw.direction_to_unit_vector(self.yaw)
         self.move(-dx * 0.2, -dy * 0.2)
 
     def connect_to_sorter(self, sorter):

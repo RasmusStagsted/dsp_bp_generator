@@ -81,19 +81,3 @@ class Yaw:
         elif direction == Yaw.West:
             return -1.0, 0.0
         return None
-"""
-def connect_cornor_belt(belt1, belt2):
-    dx1, dy1 = direction_to_unit_vector(belt1.yaw)
-    belt1.output_object_index = Buildings.Building.count()
-    belt1.output_to_slot = 1
-    Buildings.Belt(
-        x = belt1.x + dx1,
-        y = belt1.y + dy1,
-        z = belt1.z,
-        yaw = direction_average(belt1.yaw, belt2.yaw),
-        output_object_index = belt2.index,
-        output_to_slot = 1
-    )
-
-
-    """
