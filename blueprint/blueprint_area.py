@@ -1,4 +1,5 @@
-from Packet import Packet
+if __name__ != "__main__" and __name__ != "blueprint_area":
+    from .packet import Packet
 
 class BlueprintArea:
 
@@ -51,7 +52,9 @@ Height: {self.height}
 """
 
 if __name__ == "__main__":
-    from Packet import Packet
+    from packet import Packet
+    from colorama import Fore, Style
+    
     area = BlueprintArea()
     input_data = b'\x00\xff\x00\x00\xc8\x00\x00\x00\x00\x00\x01\x00\x01\x00'
     input_packet = Packet(input_data)
@@ -65,3 +68,5 @@ if __name__ == "__main__":
     print("Remaining data:", input_packet.data)
     assert(len(input_packet.data) == 0)
     assert(input_data == output_data)
+    print(Fore.GREEN + "Passed!")
+    Style.RESET_ALL

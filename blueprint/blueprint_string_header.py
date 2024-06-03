@@ -1,3 +1,5 @@
+if __name__ != "__main__":
+    from .packet import Packet
 import random
 
 class BlueprintStringHeader:
@@ -31,7 +33,7 @@ class BlueprintStringHeader:
         self.short_desc = component[10]
 
     def serialize(self):
-        return f"BLUEPRINT:{str(self.fixed0_1)},{str(self.layout)},{str(self.icon0)},{str(self.icon1)},{str(self.icon2)},{str(self.icon3)},{str(self.icon4)},{str(self.fixed0_2)},{str(self.timestamp)},{str(self.game_version)},{str(self.short_desc)}"
+        return f"BLUEPRINT:{str(self.fixed0_1)},{str(self.layout)},{str(self.icon0)},{str(self.icon1)},{str(self.icon2)},{str(self.icon3)},{str(self.icon4)},{str(self.fixed0_2)},{str(self.timestamp)},{str(self.game_version)},{str(self.short_desc)},"
 
     def __str__(self):
         return f"""
@@ -53,6 +55,8 @@ Description: {self.short_desc}
 """
 
 if __name__ == "__main__":
+    from packet import Packet
+    from colorama import Fore, Style
     header = BlueprintStringHeader()
     input_string = "BLUEPRINT:0,10,0,0,0,0,0,0,0,0.10.29.22015,New%20Blueprint"
     header.parse(input_string)
@@ -62,3 +66,5 @@ if __name__ == "__main__":
     print("Input string: ", input_string)
     print("Output string:", output_string)
     print(header)
+    print(Fore.GREEN + "Passed!")
+    Style.RESET_ALL

@@ -1,4 +1,4 @@
-import Buildings
+import buildings
 from ItemEnum import ItemEnum
 from utils import Yaw, Pos
 from FactoryBlock import FactoryBlock

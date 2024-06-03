@@ -71,16 +71,16 @@ class Yaw:
         else:
             return None
 
-def direction_to_unit_vector(direction):
-    if direction == Yaw.North:
-        return 0.0, 1.0
-    elif direction == Yaw.East:
-        return 1.0, 0.0
-    elif direction == Yaw.South:
-        return 0.0, -1.0
-    elif direction == Yaw.West:
-        return -1.0, 0.0
-    return None
+    def direction_to_unit_vector(direction):
+        if direction == Yaw.North:
+            return 0.0, 1.0
+        elif direction == Yaw.East:
+            return 1.0, 0.0
+        elif direction == Yaw.South:
+            return 0.0, -1.0
+        elif direction == Yaw.West:
+            return -1.0, 0.0
+        return None
 """
 def connect_cornor_belt(belt1, belt2):
     dx1, dy1 = direction_to_unit_vector(belt1.yaw)

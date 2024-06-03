@@ -3,7 +3,7 @@ import math
 import collections
 import enum
 
-class DysonSphereMD5():
+class MD5():
 	class Variant(enum.IntEnum):
 		Original = 0
 		MD5F = 1
@@ -252,18 +252,18 @@ if __name__ == "__main__":
 		for i in range(200):
 			data = os.urandom(i)
 			right = hashlib.md5(data).hexdigest()
-			mine = DysonSphereMD5().update(data).hexdigest()
+			mine = MD5().update(data).hexdigest()
 			if right != mine:
 				print(data.hex(), right, mine)
 				raise Exception("Failed test cases.")
 
-		assert(DysonSphereMD5(variant = DysonSphereMD5.Variant.MD5F).update(b"").hexdigest() == "84d1ce3bd68f49ab26eb0f96416617cf")
-		assert(DysonSphereMD5(variant = DysonSphereMD5.Variant.MD5F).update(b"a").hexdigest() == "f10bddaecb62e5a92433757867ee06db")
-		assert(DysonSphereMD5(variant = DysonSphereMD5.Variant.MD5F).update(b"abcd").hexdigest() == "fa27c78b6ec31559f0e760ce3f2b03f6")
-		assert(DysonSphereMD5(variant = DysonSphereMD5.Variant.MD5F).update(b"Why are you doing this, Youthcat Studio?").hexdigest() == "13424e12890a3f50a1f8567c464fff8c")
+		assert(MD5(variant = MD5.Variant.MD5F).update(b"").hexdigest() == "84d1ce3bd68f49ab26eb0f96416617cf")
+		assert(MD5(variant = MD5.Variant.MD5F).update(b"a").hexdigest() == "f10bddaecb62e5a92433757867ee06db")
+		assert(MD5(variant = MD5.Variant.MD5F).update(b"abcd").hexdigest() == "fa27c78b6ec31559f0e760ce3f2b03f6")
+		assert(MD5(variant = MD5.Variant.MD5F).update(b"Why are you doing this, Youthcat Studio?").hexdigest() == "13424e12890a3f50a1f8567c464fff8c")
 		print("Passed testcases.")
 	else:
-		md = DysonSphereMD5(variant = DysonSphereMD5.Variant.MD5F)
+		md = MD5(variant = MD5.Variant.MD5F)
 		with open(sys.argv[1], "rb") as f:
 			md.update(f.read())
 		print(md.hexdigest())

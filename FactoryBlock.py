@@ -1,6 +1,6 @@
 from ItemEnum import ItemEnum
 from utils import Pos, Yaw
-import Buildings
+import buildings
 
 class FactoryBlock:
     

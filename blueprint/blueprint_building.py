@@ -1,16 +1,16 @@
-from Packet import Packet
-import struct
+if __name__ != "__main__":
+    from .packet import Packet
 from utils import Pos
-
 from ItemEnum import ItemEnum
+from copy import copy
 
 class BlueprintBuilding:
 
-    def __init__(self, index = 0, area_index = 0, pos1 = Pos(0, 0, 0), pos2 = Pos(0, 0, 0), yaw = 0, yaw2 = 0, item_id = 0, model_index = 0, output_object_index = -1, input_object_index = -1, output_to_slot = 0, input_from_slot = 0, output_from_slot = 0, input_to_slot = 0, output_offset = 0, input_offset = 0, recipe_id = 0, filter_id = 0, parameters = []):
+    def __init__(self, index: int = 0, area_index: int = 0, pos1 = Pos(0, 0, 0), pos2 = Pos(0, 0, 0), yaw: int = 0, yaw2: int = 0, item_id: int = 0, model_index: int = 0, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0, input_from_slot: int = 0, output_from_slot: int = 0, input_to_slot: int = 0, output_offset: int = 0, input_offset: int = 0, recipe_id: int = 0, filter_id: int = 0, parameters = []):
         self.index = index
         self.area_index = area_index
-        self.pos1 = pos1
-        self.pos2 = pos2
+        self.pos1 = copy(pos1)
+        self.pos2 = copy(pos2)
         self.yaw = yaw
         self.yaw2 = yaw
         self.item_id = item_id
@@ -28,7 +28,11 @@ class BlueprintBuilding:
         self.parameter_count = len(parameters)
         self.parameters = parameters
 
-    def parse(self, packet):
+    def get_size(self):
+        return 61 + 4 * self.parameter_count
+
+    def parse(self, packet: Packet):
+        start_size = len(packet.data)
         self.index = packet.parse_int()
         self.area_index = packet.parse_byte()
         self.pos1.x = packet.parse_float()
@@ -55,6 +59,8 @@ class BlueprintBuilding:
         self.parameters = []
         for i in range(self.parameter_count):
             self.parameters.append(packet.parse_int())
+        end_size = len(packet.data)
+        assert start_size - end_size == self.get_size(), "Wrong amount of data parsed!"
         
     def serialize(self):
         packet = Packet()
@@ -83,13 +89,16 @@ class BlueprintBuilding:
         packet.serialize_half_word(self.parameter_count)
         for param in self.parameters:
             packet.serialize_int(param)
+        assert len(packet.data) == self.get_size(), "Wrong amount of data serialized!"
         return packet
 
     def __str__(self):
+        packet = self.serialize()
         string = f"""
 Blue Print Building:
 ====================
-Binary data: {self.serialize().data}
+Length: {len(packet.data)}
+Binary data: {packet.data}
 ====================
 Index: {self.index}
 Area index: {self.area_index}
@@ -120,11 +129,14 @@ Parameter count: {self.parameter_count}
         return string
 
 if __name__ == "__main__":
-    from Packet import Packet
+    from packet import Packet
     from copy import copy
+    from colorama import Fore, Style
     
     building = BlueprintBuilding()
-    input_data = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x90\x197\x00\x00\x00\x00\x00\x00\x00\x00\x01\x90\x197\x00\x00\x00\x00\x00\x00\x00\x00\xe4\x07&\x00\xff\xff\xff\xff\xff\xff\xff\xff\x0e\x0f\x0f\x0e\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
+    # iterable as source
+    input_data = bytearray([i for i in range(59)] + [0, 0])
+    #input_data = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x90\x197\x00\x00\x00\x00\x00\x00\x00\x00\x01\x90\x197\x00\x00\x00\x00\x00\x00\x00\x00\xe4\x07&\x00\xff\xff\xff\xff\xff\xff\xff\xff\x0e\x0f\x0f\x0e\x00\x00\x00\x00\x00\x00\x06\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00'
     input_packet = Packet(input_data)
     building.parse(input_packet)
     
@@ -136,3 +148,5 @@ if __name__ == "__main__":
     print("Remaining data:", input_packet.data)
     assert(len(input_packet.data) == 0)
     assert(input_data == output_data)
+    print(Fore.GREEN + "Passed!")
+    Style.RESET_ALL

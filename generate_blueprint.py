@@ -10,7 +10,7 @@ from utils import Yaw, Pos
 from recipes import recipes
 from ItemEnum import ItemEnum
 import Blueprint
-import Buildings
+import buildings
 import math
 
 class ItemFlow:
@@ -193,17 +193,17 @@ if __name__ == "__main__":
     size_x = 5
     size_y = 5
     
-    belts = Buildings.Belt.generate_belt(
+    belts = buildings.ConveyorBeltMKIII.generate_belt(
         name = "Belt",
         pos = Pos(0, 2, 0),
         yaw = Yaw.East,
         length = 3
     )    
-    factory = Buildings.AssemblingMachineMkIII(
+    factory = buildings.AssemblingMachineMkIII(
         name = "factory",
         pos = Pos(1, 0, 0)
     )
-    sorter = Buildings.Sorter.generate_sorter_from_belt_to_factory(
+    sorter = buildings.Sorter.generate_sorter_from_belt_to_factory(
         name = "Sorter",
         belt = belts[1],
         factory = factory
@@ -216,8 +216,8 @@ if __name__ == "__main__":
         "blueprint_string_header": generate_blueprint_string_header(),
         "blueprint_header": generate_blueprint_header(size_x, size_y),
         "blueprint_areas": generate_blueprint_areas(size_x, size_y),
-        "blueprint_building_header": generate_blueprint_building_header(len(Buildings.Building.buildings)),
-        "blueprint_buildings": Buildings.Building.buildings,
+        "blueprint_building_header": generate_blueprint_building_header(len(buildings.Building.buildings)),
+        "blueprint_buildings": buildings.Building.buildings,
     }
     
     output_bp_str = Blueprint.serialize(**blueprint_data)
