@@ -5,11 +5,6 @@ from .factory_block import FactoryBlock
 
 import math
 
-class FactoryLineFlow:
-    Item = "Iron"
-    FlowRate = 1
-    BeltIndex = 1
-
 """
 A factory block consist of:
  - A single factory of any type

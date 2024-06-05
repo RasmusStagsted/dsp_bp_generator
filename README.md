@@ -66,8 +66,6 @@ A blueprint in Dyson Sphere Program is a list of binary data blobs, each represe
 
 | Name             | Type    |
 |:---------------- |:-------:|
-| index            | int32   |
-| area_index       | int8    |
 | x1               | float32 |
 | y1               | float32 |
 | z1               | float32 |

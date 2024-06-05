@@ -1,6 +1,6 @@
 from ..ItemEnum import ItemEnum
 from ..utils import Pos, Yaw
-from ..buildings import ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII
+from ..buildings import ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII, Sorter
 from ..buildings import ArcSmelter, PlaneSmelter, NegentrophySmelter
 from ..buildings import AssemblingMachineMkI, AssemblingMachineMkII, AssemblingMachineMkIII, ReComposingAssembler
 from ..buildings import MatrixLab, SelfEvolutionLab
@@ -22,7 +22,7 @@ class FactoryBlock:
 
         for i in range(len(input_belt_types)):
             belt = self.input_belts[i][i]
-            #sorter = Buildings.Sorter.generate_sorter_from_belt_to_factory("InputSorter:{i}", belt, self.factory)
+            #sorter = Sorter.generate_sorter_from_belt_to_factory("InputSorter:{i}", belt, self.factory)
 
     def generate_input_belts(self, pos, belt_types, width):
         self.input_belts = []

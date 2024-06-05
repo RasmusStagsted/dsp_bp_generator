@@ -35,8 +35,8 @@ class Splitter(Building):
         if belt.pos1.z == 1:
             belt.input_from_slot += 1
         
-        dx, dy = direction_to_unit_vector(belt.yaw)
-        belt.move(dx * 0.2, dy * 0.2)
+        dx, dy = Yaw.direction_to_unit_vector(belt.yaw)
+        belt.move_relative(Pos(dx * 0.2, dy * 0.2))
     
     def prioritize_input(self, slot):
         assert False, "Not supported"

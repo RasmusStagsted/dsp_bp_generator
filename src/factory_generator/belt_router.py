@@ -65,22 +65,17 @@ class BeltRouter:
     def generate_selector_belts(self, pos, input_count, output_count, product_count, selector_belt_indicies):
         self.selector_belts = []
         for i in range(len(selector_belt_indicies)):
-            ### Generate north bound belts
-            temp_pos = Pos(pos.x + 2 * selector_belt_indicies[i], pos.y)
-            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:SelectorBelts:{i}", temp_pos, Yaw.North, 1 + len(selector_belt_indicies) - i)
-            north_belt_start = belts[0]
-            north_belt_end = belts[-1]
-            ### Connect north bound belts to splitter
+            ### Generate belt
+            start_pos = Pos(pos.x + 2 * selector_belt_indicies[i], pos.y)
+            yaw = [Yaw.North, Yaw.East]
+            length = [1 + len(selector_belt_indicies) - i, 1 + (input_count + output_count + product_count - selector_belt_indicies[i]) * 2]
+            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:SelectorBelts:{i}", start_pos, yaw, length)
+            belt_start = belts[0]
+            belt_end = belts[-1]
+            ### Connect belt to splitter
             splitter = self.splitters[selector_belt_indicies[i]]
-            splitter.connect_to_belt(north_belt_start)
-            ### Generate east bound belts           
-            temp_pos = Pos(pos.x + 2 * selector_belt_indicies[i] + 1, pos.y + 1 + len(selector_belt_indicies) - i) 
-            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:SelectorBelts:{i}", temp_pos, Yaw.East, (input_count + output_count + product_count - selector_belt_indicies[i]) * 2)
-            east_belt_start = belts[0]
-            east_belt_end = belts[-1]
-            self.selector_belts.append(east_belt_end)
-            # TODO remove function "connect_cornor_belt" and implement it in Belt.connect_to_belt
-            #connect_cornor_belt(north_belt_end, east_belt_start)
+            splitter.connect_to_belt(belt_start)
+            self.selector_belts.append(belt_end)
         
     def generate_production_belts(self, pos, input_count, output_count, product_count):
 
@@ -88,20 +83,12 @@ class BeltRouter:
         for i in range(product_count):
             ### Generate west bounding belt
             temp_pos = Pos(pos.x + 2 * (input_count + output_count + product_count), pos.y - 2 - i)
-            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:ProductionBelt:{i}", temp_pos, [Yaw.West, Yaw.North], [2 + 2 * i, 3 + i])
-            west_belt_start = belts[0]
-            west_belt_end = belts[-1]
-            ### Generate north bounding belt
-            #temp_pos = Pos(pos.x + 2 * (input_count + output_count + product_count) - 2 * (i + 1), pos.y - 1 - i)
-            #belts = Buildings.Belt.generate_belt(f"BeltRouter:ProductionBelt:{i}", temp_pos, Yaw.North, i + 2)
-            #north_belt_start = belts[0]
-            north_belt_end = belts[-1]
-            # Connect cornor
-            # TODO remove function "connect_cornor_belt" and implement it in Belt.connect_to_belt
-            #connect_cornor_belt(west_belt_end, north_belt_start)
-            # Connect belts to splitters
+            yaw = [Yaw.West, Yaw.North]
+            length = [2 + 2 * i, 3 + i]
+            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:ProductionBelt:{i}", temp_pos, yaw, length)
+            belt_start = belts[0]
+            belt_end = belts[-1]
+            ### Connect belt to splitter
             splitter = self.product_splitters[-i]
-            
-            # TODO
-            north_belt_end.connect_to_splitter(splitter)            
-            self.production_belts.append(west_belt_start)
+            belt_end.connect_to_splitter(splitter)
+            self.production_belts.append(belt_start)

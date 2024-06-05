@@ -13,25 +13,25 @@ class BlueprintHeader:
         self.area_count = 1
 
     def parse(self, packet):
-        self.version = packet.parse_int()
-        self.cursor_offset_x = packet.parse_int()
-        self.cursor_offset_y = packet.parse_int()
-        self.cursor_target_area = packet.parse_int()
-        self.dragbox_size_x = packet.parse_int()
-        self.dragbox_size_y = packet.parse_int()
-        self.primary_area_index = packet.parse_int()
-        self.area_count = packet.parse_byte()
+        self.version = packet.parse_int32()
+        self.cursor_offset_x = packet.parse_int32()
+        self.cursor_offset_y = packet.parse_int32()
+        self.cursor_target_area = packet.parse_int32()
+        self.dragbox_size_x = packet.parse_int32()
+        self.dragbox_size_y = packet.parse_int32()
+        self.primary_area_index = packet.parse_int32()
+        self.area_count = packet.parse_int8()
 
     def serialize(self):
         packet = Packet()
-        packet.serialize_int(self.version)
-        packet.serialize_int(self.cursor_offset_x)
-        packet.serialize_int(self.cursor_offset_y)
-        packet.serialize_int(self.cursor_target_area)
-        packet.serialize_int(self.dragbox_size_x)
-        packet.serialize_int(self.dragbox_size_y)
-        packet.serialize_int(self.primary_area_index)
-        packet.serialize_byte(self.area_count)
+        packet.serialize_int32(self.version)
+        packet.serialize_int32(self.cursor_offset_x)
+        packet.serialize_int32(self.cursor_offset_y)
+        packet.serialize_int32(self.cursor_target_area)
+        packet.serialize_int32(self.dragbox_size_x)
+        packet.serialize_int32(self.dragbox_size_y)
+        packet.serialize_int32(self.primary_area_index)
+        packet.serialize_int8(self.area_count)
         return packet
 
     def __str__(self):

@@ -41,7 +41,7 @@ class ConveyorBelt(Building):
         
         # Move the belt back 0.2 spaces
         dx, dy = Yaw.direction_to_unit_vector(self.yaw)
-        self.move(-dx * 0.2, -dy * 0.2)
+        self.move_relative(Pos(-dx * 0.2, -dy * 0.2))
 
     def connect_to_sorter(self, sorter):
         pass

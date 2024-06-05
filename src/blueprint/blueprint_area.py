@@ -15,25 +15,25 @@ class BlueprintArea:
         self.height = int(size.y)
 
     def parse(self, packet):
-        self.index = packet.parse_byte()
-        self.parent_index = packet.parse_byte()
-        self.tropic_anchor = packet.parse_half_word()
-        self.area_segments = packet.parse_half_word()
-        self.anchor_local_offset_x = packet.parse_half_word()
-        self.anchor_local_offset_y = packet.parse_half_word()
-        self.width = packet.parse_half_word()
-        self.height = packet.parse_half_word()
+        self.index = packet.parse_int8()
+        self.parent_index = packet.parse_int8()
+        self.tropic_anchor = packet.parse_int16()
+        self.area_segments = packet.parse_int16()
+        self.anchor_local_offset_x = packet.parse_int16()
+        self.anchor_local_offset_y = packet.parse_int16()
+        self.width = packet.parse_int16()
+        self.height = packet.parse_int16()
 
     def serialize(self):
         packet = Packet()
-        packet.serialize_byte(self.index)
-        packet.serialize_byte(self.parent_index)
-        packet.serialize_half_word(self.tropic_anchor)
-        packet.serialize_half_word(self.area_segments)
-        packet.serialize_half_word(self.anchor_local_offset_x)
-        packet.serialize_half_word(self.anchor_local_offset_y)
-        packet.serialize_half_word(self.width)
-        packet.serialize_half_word(self.height)
+        packet.serialize_int8(self.index)
+        packet.serialize_int8(self.parent_index)
+        packet.serialize_int16(self.tropic_anchor)
+        packet.serialize_int16(self.area_segments)
+        packet.serialize_int16(self.anchor_local_offset_x)
+        packet.serialize_int16(self.anchor_local_offset_y)
+        packet.serialize_int16(self.width)
+        packet.serialize_int16(self.height)
         return packet
     
     def get_area_from_building_list(buildings):

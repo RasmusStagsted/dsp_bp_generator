@@ -6,11 +6,11 @@ class BlueprintBuildingHeader:
         self.building_count = building_count
 
     def parse(self, packet):
-        self.building_count = packet.parse_int()
+        self.building_count = packet.parse_int32()
 
     def serialize(self):
         packet = Packet()
-        packet.serialize_int(self.building_count)
+        packet.serialize_int32(self.building_count)
         return packet
 
     def __str__(self):

@@ -1,4 +1,4 @@
-from .building import Building3x3
+from .building import Building, Building3x3
 from .assembling_machine import AssemblingMachineMkI, AssemblingMachineMkII, AssemblingMachineMkIII, ReComposingAssembler
 from .conveyer_belt import ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII
 from .sorter import Sorter

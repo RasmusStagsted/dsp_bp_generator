@@ -6,34 +6,34 @@ class Packet:
     def __init__(self, data = b""):
         self.data = copy(data)
 
-    def parse_int(self):
-        value = unpack("i", self.data[0:4])[0]
-        self.data = self.data[4:]
-        return value
-
-    def parse_float(self):
-        value = unpack("f", self.data[0:4])[0]
-        self.data = self.data[4:]
-        return value
-
-    def parse_byte(self):
+    def parse_int8(self):
         value = unpack("b", self.data[0:1])[0]
         self.data = self.data[1:]
         return value
 
-    def parse_half_word(self):
+    def parse_int16(self):
         value = unpack("h", self.data[0:2])[0]
         self.data = self.data[2:]
         return value
 
-    def serialize_int(self, value: int):
-        self.data += pack("i", value)
+    def parse_int32(self):
+        value = unpack("i", self.data[0:4])[0]
+        self.data = self.data[4:]
+        return value
 
-    def serialize_float(self, value: float):
-        self.data += pack("f", value)
+    def parse_float32(self):
+        value = unpack("f", self.data[0:4])[0]
+        self.data = self.data[4:]
+        return value
 
-    def serialize_byte(self, value):
+    def serialize_int8(self, value):
         self.data += pack("b", value)
 
-    def serialize_half_word(self, value: int):
+    def serialize_int16(self, value: int):
         self.data += pack("h", value)
+
+    def serialize_int32(self, value: int):
+        self.data += pack("i", value)
+
+    def serialize_float32(self, value: float):
+        self.data += pack("f", value)
