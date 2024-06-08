@@ -1,7 +1,7 @@
 from .building import Building
 from .conveyer_belt import ConveyorBelt
 from ..utils import Pos, Yaw
-from ..ItemEnum import ItemEnum
+from ..enums import BuildingItem, BuildingModel
 
 class Splitter(Building):
     def __init__(self, name, pos: Pos, yaw: Yaw):
@@ -10,8 +10,8 @@ class Splitter(Building):
         self.pos2 = pos
         self.yaw = yaw
         self.yaw2 = yaw
-        self.item_id = ItemEnum.Splitter
-        self.model_index = 39
+        self.item_id = BuildingItem.Splitter
+        self.model_index = BuildingModel.SplitterX
         self.output_object_index = -1
         self.input_object_index = -1
         self.output_to_slot = 14
@@ -28,6 +28,7 @@ class Splitter(Building):
         
         belt.input_object_index = self.index
         
+        # Set slot index
         if self.yaw == belt.yaw:
             belt.input_from_slot = 0
         else:

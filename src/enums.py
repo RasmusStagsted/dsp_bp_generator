@@ -1,6 +1,96 @@
 import enum
 
-class ItemEnum(enum.IntEnum):
+class Recipe(enum.IntEnum):
+    Gear = 5
+
+class BuildingItem(enum.IntEnum):
+    ConveyorBeltMKI = 2001
+    ConveyorBeltMKII = 2002
+    ConveyorBeltMKIII = 2003
+    
+    SorterMKI = 2011
+    SorterMKII = 2012
+    SorterMKIII = 2013
+    PileSorter = 2014
+    
+    Splitter = 2020
+    
+    TrafficMonitor = 2030
+    
+    DepotMK1 = 2101
+    DepotMK2 = 2102
+    
+    StorageTank = 2106
+    
+    TeslaTower = 2201
+    WirelessPowerTower = 2202
+    WindTurbine = 2203
+    ThermalPowerPlant = 2204
+    SolarPanel = 2205
+    Accumulator = 2206
+    
+    MiniFusionPowerPlant = 2211
+    SateliteSubStation = 2212
+    
+    ArcSmelter = 2302
+    AssemblingMachineMKI = 2303
+    AssemblingMachineMKII = 2304
+    AssemblingMachineMKIII = 2305
+    
+    OilRefinary = 2308
+    ChemicalPlant = 2309
+    MiniatureParticleCollider = 2310
+    
+    SprayCoater = 2313
+    Fractionator = 2314
+    
+    QuantumChemicalPlant = 2317
+
+class BuildingModel(enum.IntEnum):
+    ConveyorBeltMKI = 35
+    ConveyorBeltMKII = 36
+    ConveyorBeltMKIII = 37
+    SplitterX = 38
+    SplitterK = 39
+    SplitterI = 40
+    SorterMKI = 41
+    SorterMKII = 42
+    SorterMKIII = 43
+    TeslaTower = 44
+    
+    Accumulator = 46
+    
+    DepotMK1 = 51
+    DepotMK2 = 52
+    WindTurbine = 53
+    ThermalPowerPlant = 54
+    SolarPanel = 55
+    
+    ArcSmelter = 62
+    OilRefinary = 63
+    ChemicalPlant = 64
+    
+    SateliteSubStation = 68
+    MiniatureParticleCollider = 69
+    
+    WirelessPowerTower = 71
+    
+    AssemblingMachineMKI = 65
+    AssemblingMachineMKII = 66
+    AssemblingMachineMKIII = 67
+    
+    MiniFusionPowerPlant = 118
+    Fractionator = 119
+    SprayCoater = 120
+    StorageTank = 121
+    
+    TrafficMonitor = 208
+    
+    QuantumChemicalPlant = 376
+    
+    PileSorter = 483
+
+class Item(enum.IntEnum):
 	Lava = -1
 	IronOre = 1001
 	CopperOre = 1002
@@ -87,9 +177,9 @@ class ItemEnum(enum.IntEnum):
 	StorageMKI = 2101
 	StorageMKII = 2102
 	StorageTank = 2106
-	AssemblingMachineMkI = 2303
-	AssemblingMachineMkII = 2304
-	AssemblingMachineMkIII = 2305
+	AssemblingMachineMKI = 2303
+	AssemblingMachineMKII = 2304
+	AssemblingMachineMKIII = 2305
 	PlaneSmelter = 2315
 	TeslaTower = 2201
 	WirelessPowerTower = 2202
@@ -124,17 +214,3 @@ class ItemEnum(enum.IntEnum):
 	InformationMatrix = 6004
 	GravityMatrix = 6005
 	UniverseMatrix = 6006
-	ProliferatorMkI = 10001
-	ProliferatorMkII = 10002
-	ProliferatorMkIII = 10003
-	CoreElement = 10004
-	Engine = 10005
-	PileSorter = 10006
-	StrangeAnnihilationFuelRod = 10007
-	CombustibleUnit = 10008
-	MissileSet = 10009
-	NegentrophySmelter = 10010
-	ReComposingAssembler = 10011
-	SelfEvolutionLab = 10012
-	OilRefinary = 10013
-	QuantumChemicalPlant = 10014

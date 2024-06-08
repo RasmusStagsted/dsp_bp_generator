@@ -26,6 +26,22 @@ class Packet:
         self.data = self.data[4:]
         return value
 
+    def peak_parse_int8(self):
+        value = unpack("b", self.data[0:1])[0]
+        return value
+
+    def peak_parse_int16(self):
+        value = unpack("h", self.data[0:2])[0]
+        return value
+
+    def peak_parse_int32(self):
+        value = unpack("i", self.data[0:4])[0]
+        return value
+
+    def peak_parse_float32(self):
+        value = unpack("f", self.data[0:4])[0]
+        return value
+
     def serialize_int8(self, value):
         self.data += pack("b", value)
 

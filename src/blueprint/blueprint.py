@@ -1,6 +1,6 @@
 from .md5 import MD5
 from .blueprint_area import BlueprintArea
-from .blueprint_building import BlueprintBuilding
+from .blueprint_building import BlueprintBuilding, BlueprintBuildingV1, BlueprintBuildingV2
 from .blueprint_building_header import BlueprintBuildingHeader
 from .blueprint_header import BlueprintHeader
 from .blueprint_string_header import BlueprintStringHeader
@@ -109,6 +109,7 @@ class Blueprint:
         self.blueprint_buildings = []
         for i in range(self.blueprint_building_header.building_count):
             blueprint_building = BlueprintBuilding()
+            blueprint_building = BlueprintBuilding.get_version(packet)(blueprint_building)
             blueprint_building.parse(packet)
             self.blueprint_buildings.append(blueprint_building)
             if debug:
@@ -116,13 +117,14 @@ class Blueprint:
 
         return self.blueprint_buildings
 
-    def serialize(self, blueprint_buildings, debug = False, debug_raw_data = False):
+    def serialize(self, blueprint_buildings, debug = False, debug_raw_data = False, blueprint_building_version = BlueprintBuildingV1):
 
         data = bytes()
 
         # Serialize buildings
         blueprint_buildings_data = bytes()
         for blueprint_building in blueprint_buildings:
+            blueprint_building = blueprint_building_version(blueprint_building)
             building_data = blueprint_building.serialize().data
             blueprint_buildings_data += building_data
             if debug:

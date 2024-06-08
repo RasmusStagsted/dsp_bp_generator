@@ -1,5 +1,5 @@
 from .recipes import recipes
-from ..ItemEnum import ItemEnum
+from ..enums import Item
 from .factory_section import FactorySection
 from ..utils import Pos
 from math import ceil
@@ -73,9 +73,9 @@ class Factory:
                 continue
             print(recipes[product.name])
             if recipes[product.name]["tool"] == "Smelting Facility":
-                factory_type = ItemEnum.ArcSmelter
+                factory_type = Item.ArcSmelter
             elif recipes[product.name]["tool"] == "Assembling machine":
-                factory_type = ItemEnum.AssemblingMachineMkIII
+                factory_type = Item.AssemblingMachineMKIII
             
             recipe_id = recipes[product.name]["recipe_id"]
             assert recipe_id != None, "Recipe not supported"

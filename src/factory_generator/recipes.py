@@ -1,6 +1,6 @@
 import yaml
 
-from ..ItemEnum import ItemEnum
+from ..enums import Item
 
 class Recipe:
     def __init__(self, name, input_items, output_items, time, tool, recipe_id):
@@ -19,7 +19,7 @@ def load_from_yaml(filename):
         return yaml.safe_load(file)
 
 recipes = load_from_yaml("data/recipes.yaml")
-    
+
 if __name__ == "__main__":
     filename = "data/recipes.yaml"
     save_to_yaml(recipes, filename)

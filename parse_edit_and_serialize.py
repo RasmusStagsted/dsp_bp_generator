@@ -9,8 +9,8 @@ if __name__ == "__main__":
         prog = "Blueprint parser",
         description = "Apllication to parse blueprints for the game Dyson Sphere program"
     )
-    parser.add_argument("-i", "--input_file", help = "Input file where to read the input from (if not defined, the input will be read from standard input)")
-    parser.add_argument("-o", "--output_file", help = "Output file where to save the output to (if not defined, the output will be written to standard output)")
+    parser.add_argument("--input_file", "--if", type = str, help = "Input file where to read the input from (if not defined, the input will be read from standard input)")
+    parser.add_argument("--output_file", "--of", type = str, help = "Output file where to save the output to (if not defined, the output will be written to standard output)")
     args = parser.parse_args()
 
     # Load the blueprint
@@ -48,7 +48,9 @@ if __name__ == "__main__":
     if args.output_file == None:
         for building in buildings:
             print(building)
+            print(output_blueprint_string)
     else:
         with open(args.output_file, "w") as file:
             for building in buildings:
                 file.write(building.__str__())
+            file.write(output_blueprint_string)

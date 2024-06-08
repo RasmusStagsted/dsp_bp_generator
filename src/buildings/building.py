@@ -1,6 +1,6 @@
 from ..blueprint import BlueprintBuilding
 from ..utils import Pos, Yaw
-from ..ItemEnum import ItemEnum
+from ..enums import Item
 
 class Building(BlueprintBuilding):
     
@@ -37,7 +37,7 @@ position 2 y: {self.pos2.y}
 position 2 z: {self.pos2.z}
 Yaw: {self.yaw}
 Yaw2: {self.yaw2}
-Item ID: {str(ItemEnum(self.item_id))[9:]} ({self.item_id})
+Item ID: {str(Item(self.item_id))[9:]} ({self.item_id})
 Model index: {self.model_index}
 Output object index: {self.output_object_index}
 Input object index: {self.input_object_index}
@@ -54,7 +54,7 @@ Parameter count: {self.parameter_count}
         for i in range(self.parameter_count):
             string += f"\tParam_{i}: {self.parameters[i]}\n"
         return string
-    
+
 class Building3x3(Building):
     
     def __init__(self, name = "Unknown", **kwargs):

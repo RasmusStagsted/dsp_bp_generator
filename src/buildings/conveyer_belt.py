@@ -1,16 +1,14 @@
 from .building import Building
 from ..utils import Pos, Yaw
-from ..ItemEnum import ItemEnum
+from ..enums import BuildingItem, BuildingModel
 
 class ConveyorBelt(Building):
-    def __init__(self, name, pos: Pos, yaw: Yaw, item_id: ItemEnum, model_index: int, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
+    def __init__(self, name, pos: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(name)
         self.pos1 = pos
         self.pos2 = pos
         self.yaw = yaw
         self.yaw2 = yaw
-        self.item_id = item_id
-        self.model_index = model_index
         self.output_object_index = output_object_index
         self.output_to_slot = output_to_slot
         
@@ -81,12 +79,12 @@ class ConveyorBeltMKI(ConveyorBelt):
             name = name,
             pos = pos,
             yaw = yaw,
-            item_id = ItemEnum.ConveyorBeltMKI,
-            model_index = 37, # TODO Find the right index
             output_object_index = output_object_index,
             input_object_index = input_object_index,
             output_to_slot = output_to_slot
         )
+        self.item_id = BuildingItem.ConveyorBeltMKI
+        self.model_index = BuildingModel.ConveyorBeltMKI
         
 class ConveyorBeltMKII(ConveyorBelt):
     def __init__(self, name, pos: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
@@ -94,12 +92,12 @@ class ConveyorBeltMKII(ConveyorBelt):
             name = name,
             pos = pos,
             yaw = yaw,
-            item_id = ItemEnum.ConveyorBeltMKII,
-            model_index = 37, # TODO Find the right index
             output_object_index = output_object_index,
             input_object_index = input_object_index,
             output_to_slot = output_to_slot
         )
+        self.item_id = BuildingItem.ConveyorBeltMKII
+        self.model_index = BuildingModel.ConveyorBeltMKII
 
 class ConveyorBeltMKIII(ConveyorBelt):
     def __init__(self, name, pos: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
@@ -107,9 +105,9 @@ class ConveyorBeltMKIII(ConveyorBelt):
             name = name,
             pos = pos,
             yaw = yaw,
-            item_id = ItemEnum.ConveyorBeltMKIII,
-            model_index = 37,
             output_object_index = output_object_index,
             input_object_index = input_object_index,
             output_to_slot = output_to_slot
         )
+        self.item_id = BuildingItem.ConveyorBeltMKIII
+        self.model_index = BuildingModel.ConveyorBeltMKIII

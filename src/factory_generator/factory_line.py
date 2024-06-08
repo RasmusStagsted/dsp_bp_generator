@@ -1,5 +1,5 @@
 from ..buildings import TeslaTower, ArcSmelter, ConveyorBeltMKI
-from ..ItemEnum import ItemEnum
+from ..enums import Item
 from ..utils import Yaw, Pos
 from .factory_block import FactoryBlock
 
@@ -39,15 +39,15 @@ class FactoryLine:
         self.output_belts = [factory_blocks[0].output_belts[i][-1] for i in range(output_count)]
     
     def _get_factory_width(factory_type):
-        if factory_type == ItemEnum.ArcSmelter or factory_type == ItemEnum.PlaneSmelter or factory_type == ItemEnum.NegentrophySmelter:
+        if factory_type == Item.ArcSmelter or factory_type == Item.PlaneSmelter or factory_type == Item.NegentrophySmelter:
             return 3
-        elif factory_type == ItemEnum.AssemblingMachineMkI or factory_type == ItemEnum.AssemblingMachineMkII or factory_type == ItemEnum.AssemblingMachineMkIII or factory_type == ItemEnum.ReComposingAssembler:
+        elif factory_type == Item.AssemblingMachineMKI or factory_type == Item.AssemblingMachineMKII or factory_type == Item.AssemblingMachineMKIII or factory_type == Item.ReComposingAssembler:
             return 3
-        elif factory_type == ItemEnum.MatrixLab or factory_type == ItemEnum.SelfEvolutionLab:
+        elif factory_type == Item.MatrixLab or factory_type == Item.SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
-        elif factory_type == ItemEnum.OilRefinary:
+        elif factory_type == Item.OilRefinary:
             assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == ItemEnum.ChemicalPlant or factory_type == ItemEnum.QuantumChemicalPlant:
+        elif factory_type == Item.ChemicalPlant or factory_type == Item.QuantumChemicalPlant:
             assert True, "Chemical plants labs isn't supported yet"
         else:
             assert True, "Unsupported factory type: " + factory_type
@@ -57,19 +57,19 @@ class FactoryLine2:
     def __init__(self, x, y, input_count, output_count, factory_type, recipe, factory_count):
         
         
-        assert (factory_type == ItemEnum.Smelter) or \
-            (factory_type == ItemEnum.AssemblingMachineMkI) or \
-            (factory_type == ItemEnum.AssemblingMachineMkII) or \
-            (factory_type == ItemEnum.AssemblingMachineMkIII), \
+        assert (factory_type == Item.Smelter) or \
+            (factory_type == Item.AssemblingMachineMKI) or \
+            (factory_type == Item.AssemblingMachineMKII) or \
+            (factory_type == Item.AssemblingMachineMKIII), \
             f"Factory type ({factory_type}) isn't supported yet."
             
         assert output_count == 1, "recipes with multiple outputs isn't supported yet."
         
-        if ((factory_type == ItemEnum.AssemblingMachineMkI) or \
-            (factory_type == ItemEnum.AssemblingMachineMkII) or \
-            (factory_type == ItemEnum.AssemblingMachineMkIII)):
+        if ((factory_type == Item.AssemblingMachineMKI) or \
+            (factory_type == Item.AssemblingMachineMKII) or \
+            (factory_type == Item.AssemblingMachineMKIII)):
             self._factory_width = 4
-        elif (factory_type == ItemEnum.Smelter):
+        elif (factory_type == Item.Smelter):
             self._factory_width = 3
         self._factory_height = 3
         self.height = self._factory_height + input_count + output_count
@@ -86,7 +86,7 @@ class FactoryLine2:
         # Generate the factories
         factory_offset = 4
         power_pole_frequency = 0
-        if factory_type == ItemEnum.Smelter:
+        if factory_type == Item.Smelter:
             factory_offset = 3
             power_pole_frequency = 4
         factory_idicies = self._generate_factory_line_factories(x, y, factory_count, factory_offset, factory_type, recipe, power_pole_frequency)
@@ -100,7 +100,7 @@ class FactoryLine2:
         self._generate_factory_line_output_sorters(output_sorter_x, output_sorter_y, output_belts, factory_count, factory_offset, factory_idicies, power_pole_frequency)
         
         # Generate the power poles
-        if factory_type == ItemEnum.Smelter:
+        if factory_type == Item.Smelter:
             for i in range(math.ceil(factory_count / 4)):
                 tesla_tower = Buildings.TeslaTower(
                     x = x + 13 * i + 7,
@@ -177,7 +177,7 @@ class FactoryLine2:
         factory_idicies = []
         for i in range(factory_count):
             factory_idicies.append(len(buildings))
-            if factory_type == ItemEnum.Smelter:
+            if factory_type == Item.Smelter:
                 factory_height = 3
                 pos_x = x + 2 + factory_offset * i
                 if power_pole_frequency != 0:
@@ -189,9 +189,9 @@ class FactoryLine2:
                     yaw = Yaw.North,
                     recipe_id = recipe
                 )
-            elif factory_type == ItemEnum.AssemblingMachineMkIII:
+            elif factory_type == Item.AssemblingMachineMKIII:
                 factory_height = 3
-                Buildings.AssemblingMachineMkIII(
+                Buildings.AssemblingMachineMKIII(
                     x = x + 2 + factory_offset * i,
                     y = y,
                     z = 0,

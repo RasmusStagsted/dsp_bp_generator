@@ -20,7 +20,7 @@ def run(cmd):
     else:
         log_passed(cmd)
 
-run(["python", "parse.py", "--input_file=input.bp"])
-run(["python", "parse_edit_and_serialize.py", "--input_file=input.bp"])
-run(["python", "generate_and_serialize.py", "--input_file=input.bp"])
-run(["python", "generate_factory.py", "--input_file=input.bp"])
+run(["python3", "parse.py", "--if=input.bp"])
+run(["python3", "parse_edit_and_serialize.py", "--if=input.bp"])
+run(["python3", "generate_and_serialize.py"])
+run(["python3", "generate_factory.py"])

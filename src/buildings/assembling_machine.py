@@ -1,9 +1,9 @@
 from .building import Building, Building3x3
 from ..utils import Pos, Yaw
-from ..ItemEnum import ItemEnum
+from ..enums import BuildingItem, BuildingModel
 
 class AssemblingMachine(Building3x3):
-    def __init__(self, name, pos: Pos, item_id: ItemEnum, model_index: int, recipe_id: int = 0):
+    def __init__(self, name, pos: Pos, item_id: BuildingItem, model_index: int, recipe_id: int = 0):
         super().__init__(name)
         self.pos1 = pos
         self.pos2 = pos
@@ -17,33 +17,33 @@ class AssemblingMachine(Building3x3):
         self.parameter_count = 1
         self.parameters = [0]
         
-class AssemblingMachineMkI(AssemblingMachine):
+class AssemblingMachineMKI(AssemblingMachine):
     def __init__(self, name, pos: Pos, recipe_id: int = 0):
         super().__init__(
             name = name,
             pos = pos,
-            item_id = ItemEnum.AssemblingMachineMkI,
-            model_index = 67, # TODO Find the right id 
+            item_id = BuildingItem.AssemblingMachineMKI,
+            model_index = BuildingModel.AssemblingMachineMKI,
             recipe_id = recipe_id
         )
             
-class AssemblingMachineMkII(AssemblingMachine):
+class AssemblingMachineMKII(AssemblingMachine):
     def __init__(self, name, pos: Pos, recipe_id: int = 0):
         super().__init__(
             name = name,
             pos = pos,
-            item_id = ItemEnum.AssemblingMachineMkII,
-            model_index = 67, # TODO Find the right id 
+            item_id = BuildingItem.AssemblingMachineMKII,
+            model_index = BuildingModel.AssemblingMachineMKII,
             recipe_id = recipe_id
         )
             
-class AssemblingMachineMkIII(AssemblingMachine):
+class AssemblingMachineMKIII(AssemblingMachine):
     def __init__(self, name, pos: Pos, recipe_id: int = 0):
         super().__init__(
             name = name,
             pos = pos,
-            item_id = ItemEnum.AssemblingMachineMkIII,
-            model_index = 67,
+            item_id = BuildingItem.AssemblingMachineMKIII,
+            model_index = BuildingModel.AssemblingMachineMKIII,
             recipe_id = recipe_id
         )
             
@@ -52,7 +52,7 @@ class ReComposingAssembler(AssemblingMachine):
         super().__init__(
             name = name,
             pos = pos,
-            item_id = ItemEnum.ReComposingAssembler,
-            model_index = 67, # TODO Find the right id 
+            item_id = BuildingItem.ReComposingAssembler,
+            model_index = BuildingModel.ReComposingAssembler,
             recipe_id = recipe_id
         )
