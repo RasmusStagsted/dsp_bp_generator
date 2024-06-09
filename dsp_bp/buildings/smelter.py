@@ -11,6 +11,10 @@ class Smelter(Building3x3):
         self.yaw2 = Yaw.North
         self.output_object_index = -1
         self.input_object_index = -1
+        self.output_to_slot = 0
+        self.input_from_slot = 0
+        self.output_from_slot = 0
+        self.input_to_slot = 0
         self.recipe_id = recipe_id
         self.parameter_count = 1
         self.parameters = [0]

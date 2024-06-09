@@ -1,5 +1,6 @@
 import yaml
 
+import pkgutil
 from ..enums import Item
 
 class Recipe:
@@ -15,13 +16,15 @@ class Recipe:
         return f'Name: {self.name} - Input item: {self.input_items} - Output items: {self.output_items} - Time: {self.time}s - Tool: {self.tool} - Recipe id: {self.recipe_id}'
 
 def load_from_yaml(filename):
-    with open(filename, "r") as file:
-        return yaml.safe_load(file)
+    data = pkgutil.get_data(__package__, filename)
+    if data is not None:
+        return yaml.safe_load(data)
+    else:
+        raise FileNotFoundError(f'{filename} not found in package')
 
 recipes = load_from_yaml("data/recipes.yaml")
 
 if __name__ == "__main__":
-    filename = "data/recipes.yaml"
-    save_to_yaml(recipes, filename)
+    filename = "recipes.yaml"
     recipes = load_from_yaml(filename)
     print(recipes)

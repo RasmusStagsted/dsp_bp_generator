@@ -35,19 +35,36 @@ class Sorter(Building):
             pos1 = belt.pos1,
             pos2 = pos,
             yaw = yaw,
-            output_object_index = belt.index,
-            input_object_index = factory.index,
+            output_object_index = factory.index,
+            input_object_index = belt.index,
             output_to_slot = slot,
             input_from_slot = -1,
             output_from_slot = 0,
             input_to_slot = 1,
-            output_offset = -1,
+            output_offset = 0,
             input_offset = 0,
-            parameters = [1]            
+            parameters = [1]
         )
 
     def generate_sorter_from_factory_to_belt(name, factory, belt, sorter_type = None):
-        assert False, "Not supported"
+        yaw = Yaw.get_neares_90_degree(factory.pos1, belt.pos1)
+        slot = factory.get_input_slot(belt.pos1)
+        pos = factory.get_pos_from_slot(slot)
+        return sorter_type(
+            name = name,
+            pos1 = pos,
+            pos2 = belt.pos1,
+            yaw = yaw,
+            output_object_index = belt.index,
+            input_object_index = factory.index,
+            output_to_slot = -1,
+            input_from_slot = slot,
+            output_from_slot = 0,
+            input_to_slot = 1,
+            output_offset = -1,
+            input_offset = 0,
+            parameters = [1]
+        )
 
     def generate_sorter_from_factory_to_factory(name, factory, belt, sorter_type = None):
         assert False, "Not supported"

@@ -1,5 +1,6 @@
-from src.blueprint import Blueprint
 import argparse
+from dsp_bp.blueprint import Blueprint
+from dsp_bp.utils import Pos
 
 if __name__ == "__main__":
     
@@ -26,14 +27,30 @@ if __name__ == "__main__":
     # Parse the blueprint
     bp = Blueprint()
     buildings = bp.parse(input_blueprint_string)
+    
     # Validate hash
-    assert bp.validate_hash(), "Could not validate hash of input blueprint string"
+    assert bp.validate_hash(), "Could not validate hash"
 
+    #########################
+    # Change blueprint here #
+    #########################
+
+    # Move the building at index 0
+    buildings[0].move_relative(Pos(x = 1))
+
+    # Serialize the blueprint again
+    output_blueprint_string = bp.serialize(buildings)
+    
+    # Validate hash
+    assert bp.validate_hash(), "Could not validate hash"
+    
     # Write parsed data
     if args.output_file == None:
         for building in buildings:
             print(building)
+            print(output_blueprint_string)
     else:
         with open(args.output_file, "w") as file:
             for building in buildings:
                 file.write(building.__str__())
+            file.write(output_blueprint_string)

@@ -14,6 +14,7 @@ class ConveyorBelt(Building):
         
         self.output_from_slot = 0
         self.input_to_slot = 1
+        self.input_from_slot = 0
         
     def connect_to_belt(belt1, belt2):
         dx, dy = Yaw.direction_to_unit_vector(belt1.yaw)
@@ -70,7 +71,7 @@ class ConveyorBelt(Building):
                 belt.yaw = Yaw.direction_average(yaw[i], yaw[i + 1])
             else:
                 belt.output_object_index = -1
-                belt.output_to_slot = -1
+                belt.output_to_slot = 0
         return belts
     
 class ConveyorBeltMKI(ConveyorBelt):

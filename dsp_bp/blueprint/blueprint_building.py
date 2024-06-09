@@ -150,10 +150,11 @@ class BlueprintBuildingV1(BlueprintBuilding):
         string = f"""
 Blue Print Building:
 ====================
+Version: 1
+====================
 Length: {len(packet.data)}
 Binary data: {packet.data}
 ====================
-Dummy 1: {self.dummy1}
 Index: {self.index}
 Area index: {self.area_index}
 position 1 x: {self.pos1.x}
@@ -164,9 +165,9 @@ position 2 y: {self.pos2.y}
 position 2 z: {self.pos2.z}
 Yaw: {self.yaw}
 Yaw2: {self.yaw2}
-Output object index: {self.output_object_index}
 Item ID: {self.item_id} ({BuildingItem(self.item_id).name})
 Model index: {self.model_index} ({BuildingModel(self.model_index).name})
+Output object index: {self.output_object_index}
 Input object index: {self.input_object_index}
 Output to slot: {self.output_to_slot}
 Input from slot: {self.input_from_slot}
@@ -174,7 +175,6 @@ Output from slot: {self.output_from_slot}
 Input to slot: {self.input_to_slot}
 Output offset: {self.output_offset}
 Input offset: {self.input_offset}
-Dummy 2: {self.dummy2}
 Recipe id: {self.recipe_id}
 Filter id: {self.filter_id}
 Parameter count: {self.parameter_count}
@@ -187,6 +187,7 @@ class BlueprintBuildingV2(BlueprintBuilding):
 
     def __init__(self, building):
         super().__init__()
+        asldkfjh
         self.dummy1 = -100
         self.dummy2 = 0
         self.index = building.index
@@ -283,9 +284,12 @@ class BlueprintBuildingV2(BlueprintBuilding):
         return packet
 
     def __str__(self):
+        asdfas
         packet = self.serialize()
         string = f"""
 Blue Print Building:
+====================
+Version: 2
 ====================
 Length: {len(packet.data)}
 Binary data: {packet.data}

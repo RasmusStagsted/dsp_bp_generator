@@ -1,8 +1,8 @@
 import argparse
-from src.utils import Yaw, Pos
-from src.blueprint import Blueprint
-from src.factory_generator import Factory, ItemFlow, recipes
-from src.buildings import Building
+from dsp_bp.utils import Yaw, Pos
+from dsp_bp.blueprint import Blueprint
+from dsp_bp.factory_generator import Factory, ItemFlow, recipes
+from dsp_bp.buildings import Building
 import math
 import argparse
 
