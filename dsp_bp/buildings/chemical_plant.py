@@ -1,8 +1,8 @@
-from .building import Building
-from ..utils import Pos, Yaw
+from .building import Factory
+from ..utils import Vector, Yaw
 
-class ChemicalPlant(Building):
-    def __init__(self, name, pos: Pos, yaw: Yaw, recipe_id: int = 0):
+class ChemicalPlant(Factory):
+    def __init__(self, name, pos: Vector, yaw: Yaw, recipe_id: int = 0):
         super().__init__(name)
         self.pos1 = pos
         self.pos2 = pos
@@ -16,9 +16,9 @@ class ChemicalPlant(Building):
         self.parameter_count = 1
         self.parameters = [0]
 
-    def get_input_slot(self, source):
-        dx = source.x - self.pos1.x
-        dy = source.y - self.pos1.y
+    def get_slot_from_pos(self, pos):
+        dx = pos.x - self.pos1.x
+        dy = pos.y - self.pos1.y
 
         if dx < -0.5:
             if dy < -0.5:
@@ -54,9 +54,36 @@ class ChemicalPlant(Building):
             else:
                 assert False, "Can't find slot index when source on top of target"
             
+    def get_pos_from_slot(self, slot):
+        assert slot >= 0 and slot <= 7, f"slot index needs to be: slot >= 0 and slot <= 7 (slot was {slot})"
+        assert False, "Not tested"
+        if slot == 0:
+            delta_pos = Vector(x = 0.8, y = -0.8)
+        elif slot == 1:
+            delta_pos = Vector(x = 0.8, y = 0.0)
+        elif slot == 2:
+            delta_pos = Vector(x = 0.8, y = 0.8)
+        elif slot == 3:
+            delta_pos = Vector(x = -0.8, y = 0.8)
+        elif slot == 4:
+            delta_pos = Vector(x = -0.8, y = 0.0)
+        elif slot == 5:
+            delta_pos = Vector(x = -0.8, y = -0.8)
+        elif slot == 6:
+            delta_pos = Vector(x = 0.8, y = -0.8)
+        elif slot == 7:
+            delta_pos = Vector(x = 0.0, y = -0.8)
+        elif slot == 8:
+            delta_pos = Vector(x = -0.8, y = -0.8)
+        elif slot == 9:
+            delta_pos = Vector(x = -1.2, y = -0.8)
+        elif slot == 10:
+            delta_pos = Vector(x = -1.2, y = 0.0)
+        elif slot == 11:
+            delta_pos = Vector(x = -1.2, y = 0.8)
 
 class QuantumChemicalPlant(ChemicalPlant):
-    def __init__(self, name, pos: Pos, yaw: Yaw, recipe_id: int = 0):
+    def __init__(self, name, pos: Vector, yaw: Yaw, recipe_id: int = 0):
         super().__init__(name, pos, yaw, recipe_id)
         self.item_id = BuildingItem.QuantumChemicalPlant
         self.model_index = BuildingModel.QuantumChemicalPlant

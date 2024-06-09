@@ -1,8 +1,8 @@
 import math
 
-class Pos:
-    
-    def __init__(self, x = 0, y = 0, z = 0):
+class Vector:
+
+    def __init__(self, x = 0.0, y = 0.0, z = 0.0):
         self.x = x
         self.y = y
         self.z = z
@@ -12,15 +12,18 @@ class Pos:
         self.y += offset.y
         self.z += offset.z
 
+    def get_distance(self, pos):
+        return math.sqrt(math.pow(pos.x - self.x, 2) + math.pow(pos.y - self.y, 2))
+
     def __add__(pos1, pos2):
-        return Pos(
+        return Vector(
             x = pos1.x + pos2.x,
             y = pos1.y + pos2.y,
             z = pos1.z + pos2.z
         )
 
     def __sub__(pos1, pos2):
-        return Pos(
+        return Vector(
             x = pos1.x - pos2.x,
             y = pos1.y - pos2.y,
             z = pos1.z - pos2.z
@@ -40,13 +43,17 @@ class Yaw:
     NorthWest = 315.0
     Unknown = None
 
-    def get_neares_90_degree(pos1: Pos, pos2: Pos):
-
+    def get_neares_90_degree(pos1: Vector, pos2: Vector):
         angle = Yaw.get_angle(pos1, pos2)
-        angle = ((angle + 45) // 90) * 90
+        if angle == None:
+            return None
+        angle = (angle + 45) // 90 * 90
+        if angle == 360.00:
+            angle = 0
         return angle
 
     def get_angle(pos1, pos2):
+        # TODO test
         delta_x = pos2.x - pos1.x
         delta_y = pos2.y - pos1.y
         
@@ -57,7 +64,11 @@ class Yaw:
                 return Yaw.South
             else:
                 return Yaw.Unknown
-        return 180 + math.degrees(math.atan2(delta_x, delta_y))
+        angle = math.degrees(math.atan2(delta_x, delta_y))
+        
+        if angle < 0.0:
+            angle += 360.0
+        return angle
             
     def direction_average(dir1, dir2):
         if (dir1 == Yaw.North and dir2 == Yaw.East) or (dir1 == Yaw.East and dir2 == Yaw.North):
@@ -81,3 +92,25 @@ class Yaw:
         elif direction == Yaw.West:
             return -1.0, 0.0
         return None
+
+if __name__ == "__main__":
+    string = ""
+    for i in range(11):
+        for j in range(11):
+            angle = Yaw.get_angle(Vector(5, 5), Vector(j, 10 - i))
+            if angle != None:
+                string += "{:.2f}\t".format(angle)
+            else:
+                string += "{:.2f}\t".format(0)
+        string += "\n"
+    print(string)
+    string = ""
+    for i in range(11):
+        for j in range(11):
+            angle = Yaw.get_neares_90_degree(Vector(5, 5), Vector(j, 10 - i))
+            if angle != None:
+                string += "{:.2f}\t".format(angle)
+            else:
+                string += "{:.2f}\t".format(0)
+        string += "\n"
+    print(string)

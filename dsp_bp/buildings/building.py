@@ -1,6 +1,6 @@
 from ..blueprint import BlueprintBuilding
-from ..utils import Pos, Yaw
-from ..enums import Item
+from ..utils import Vector, Yaw
+from ..enums import BuildingItem, BuildingModel
 
 class Building(BlueprintBuilding):
     
@@ -21,6 +21,14 @@ class Building(BlueprintBuilding):
     def get_building(index):
         return Building.buildings[index]
     
+    def get_nearest_slot_from_position(self, pos):
+        distances = []
+        for i in range(self.number_of_slots()):
+            distance = pos.get_distance(self.get_position_of_slot(i))
+            distances.append(distance)
+        slot = distances.index(min(distances))
+        return slot
+    
     def __str__(self):
         string = f"""
 Blue Print Building:
@@ -37,8 +45,8 @@ position 2 y: {self.pos2.y}
 position 2 z: {self.pos2.z}
 Yaw: {self.yaw}
 Yaw2: {self.yaw2}
-Item ID: {str(Item(self.item_id))[9:]} ({self.item_id})
-Model index: {self.model_index}
+Item ID: {str(BuildingItem(self.item_id))} ({self.item_id})
+Model index: {str(BuildingModel(self.model_index))} ({self.model_index})
 Output object index: {self.output_object_index}
 Input object index: {self.input_object_index}
 Output to slot: {self.output_to_slot}
@@ -55,74 +63,61 @@ Parameter count: {self.parameter_count}
             string += f"\tParam_{i}: {self.parameters[i]}\n"
         return string
 
-class Building3x3(Building):
+class Factory(Building):
+    
+    def __init__(self, name = "Unknown", **kwargs):
+        super().__init__(name, **kwargs)
+
+    def set_recipe(self, recipe_id):
+        self.recipe_id = recipe_id
+
+class Factory3x3(Factory):
+
+#          slot 0  slot 1  slot 2
+#         ┌───────────────────────┐
+#         │                       │
+# slot 11 │                       │ slot 3
+#         │                       │
+#         │                       │
+# slot 10 │           X           │ slot 4
+#         │                       │
+#         │                       │
+# slot 9  │                       │ slot 5
+#         │                       │
+#         └───────────────────────┘
+#           slot 8  slot 7  slot6  
+    
+    def number_of_slots(self):
+        return 12
     
     def __init__(self, name = "Unknown", **kwargs):
         super().__init__(name, **kwargs)
         
-    def get_input_slot(self, source):
-        dx = source.x - self.pos1.x
-        dy = source.y - self.pos1.y
-
-        if dx < -0.5:
-            if dy < -0.5:
-                if -dy > -dx:
-                    return 8
-                else:
-                    return 9
-            elif dy > 0.5:
-                if -dx > dy:
-                    return 11
-                else:
-                    return 0               
-            else:
-                return 10        
-        elif dx > 0.5:
-            if dy < -0.5:
-                if -dy > dx:
-                    return 6
-                else:
-                    return 5
-            elif dy > 0.5:
-                if dx > dy:
-                    return 3
-                else:
-                    return 2
-            else:
-                return 4
-        else:
-            if dy < -0.5:
-                return 7
-            elif dy > 0.5:
-                return 1
-            else:
-                assert False, "Can't find slot index when source on top of target"
-            
-    def get_pos_from_slot(self, slot):
-        assert slot >= 0 and slot <= 11, f"slot index needs to be: slot >= 0 and slot <= 8 (slot was {slot})"
+    def get_position_of_slot(self, slot):
+        assert slot >= 0 and slot <= 11, f"slot index needs to be: slot >= 0 and slot <= 11 (slot was {slot})"
         if slot == 0:
-            delta_pos = Pos(x = -0.8, y = 0.8)
+            delta_pos = Vector(x = -0.75, y = 0.8)
         elif slot == 1:
-            delta_pos = Pos(x = 0.0, y = 0.8)
+            delta_pos = Vector(x = 0.0, y = 0.8)
         elif slot == 2:
-            delta_pos = Pos(x = 0.8, y = 0.8)
+            delta_pos = Vector(x = 0.75, y = 0.8)
         elif slot == 3:
-            delta_pos = Pos(x = 1.2, y = 0.8)
+            delta_pos = Vector(x = 0.8, y = 0.75)
         elif slot == 4:
-            delta_pos = Pos(x = 1.2, y = 0.0)
+            delta_pos = Vector(x = 0.8, y = 0.0)
         elif slot == 5:
-            delta_pos = Pos(x = 1.2, y = -0.8)
+            delta_pos = Vector(x = 0.8, y = -0.75)
         elif slot == 6:
-            delta_pos = Pos(x = 0.8, y = -0.8)
+            delta_pos = Vector(x = 0.75, y = -0.8)
         elif slot == 7:
-            delta_pos = Pos(x = 0.0, y = -0.8)
+            delta_pos = Vector(x = 0.0, y = -0.8)
         elif slot == 8:
-            delta_pos = Pos(x = -0.8, y = -0.8)
+            delta_pos = Vector(x = -0.75, y = -0.8)
         elif slot == 9:
-            delta_pos = Pos(x = -1.2, y = -0.8)
+            delta_pos = Vector(x = -0.8, y = -0.75)
         elif slot == 10:
-            delta_pos = Pos(x = -1.2, y = 0.0)
+            delta_pos = Vector(x = -0.8, y = 0.0)
         elif slot == 11:
-            delta_pos = Pos(x = -1.2, y = 0.8)
+            delta_pos = Vector(x = -0.8, y = 0.75)
 
         return self.pos1 + delta_pos

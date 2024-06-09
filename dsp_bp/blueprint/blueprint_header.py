@@ -1,14 +1,16 @@
 from .packet import Packet
+from ..utils import Vector
 
 class BlueprintHeader:
 
-    def __init__(self, size_x = 0, size_y = 0):
+    def __init__(self, size: Vector = Vector()):
         self.version = 1
-        self.cursor_offset_x = size_x // 2
-        self.cursor_offset_y = size_y // 2
+        self.cursor_offset_x = int(size.x // 2)
+        self.cursor_offset_y = int(size.y // 2)
+        print(self.cursor_offset_x)
         self.cursor_target_area = 0
-        self.dragbox_size_x = size_x
-        self.dragbox_size_y = size_y
+        self.dragbox_size_x = int(size.x)
+        self.dragbox_size_y = int(size.y)
         self.primary_area_index = 0
         self.area_count = 1
 

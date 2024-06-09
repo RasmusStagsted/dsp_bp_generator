@@ -1,6 +1,6 @@
 import argparse
 from dsp_bp.blueprint import Blueprint
-from dsp_bp.utils import Pos
+from dsp_bp.utils import Vector
 
 if __name__ == "__main__":
     
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     #########################
 
     # Move the building at index 0
-    buildings[0].move_relative(Pos(x = 1))
+    buildings[0].move_relative(Vector(x = 1))
 
     # Serialize the blueprint again
     output_blueprint_string = bp.serialize(buildings)

@@ -1,6 +1,6 @@
 from ..buildings import TeslaTower, ArcSmelter, ConveyorBeltMKI
 from ..enums import Item
-from ..utils import Yaw, Pos
+from ..utils import Yaw, Vector
 from .factory_block import FactoryBlock
 
 import math
@@ -19,15 +19,15 @@ class FactoryLine:
     def __init__(self, pos, input_count, output_count, factory_type, recipe, factory_count):
         
         self.height = 6
-        self.block_width = FactoryLine._get_factory_width(factory_type)
+        self._factory_type = factory_type
+        self.block_width = self._get_factory_width()
         
         # Generate factory_blocks
         factory_blocks = []
         for i in range(factory_count):
-            temp_pos = pos + Pos(x = i * self.block_width)
+            temp_pos = pos + Vector(x = i * self.block_width)
             input_belt_types = [ConveyorBeltMKI for i in range(input_count)]
             output_belt_types = [ConveyorBeltMKI for i in range(output_count)]
-            factory_type = ArcSmelter
             factory_block = FactoryBlock(temp_pos, input_belt_types, output_belt_types, factory_type, self.block_width, recipe)
             factory_blocks.append(factory_block)
         
@@ -38,19 +38,8 @@ class FactoryLine:
         self.input_belts = [factory_blocks[0].input_belts[i][0] for i in range(input_count)]
         self.output_belts = [factory_blocks[0].output_belts[i][-1] for i in range(output_count)]
     
-    def _get_factory_width(factory_type):
-        if factory_type == Item.ArcSmelter or factory_type == Item.PlaneSmelter or factory_type == Item.NegentrophySmelter:
-            return 3
-        elif factory_type == Item.AssemblingMachineMKI or factory_type == Item.AssemblingMachineMKII or factory_type == Item.AssemblingMachineMKIII or factory_type == Item.ReComposingAssembler:
-            return 3
-        elif factory_type == Item.MatrixLab or factory_type == Item.SelfEvolutionLab:
-            assert True, "Matrix labs isn't supported yet"
-        elif factory_type == Item.OilRefinary:
-            assert True, "Oil refinaries isn't supported yet"
-        elif factory_type == Item.ChemicalPlant or factory_type == Item.QuantumChemicalPlant:
-            assert True, "Chemical plants labs isn't supported yet"
-        else:
-            assert True, "Unsupported factory type: " + factory_type
+    def _get_factory_width(self):
+        return self._factory_type.get_size().x
         
 class FactoryLine2:
 

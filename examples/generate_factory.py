@@ -1,5 +1,5 @@
 import argparse
-from dsp_bp.utils import Yaw, Pos
+from dsp_bp.utils import Yaw, Vector
 from dsp_bp.blueprint import Blueprint
 from dsp_bp.factory_generator import Factory, ItemFlow, recipes
 from dsp_bp.buildings import Building
@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     # Generate the factory
     factory = Factory()
-    output_flow = [ItemFlow("Magnet", 2.0)]
+    output_flow = [ItemFlow("SorterMKI", 2.0)]
     factory.set_tartget_output_flow(output_flow, debug = True)
     factory.generate_factories(debug = True)
     blueprint = Blueprint()
@@ -26,11 +26,7 @@ if __name__ == "__main__":
 
     # Write parsed data
     if args.output_file == None:
-        for building in Building.buildings:
-            print(building)
-            print(output_blueprint_string)
+        print(output_blueprint_string)
     else:
         with open(args.output_file, "w") as file:
-            for building in Building.buildings:
-                file.write(building.__str__())
             file.write(output_blueprint_string)

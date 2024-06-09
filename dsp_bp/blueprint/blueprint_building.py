@@ -1,5 +1,5 @@
 from .packet import Packet
-from ..utils import Pos
+from ..utils import Vector
 from ..enums import BuildingItem, BuildingModel
 from copy import copy
 import enum
@@ -9,8 +9,8 @@ class BlueprintBuilding:
     def __init__(self):
         self.index = 0
         self.area_index = 0
-        self.pos1 = Pos()
-        self.pos2 = Pos()
+        self.pos1 = Vector()
+        self.pos2 = Vector()
         self.yaw = 0
         self.yaw2 = 0
         self.item_id = 0
@@ -28,7 +28,7 @@ class BlueprintBuilding:
         self.parameter_count = 0
         self.parameters = []
     
-    def move_relative(self, pos: Pos):
+    def move_relative(self, pos: Vector):
         self.pos1.x += pos.x
         self.pos1.y += pos.y
         self.pos1.z += pos.z
@@ -36,7 +36,7 @@ class BlueprintBuilding:
         self.pos2.y += pos.y
         self.pos2.z += pos.z
 
-    def move_absolute(self, pos: Pos):
+    def move_absolute(self, pos: Vector):
         self.pos1.x = pos.x
         self.pos1.y = pos.y
         self.pos1.z = pos.z

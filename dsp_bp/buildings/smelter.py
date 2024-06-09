@@ -1,9 +1,9 @@
-from .building import Building3x3
-from ..utils import Pos, Yaw
+from .building import Factory3x3
+from ..utils import Vector, Yaw
 from ..enums import BuildingItem, BuildingModel
 
-class Smelter(Building3x3):
-    def __init__(self, name: str, pos: Pos, recipe_id: int = 0):
+class Smelter(Factory3x3):
+    def __init__(self, name: str, pos: Vector, recipe_id: int = 0):
         super().__init__(name)
         self.pos1 = pos
         self.pos2 = pos
@@ -19,20 +19,26 @@ class Smelter(Building3x3):
         self.parameter_count = 1
         self.parameters = [0]
         
+    def get_size():
+        return Vector(3.0, 3.0)
+    
+    def get_offset():
+        return Vector(1.5, 1.5)
+        
 class ArcSmelter(Smelter):
-    def __init__(self, name: str, pos: Pos, recipe_id: int = 0):
+    def __init__(self, name: str, pos: Vector, recipe_id: int = 0):
         super().__init__(name, pos, recipe_id)
         self.item_id = BuildingItem.ArcSmelter
         self.model_index = BuildingModel.ArcSmelter
         
 class PlaneSmelter(Smelter):
-    def __init__(self, name: str, pos: Pos, recipe_id: int = 0):
+    def __init__(self, name: str, pos: Vector, recipe_id: int = 0):
         super().__init__(name, pos, recipe_id)
         self.item_id = BuildingItem.PlaneSmelter
         self.model_index = BuildingModel.PlaneSmelter
         
 class NegentrophySmelter(Smelter):
-    def __init__(self, name: str, pos: Pos, recipe_id: int = 0):
+    def __init__(self, name: str, pos: Vector, recipe_id: int = 0):
         super().__init__(name, pos, recipe_id)
         self.item_id = BuildingItem.NegentrophySmelter
         self.model_index = BuildingModel.NegentrophySmelter

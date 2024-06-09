@@ -1,9 +1,9 @@
-from .building import Building, Building3x3
-from ..utils import Pos, Yaw
+from .building import Building, Factory3x3
+from ..utils import Vector, Yaw
 from ..enums import BuildingItem, BuildingModel
 
-class AssemblingMachine(Building3x3):
-    def __init__(self, name, pos: Pos, item_id: BuildingItem, model_index: int, recipe_id: int = 0):
+class AssemblingMachine(Factory3x3):
+    def __init__(self, name, pos: Vector, item_id: BuildingItem, model_index: int, recipe_id: int = 0):
         super().__init__(name)
         self.pos1 = pos
         self.pos2 = pos
@@ -17,8 +17,14 @@ class AssemblingMachine(Building3x3):
         self.parameter_count = 1
         self.parameters = [0]
         
+    def get_size():
+        return Vector(4.0, 4.0)
+    
+    def get_offset():
+        return Vector(2.0, 2.0)
+        
 class AssemblingMachineMKI(AssemblingMachine):
-    def __init__(self, name, pos: Pos, recipe_id: int = 0):
+    def __init__(self, name, pos: Vector, recipe_id: int = 0):
         super().__init__(
             name = name,
             pos = pos,
@@ -28,7 +34,7 @@ class AssemblingMachineMKI(AssemblingMachine):
         )
             
 class AssemblingMachineMKII(AssemblingMachine):
-    def __init__(self, name, pos: Pos, recipe_id: int = 0):
+    def __init__(self, name, pos: Vector, recipe_id: int = 0):
         super().__init__(
             name = name,
             pos = pos,
@@ -38,7 +44,7 @@ class AssemblingMachineMKII(AssemblingMachine):
         )
             
 class AssemblingMachineMKIII(AssemblingMachine):
-    def __init__(self, name, pos: Pos, recipe_id: int = 0):
+    def __init__(self, name, pos: Vector, recipe_id: int = 0):
         super().__init__(
             name = name,
             pos = pos,
@@ -48,7 +54,7 @@ class AssemblingMachineMKIII(AssemblingMachine):
         )
             
 class ReComposingAssembler(AssemblingMachine):
-    def __init__(self, name, pos: Pos, recipe_id: int = 0):
+    def __init__(self, name, pos: Vector, recipe_id: int = 0):
         super().__init__(
             name = name,
             pos = pos,

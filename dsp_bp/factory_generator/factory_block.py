@@ -1,6 +1,7 @@
 from ..enums import Item
-from ..utils import Pos, Yaw
-from ..buildings import ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII, Sorter
+from ..utils import Vector, Yaw
+from ..buildings import ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII
+from ..buildings import Sorter, SorterMKI
 from ..buildings import ArcSmelter, PlaneSmelter, NegentrophySmelter
 from ..buildings import AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler
 from ..buildings import MatrixLab, SelfEvolutionLab
@@ -8,7 +9,7 @@ from ..buildings import OilRefinary
 from ..buildings import ChemicalPlant, QuantumChemicalPlant
 
 class FactoryBlock:
-    
+
     def __init__(self, pos, input_belt_types, output_belt_types, factory_type, width, recipe):
 
         input_belt_pos = pos + FactoryBlock._get_top_belt_offset(factory_type)
@@ -20,9 +21,8 @@ class FactoryBlock:
         factory_pos = pos + FactoryBlock._get_factory_offset(factory_type)
         self.generate_factory(factory_pos, factory_type, width, recipe)
 
-        for i in range(len(input_belt_types)):
-            belt = self.input_belts[i][i]
-            #sorter = Sorter.generate_sorter_from_belt_to_factory("InputSorter:{i}", belt, self.factory)
+        self.generate_input_sorters(input_belt_types)
+        self.generate_output_sorters(output_belt_types)
 
     def generate_input_belts(self, pos, belt_types, width):
         self.input_belts = []
@@ -31,23 +31,23 @@ class FactoryBlock:
                 name = f"FactoryBlock:InputBelt:{i}",
                 pos = pos,
                 yaw = Yaw.East,
-                length = width
+                length = int(width)
             )
             self.input_belts.append(belts)
-            pos += Pos(y = 1)
+            pos += Vector(y = 1)
     
     def generate_output_belts(self, pos, belt_types, width):
         self.output_belts = []
-        pos += Pos(x = width - 1)
+        pos += Vector(x = width - 1)
         for i in range(len(belt_types)):
             belts = belt_types[i].generate_belt(
                 name = "FactoryBlockOutputBelt",
                 pos = pos,
                 yaw = Yaw.West,
-                length = width
+                length = int(width)
             )
             self.output_belts.append(belts)
-            pos -= Pos(y = 1)
+            pos -= Vector(y = 1)
     
     def generate_factory(self, pos, factory_type, width, recipe):
         self.factory = factory_type(
@@ -55,8 +55,25 @@ class FactoryBlock:
             pos = pos
         )
     
-    def generate_input_sorters(self):
-        pass
+    def generate_input_sorters(self, input_belt_types):
+        for i in range(len(input_belt_types)):
+            belt = self.input_belts[i][i]
+            sorter = Sorter.generate_sorter_from_belt_to_factory(
+                name = "InputSorter:{i}",
+                belt = belt,
+                factory = self.factory,
+                sorter_type = SorterMKI
+            )
+    
+    def generate_output_sorters(self, output_belt_types):
+        for i in range(len(output_belt_types)):
+            belt = self.output_belts[i][-1 - i]
+            sorter = Sorter.generate_sorter_from_factory_to_belt(
+                name = "OutputSorter:{i}",
+                belt = belt,
+                factory = self.factory,
+                sorter_type = SorterMKI
+            )
     
     def connect_to_factory_block(factory_block1, factory_block2):
         for i in range(len(factory_block1.input_belts)):
@@ -67,12 +84,12 @@ class FactoryBlock:
     def _get_inserter_offset(factory_type, side, index):
         assert side == "top" or side == "buttom", "Side needs to be \"top\" or \"buttom\""
         if factory_type == Item.ArcSmelter or factory_type == Item.PlaneSmelter or factory_type == Item.NegentrophySmelter:
-            return Pos(
+            return Vector(
                 x = -0.8 + 0.8 * index,
                 y = 1.2 if side == "top" else -1.2
             )
         elif factory_type == Item.AssemblingMachineMKI or factory_type == Item.AssemblingMachineMKII or factory_type == Item.AssemblingMachineMKIII or factory_type == Item.ReComposingAssembler:
-            return Pos(
+            return Vector(
                 x = -0.8 + 0.8 * index,
                 y = 1.2 if side == "buttom" else -1.2    
             )
@@ -122,15 +139,15 @@ class FactoryBlock:
     
     def _get_belt_offset(factory_type, side):
         if side == "top":
-            return Pos(y = self.get_top_belt_y_offset(factory_type))
+            return Vector(y = self.get_top_belt_y_offset(factory_type))
         elif side == "buttom":
-            return Pos(y = self.get_buttom_belt_y_offset(factory_type))
+            return Vector(y = self.get_buttom_belt_y_offset(factory_type))
     
     def _get_top_belt_offset(factory_type):
         if factory_type == ArcSmelter or factory_type == PlaneSmelter or factory_type == NegentrophySmelter:
-            return Pos(y = 2)
+            return Vector(y = 2)
         elif factory_type == AssemblingMachineMKI or factory_type == AssemblingMachineMKII or factory_type == AssemblingMachineMKIII or factory_type == ReComposingAssembler:
-            return Pos(y = 2)
+            return Vector(y = 2)
         elif factory_type == MatrixLab or factory_type == SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
         elif factory_type == OilRefinary:
@@ -142,9 +159,9 @@ class FactoryBlock:
     
     def _get_buttom_belt_offset(factory_type):
         if factory_type == ArcSmelter or factory_type == PlaneSmelter or factory_type == NegentrophySmelter:
-            return Pos(y = -2)
+            return Vector(y = -2)
         elif factory_type == AssemblingMachineMKI or factory_type == AssemblingMachineMKII or factory_type == AssemblingMachineMKIII or factory_type == ReComposingAssembler:
-            return Pos(y = -2)
+            return Vector(y = -2)
         elif factory_type == MatrixLab or factory_type == SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
         elif factory_type == OilRefinary:
@@ -156,9 +173,9 @@ class FactoryBlock:
         
     def _get_factory_offset(factory_type):
         if factory_type == ArcSmelter or factory_type == PlaneSmelter or factory_type == NegentrophySmelter:
-            return Pos(x = 1)
+            return Vector(x = 1)
         elif factory_type == AssemblingMachineMKI or factory_type == AssemblingMachineMKII or factory_type == AssemblingMachineMKIII or factory_type == ReComposingAssembler:
-            return Pos(x = 1)
+            return Vector(x = 1)
         elif factory_type == MatrixLab or factory_type == SelfEvolutionLab:
             assert True, "Matrix labs isn't supported yet"
         elif factory_type == OilRefinary:

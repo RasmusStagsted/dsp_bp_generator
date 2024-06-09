@@ -1,7 +1,135 @@
 import enum
 
-class Recipe(enum.IntEnum):
-    Gear = 5
+class SmeltingRecipe(enum.IntEnum):
+    IronIngot = 1
+    Magent = 2
+    CopperIngot = 3
+    StoneBrick = 4
+    EnergeticGraphite = 17
+    SiliconOre = 34
+    CrystalSilicon = 37
+    Glass = 57
+    HighPuritySilicon = 59
+    Diamond = 60
+    DiamondAdvanced = 61
+    Steel = 63
+    TitaniumIngot = 65
+    TitaniumAlloy = 66
+
+class AssemblingRecipe(enum.IntEnum):
+	Gear = 5
+	MagneticCoil = 6
+	WindTurbine = 7
+	TeslaTower = 8
+	MatrixLab = 10
+	Prism = 11
+	PlasmaExciter = 12
+	WirelessPowerTower = 13
+	OilExtractor = 14
+	OilRefinary = 15
+	HydrogenFuelRod = 19
+	Thruster = 20
+	ReinforcedThruster = 21
+	ChemicalPlant = 22
+	TitaniumCrystal = 26
+	CashmirCrystal = 28
+	CashmirCrystalAdvanced = 29
+	TitaniumGlass = 30
+	ParticleBroadband = 36
+	PlaneFilter = 38
+	MiniatureParticleCollider = 39
+	DeuteronFuelRod = 41
+	AnnihilationConstraintSphere = 42
+	AntimatterFuelRod = 44
+	AssemblingMachineMKI = 45
+	AssemblingMachineMKII = 46
+	AssemblingMachineMKIII = 47
+	MiningMachine = 48
+	WaterPump = 49
+	CircuitBoard = 50
+	Processor = 51
+	QuantumChip = 52
+	MicrocrystallineComponent = 53
+	OrganicCrystal = 54
+	ArcSmelter = 56
+	CrystalSiliconAdvanced = 62
+	ThermalPowerPlant = 64
+	SolarPanel = 67
+	PhotonCombiner = 68
+	PhotonCombinerAdvanced = 69
+	SolarSail = 70
+	EMRailEjector = 71
+	RayReceiver = 72
+	SateliteSubstation = 73
+	Accumulator = 76
+	EnergyExchanger = 77
+	SpaceWraper = 78
+	SpaceWraperAdvanced = 79
+	FrameMaterial = 80
+	DysonSphereComponent = 81
+	VerticalLaunchingSilo = 82
+	DysonSphereRocket = 83
+	ConveyorBeltMKI = 84
+	SorterMKI = 85
+	DepotMK1 = 86
+	Splitter = 87
+	SorterMKII = 88
+	ConveyorBeltMKII = 89
+	DepotMKII = 91
+	ConveyorBeltMKIII = 92
+	PlanetaryLogisticsStation = 93
+	LogisticDrone = 94
+	InterstellarLogisticsStation = 95
+	LogisticsVessel = 96
+	ElectricMotor = 97
+	ParticleContainer = 99
+	ParticleContainerAdvanced = 100
+	GravitationLens = 101
+	SuperMagneticRing = 103
+	Engine = 105
+	ProlifiratorMKI = 106
+	ProlifiratorMKII = 107
+	ProlifiratorMKIII = 108
+	SprayCoater = 109
+	Fractionator = 110
+	ObitalCollector = 111
+	MiniFusionPowerPlant = 113
+	StorageTank = 114
+	PlaneSmelter = 116
+	ItemMonitor = 117
+	GeothermalPowerPlant = 118
+	AdvancedMiningMachine = 119
+	AutomaticPiler = 120
+	LogisticDistributer = 122
+	LogisticBot = 123
+	QuantumChemicalPlant = 124
+	GaussTurrent = 125
+	LaserTurret = 126
+	ImplosionCanon = 127
+	PlasmaTurret = 128
+	MissleTurret = 129
+	JammerTower = 130
+	SignalTower = 131
+	PlanetaryShieldGenerator = 132
+	CombustibleUnit = 133
+	MagnumAmmoBox = 136
+	TitaniumAmmoBox = 137
+	SuperAlloyAmmoBox = 138
+	ShellSet = 139
+	HighExplosiveShellSet = 140
+	CrystalShellSet = 141
+	PlasmaCapsule = 142
+	MissleSet = 144
+	SuperSonicMissleSet = 145
+	Prototype = 147
+	PrecisionDrone = 148
+	AttackDrone = 149
+	Covette = 150
+	Destroyer = 151
+	BattleFieldAnalysisBase = 152
+	SRPlasmaTurret = 157
+	JamingCapsule = 158
+	StackSorter = 160
 
 class BuildingItem(enum.IntEnum):
     ConveyorBeltMKI = 2001
@@ -13,38 +141,38 @@ class BuildingItem(enum.IntEnum):
     SorterMKIII = 2013
     PileSorter = 2014
     
-    Splitter = 2020
+    Splitter = 2020 # TODO implement
     
-    TrafficMonitor = 2030
+    TrafficMonitor = 2030 # TODO implement
     
-    DepotMK1 = 2101
-    DepotMK2 = 2102
+    DepotMK1 = 2101 # TODO implement
+    DepotMK2 = 2102 # TODO implement
     
-    StorageTank = 2106
+    StorageTank = 2106 # TODO implement
     
     TeslaTower = 2201
     WirelessPowerTower = 2202
-    WindTurbine = 2203
-    ThermalPowerPlant = 2204
-    SolarPanel = 2205
-    Accumulator = 2206
+    WindTurbine = 2203 # TODO implement
+    ThermalPowerPlant = 2204 # TODO implement
+    SolarPanel = 2205 # TODO implement
+    Accumulator = 2206 # TODO implement
     
-    MiniFusionPowerPlant = 2211
-    SateliteSubStation = 2212
+    MiniFusionPowerPlant = 2211 # TODO implement
+    SateliteSubstation = 2212
     
     ArcSmelter = 2302
     AssemblingMachineMKI = 2303
     AssemblingMachineMKII = 2304
     AssemblingMachineMKIII = 2305
     
-    OilRefinary = 2308
-    ChemicalPlant = 2309
-    MiniatureParticleCollider = 2310
+    OilRefinary = 2308 # TODO implement
+    ChemicalPlant = 2309 # TODO implement
+    MiniatureParticleCollider = 2310 # TODO implement
     
-    SprayCoater = 2313
-    Fractionator = 2314
+    SprayCoater = 2313 # TODO implement
+    Fractionator = 2314 # TODO implement
     
-    QuantumChemicalPlant = 2317
+    QuantumChemicalPlant = 2317 # TODO implement
 
 class BuildingModel(enum.IntEnum):
     ConveyorBeltMKI = 35
@@ -70,7 +198,7 @@ class BuildingModel(enum.IntEnum):
     OilRefinary = 63
     ChemicalPlant = 64
     
-    SateliteSubStation = 68
+    SateliteSubstation = 68
     MiniatureParticleCollider = 69
     
     WirelessPowerTower = 71

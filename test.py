@@ -23,7 +23,9 @@ def run(cmd, enable_output = False):
     else:
         log_passed(cmd)
 
+run(["python3", "examples/buildings.py"])
 run(["python3", "examples/generate_factory.py"])
+run(["python3", "examples/oil_refinary.py"])
 run(["python3", "examples/parse_edit_and_serialize.py", "--if=input.bp"])
 run(["python3", "examples/parse.py", "--if=input.bp"])
 run(["python3", "examples/sorter_example.py"])

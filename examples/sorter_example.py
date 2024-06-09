@@ -1,4 +1,4 @@
-from dsp_bp.utils import Yaw, Pos
+from dsp_bp.utils import Yaw, Vector
 from dsp_bp.blueprint import Blueprint
 from dsp_bp.blueprint import BlueprintStringHeader
 from dsp_bp.blueprint import BlueprintHeader
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     # Generate three belts on a line, from coordinate x:0, y:3, going east
     input_belts = buildings.ConveyorBeltMKI.generate_belt(
         name = "InputBelt",
-        pos = Pos(0, 4),
+        pos = Vector(0, 4),
         yaw = Yaw.East,
         length = 3
     )
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     # Generate three belts on a line, from coordinate x:2, y:0, going west
     output_belts = buildings.ConveyorBeltMKI.generate_belt(
         name = "OutputBelt",
-        pos = Pos(2, 0),
+        pos = Vector(2, 0),
         yaw = Yaw.West,
         length = 3
     )
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     # Generate an assembling machine at coordinate x:1, y:2
     factory = buildings.AssemblingMachineMKI(
         name = "Factory",
-        pos = Pos(1, 2)
+        pos = Vector(1, 2)
     )
     
     # Generate a sorter picking items from the second piece of the input belt and droping at the assembler
@@ -98,6 +98,7 @@ if __name__ == "__main__":
     if args.output_file == None:
         for building in buildings.Building.buildings:
             print(building)
+        print(output_blueprint_string)
     else:
         with open(args.output_file, "w") as file:
             for building in buildings.Building.buildings:

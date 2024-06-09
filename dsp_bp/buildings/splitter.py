@@ -1,10 +1,10 @@
 from .building import Building
 from .conveyer_belt import ConveyorBelt
-from ..utils import Pos, Yaw
+from ..utils import Vector, Yaw
 from ..enums import BuildingItem, BuildingModel
 
 class Splitter(Building):
-    def __init__(self, name, pos: Pos, yaw: Yaw):
+    def __init__(self, name, pos: Vector, yaw: Yaw):
         super().__init__(name)
         self.pos1 = pos
         self.pos2 = pos
@@ -37,7 +37,7 @@ class Splitter(Building):
             belt.input_from_slot += 1
         
         dx, dy = Yaw.direction_to_unit_vector(belt.yaw)
-        belt.move_relative(Pos(dx * 0.2, dy * 0.2))
+        belt.move_relative(Vector(dx * 0.2, dy * 0.2))
     
     def prioritize_input(self, slot):
         assert False, "Not supported"
@@ -47,3 +47,9 @@ class Splitter(Building):
     
     def set_output_filter(self, slot, item):
         assert False, "Not supported"
+        
+    def get_size():
+        return Vector(2.0, 2.0)
+    
+    def get_offset():
+        return Vector(1.0, 1.0)

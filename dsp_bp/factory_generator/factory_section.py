@@ -1,6 +1,6 @@
 from .factory_line import FactoryLine
 from .belt_router import BeltRouter
-from ..utils import Pos
+from ..utils import Vector
 
 class FactorySection:
     
@@ -9,7 +9,7 @@ class FactorySection:
         self.router_width = 2 * (input_count + output_count + product_count) + 1
         
         # Create factory line
-        factory_line_pos = pos + Pos(x = self.router_width)
+        factory_line_pos = pos + Vector(x = self.router_width)
         self.factory_line = FactoryLine(factory_line_pos, len(selector_belts), product_count, factory_type, recipe, factory_count)
         
         # Create router

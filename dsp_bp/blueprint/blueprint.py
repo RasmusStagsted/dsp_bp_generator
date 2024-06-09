@@ -151,7 +151,7 @@ class Blueprint:
         data = blueprint_areas_data + data
 
         # Serialize blueprint header
-        self.blueprint_header = BlueprintHeader()
+        self.blueprint_header = BlueprintHeader(size)
         blueprint_header_data = self.blueprint_header.serialize().data
         data = blueprint_header_data + data
         if debug:

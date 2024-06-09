@@ -1,16 +1,16 @@
 from .packet import Packet
-from ..utils import Pos
+from ..utils import Vector
 import sys
 
 class BlueprintArea:
 
-    def __init__(self, size: Pos = Pos(), offset: Pos = Pos()):
+    def __init__(self, size: Vector = Vector(), offset: Vector = Vector()):
         self.index = 0
         self.parent_index = -1
         self.tropic_anchor = 0
         self.area_segments = 200
-        self.anchor_local_offset_x = int(offset.x)
-        self.anchor_local_offset_y = int(offset.y)
+        self.anchor_local_offset_x = 0
+        self.anchor_local_offset_y = 0
         self.width = int(size.x)
         self.height = int(size.y)
 
@@ -46,8 +46,8 @@ class BlueprintArea:
             max_x = max(max_x, max(building.pos1.x, building.pos2.x))
             min_y = min(min_y, min(building.pos1.y, building.pos2.y))
             max_y = max(max_y, max(building.pos1.y, building.pos2.y))
-        size = Pos(max_x - min_x + 1, max_y - min_y + 1)
-        offset = Pos((max_x - min_x) // 2, (max_y - min_y) // 2)
+        size = Vector(max_x - min_x + 1, max_y - min_y + 1)
+        offset = Vector((max_x - min_x) // 2, (max_y - min_y) // 2)
         return size, offset
 
     def __str__(self):

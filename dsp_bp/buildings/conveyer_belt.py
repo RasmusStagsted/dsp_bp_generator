@@ -1,9 +1,9 @@
 from .building import Building
-from ..utils import Pos, Yaw
+from ..utils import Vector, Yaw
 from ..enums import BuildingItem, BuildingModel
 
 class ConveyorBelt(Building):
-    def __init__(self, name, pos: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
+    def __init__(self, name, pos: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(name)
         self.pos1 = pos
         self.pos2 = pos
@@ -40,12 +40,12 @@ class ConveyorBelt(Building):
         
         # Move the belt back 0.2 spaces
         dx, dy = Yaw.direction_to_unit_vector(self.yaw)
-        self.move_relative(Pos(-dx * 0.2, -dy * 0.2))
+        self.move_relative(Vector(-dx * 0.2, -dy * 0.2))
 
     def connect_to_sorter(self, sorter):
         pass
 
-    def generate_belt(name, pos, yaw, length: int):
+    def generate_belt(name, pos, yaw, length: int, belt_type):
         
         if type(yaw) != list:
             yaw = [yaw]
@@ -57,7 +57,7 @@ class ConveyorBelt(Building):
         for i in range(len(yaw)):
             dx, dy = Yaw.direction_to_unit_vector(yaw[i])
             for j in range(length[i]):
-                belt = ConveyorBeltMKIII(
+                belt = belt_type(
                     name = f"{name}:{len(belts)}",
                     pos = pos,
                     yaw = yaw[i],
@@ -65,7 +65,7 @@ class ConveyorBelt(Building):
                     output_to_slot = 1
                 )
                 belts.append(belt)
-                pos += Pos(dx, dy)
+                pos += Vector(dx, dy)
             
             if (i != len(yaw) - 1):
                 belt.yaw = Yaw.direction_average(yaw[i], yaw[i + 1])
@@ -73,9 +73,9 @@ class ConveyorBelt(Building):
                 belt.output_object_index = -1
                 belt.output_to_slot = 0
         return belts
-    
+        
 class ConveyorBeltMKI(ConveyorBelt):
-    def __init__(self, name, pos: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
+    def __init__(self, name, pos: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(
             name = name,
             pos = pos,
@@ -86,9 +86,12 @@ class ConveyorBeltMKI(ConveyorBelt):
         )
         self.item_id = BuildingItem.ConveyorBeltMKI
         self.model_index = BuildingModel.ConveyorBeltMKI
+    
+    def generate_belt(name, pos, yaw, length: int):
+        return ConveyorBelt.generate_belt(name, pos, yaw, length, ConveyorBeltMKI)
         
 class ConveyorBeltMKII(ConveyorBelt):
-    def __init__(self, name, pos: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
+    def __init__(self, name, pos: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(
             name = name,
             pos = pos,
@@ -100,8 +103,11 @@ class ConveyorBeltMKII(ConveyorBelt):
         self.item_id = BuildingItem.ConveyorBeltMKII
         self.model_index = BuildingModel.ConveyorBeltMKII
 
+    def generate_belt(name, pos, yaw, length: int):
+        return ConveyorBelt.generate_belt(name, pos, yaw, length, ConveyorBeltMKII)
+        
 class ConveyorBeltMKIII(ConveyorBelt):
-    def __init__(self, name, pos: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
+    def __init__(self, name, pos: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(
             name = name,
             pos = pos,
@@ -112,3 +118,7 @@ class ConveyorBeltMKIII(ConveyorBelt):
         )
         self.item_id = BuildingItem.ConveyorBeltMKIII
         self.model_index = BuildingModel.ConveyorBeltMKIII
+
+    def generate_belt(name, pos, yaw, length: int):
+        return ConveyorBelt.generate_belt(name, pos, yaw, length, ConveyorBeltMKIII)
+        

@@ -1,10 +1,10 @@
 from .building import Building
-from ..utils import Pos, Yaw
+from ..utils import Vector, Yaw
 from ..enums import BuildingItem, BuildingModel
 
 class Sorter(Building):
     
-    def __init__(self, name, pos1: Pos, pos2: Pos, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = -1, input_from_slot: int = -1, output_from_slot: int = -1, input_to_slot: int = -1, output_offset: int = -1, input_offset: int = -1, parameters = []):
+    def __init__(self, name, pos1: Vector, pos2: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = -1, input_from_slot: int = -1, output_from_slot: int = -1, input_to_slot: int = -1, output_offset: int = -1, input_offset: int = -1, parameters = []):
         super().__init__(name)
         self.pos1 = pos1
         self.pos2 = pos2
@@ -28,12 +28,12 @@ class Sorter(Building):
 
     def generate_sorter_from_belt_to_factory(name, belt, factory, sorter_type):
         yaw = Yaw.get_neares_90_degree(belt.pos1, factory.pos1)
-        slot = factory.get_input_slot(belt.pos1)
-        pos = factory.get_pos_from_slot(slot)
+        slot = factory.get_nearest_slot_from_position(belt.pos1)
+        slot_pos = factory.get_position_of_slot(slot)
         return sorter_type(
             name = name,
             pos1 = belt.pos1,
-            pos2 = pos,
+            pos2 = slot_pos,
             yaw = yaw,
             output_object_index = factory.index,
             input_object_index = belt.index,
@@ -48,11 +48,11 @@ class Sorter(Building):
 
     def generate_sorter_from_factory_to_belt(name, factory, belt, sorter_type = None):
         yaw = Yaw.get_neares_90_degree(factory.pos1, belt.pos1)
-        slot = factory.get_input_slot(belt.pos1)
-        pos = factory.get_pos_from_slot(slot)
+        slot = factory.get_nearest_slot_from_position(belt.pos1)
+        slot_pos = factory.get_position_of_slot(slot)
         return sorter_type(
             name = name,
-            pos1 = pos,
+            pos1 = slot_pos,
             pos2 = belt.pos1,
             yaw = yaw,
             output_object_index = belt.index,

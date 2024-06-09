@@ -1,3 +1,3 @@
 from .factory import Factory
 from .item_flow import ItemFlow
-from .recipes import recipes
+from .recipes import Recipe
