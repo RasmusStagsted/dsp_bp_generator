@@ -4,14 +4,19 @@ from ..utils import Vector, Yaw
 from ..enums import BuildingItem, BuildingModel
 
 class Splitter(Building):
-    def __init__(self, name, pos: Vector, yaw: Yaw):
+    
+    # Mode should be one of: 
+    # - BuildingModel.SplitterCross
+    # - BuildingModel.SplitterTwoLayerStraight
+    # - BuildingModel.SplitterTwoLayerCross
+    def __init__(self, name, pos: Vector, yaw: Yaw, mode):
         super().__init__(name)
         self.pos1 = pos
         self.pos2 = pos
         self.yaw = yaw
         self.yaw2 = yaw
         self.item_id = BuildingItem.Splitter
-        self.model_index = BuildingModel.SplitterX
+        self.model_index = mode
         self.output_object_index = -1
         self.input_object_index = -1
         self.output_to_slot = 14

@@ -178,9 +178,9 @@ class BuildingModel(enum.IntEnum):
     ConveyorBeltMKI = 35
     ConveyorBeltMKII = 36
     ConveyorBeltMKIII = 37
-    SplitterX = 38
-    SplitterK = 39
-    SplitterI = 40
+    SplitterCross = 38
+    SplitterTwoLayerStraight = 39
+    SplitterTwoLayerCross = 40
     SorterMKI = 41
     SorterMKII = 42
     SorterMKIII = 43

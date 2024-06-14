@@ -18,7 +18,7 @@ if __name__ == "__main__":
 
     # Generate the factory
     factory = Factory()
-    output_flow = [ItemFlow("SorterMKI", 2.0)]
+    output_flow = [ItemFlow("IronIngot", 1.0)]
     factory.set_tartget_output_flow(output_flow, debug = True)
     factory.generate_factories(debug = True)
     blueprint = Blueprint()

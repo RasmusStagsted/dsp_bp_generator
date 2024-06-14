@@ -1,31 +1,48 @@
 #import Buildings
 from ..utils import Vector, Yaw
 from ..buildings import ConveyorBeltMKI, Splitter
+from ..enums import BuildingModel
 
 class BeltRouter:
 
-    def __init__(self, pos, input_count, output_count, product_count, selector_belt_indicies, belt_length):
+    def __init__(self, pos, input_count, output_count, product_count, belt_routing, belt_length):
+        self.width = 2 * (input_count + output_count + product_count)
+        print("Belt router width:", self.width)
         self.generate_splitters(pos, input_count, output_count, product_count)
         self.generate_input_belts(pos, input_count, belt_length)
         self.generate_output_belts(pos, input_count, output_count, product_count, belt_length)
-        self.generate_selector_belts(pos, input_count, output_count, product_count, selector_belt_indicies)
-        self.generate_production_belts(pos, input_count, output_count, product_count)
+        self.generate_router_belts(pos, belt_routing)
         
     def generate_splitters(self, pos, input_count, output_count, product_count):
         self.input_splitters = []
         for i in range(input_count):
             temp_pos = Vector(pos.x + 2 * i, pos.y)
-            input_splitter = Splitter(f"InputSplitter:{i}", temp_pos, Yaw.North)
+            input_splitter = Splitter(
+                name = f"InputSplitter:{i}",
+                pos = temp_pos,
+                yaw = Yaw.North,
+                mode = BuildingModel.SplitterTwoLayerStraight
+            )
             self.input_splitters.append(input_splitter)
         self.output_splitters = []
         for i in range(output_count):
             temp_pos = Vector(pos.x + 2 * (i + input_count), pos.y)
-            output_splitter = Splitter(f"OutputSplitter:{i}", temp_pos, Yaw.North)
+            output_splitter = Splitter(
+                name = f"OutputSplitter:{i}",
+                pos = temp_pos,
+                yaw = Yaw.North,
+                mode = BuildingModel.SplitterTwoLayerStraight
+            )
             self.output_splitters.append(output_splitter)
         self.product_splitters = []
         for i in range(product_count):
             temp_pos = Vector(pos.x + 2 * (i + input_count + output_count), pos.y)
-            product_splitter = Splitter(f"ProductSplitter:{i}", temp_pos, Yaw.North)
+            product_splitter = Splitter(
+                name = f"ProductSplitter:{i}",
+                pos = temp_pos,
+                yaw = Yaw.North,
+                mode = BuildingModel.SplitterTwoLayerStraight
+            )
             self.product_splitters.append(product_splitter)
         self.splitters = self.input_splitters + self.output_splitters + self.product_splitters
         
@@ -61,34 +78,42 @@ class BeltRouter:
             self.output_belts.append(belt_end)
             splitter = self.product_splitters[i]
             splitter.connect_to_belt(belt_start)
-            
-    def generate_selector_belts(self, pos, input_count, output_count, product_count, selector_belt_indicies):
+    
+    def generate_router_belts(self, pos, routes):
+        self.product_belts = []
         self.selector_belts = []
-        for i in range(len(selector_belt_indicies)):
-            ### Generate belt
-            start_pos = Vector(pos.x + 2 * selector_belt_indicies[i], pos.y)
-            yaw = [Yaw.North, Yaw.East]
-            length = [1 + len(selector_belt_indicies) - i, 1 + (input_count + output_count + product_count - selector_belt_indicies[i]) * 2]
-            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:SelectorBelts:{i}", start_pos, yaw, length)
-            belt_start = belts[0]
-            belt_end = belts[-1]
-            ### Connect belt to splitter
-            splitter = self.splitters[selector_belt_indicies[i]]
-            splitter.connect_to_belt(belt_start)
-            self.selector_belts.append(belt_end)
-        
-    def generate_production_belts(self, pos, input_count, output_count, product_count):
-
-        self.production_belts = []
-        for i in range(product_count):
-            ### Generate west bounding belt
-            temp_pos = Vector(pos.x + 2 * (input_count + output_count + product_count), pos.y - 2 - i)
-            yaw = [Yaw.West, Yaw.North]
-            length = [2 + 2 * i, 3 + i]
-            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:ProductionBelt:{i}", temp_pos, yaw, length)
-            belt_start = belts[0]
-            belt_end = belts[-1]
-            ### Connect belt to splitter
-            splitter = self.product_splitters[-i]
-            belt_end.connect_to_splitter(splitter)
-            self.production_belts.append(belt_start)
+        for route in routes:
+            if route.direction == "input":
+                if route.placement == "top":
+                    start_pos = pos + Vector(self.width, 2 + route.belt_index)
+                    yaw = [Yaw.West, Yaw.South]
+                else:
+                    start_pos = pos + Vector(self.width, -2 - route.belt_index)
+                    yaw = [Yaw.West, Yaw.North]
+                name = "Productbelt"
+                length = [self.width - 2 * route.router_index, 3 + route.belt_index]
+                print(length)
+                self.product_belts.append(ConveyorBeltMKI.generate_belt(name, start_pos, yaw, length))
+                splitter = self.splitters[route.router_index]
+                self.product_belts[-1][-1].connect_to_splitter(splitter)
+                
+                for i in range(route.belt_index):
+                    self.product_belts[-1][-2-i].move_relative(Vector(z = 0.0))
+                
+            elif route.direction == "output":
+                if route.placement == "top":
+                    start_pos = pos + Vector(route.router_index * 2, 0)
+                    yaw = [Yaw.North, Yaw.East]
+                else:
+                    start_pos = pos + Vector(route.router_index * 2, 0)
+                    yaw = [Yaw.South, Yaw.East]
+                
+                name = "SelectorBelt",
+                length = [2 + route.belt_index, self.width - 2 * route.router_index]
+                self.selector_belts.append(ConveyorBeltMKI.generate_belt(name, start_pos, yaw, length))
+                splitter = self.splitters[route.router_index]
+                splitter.connect_to_belt(self.selector_belts[-1][0])
+                
+                for i in range(route.belt_index):
+                    print(i, 2 + i)
+                    self.selector_belts[-1][2 + i].move_relative(Vector(z = 0.3))

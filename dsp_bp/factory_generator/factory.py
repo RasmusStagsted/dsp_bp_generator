@@ -74,62 +74,28 @@ class Factory:
         y = 0
         
         for product in self.target_output_flow:
-            assert product.name in Recipe.recipes.keys(), f"Recipe not supported ({product.name})"
+            
+            recipe = Recipe.select(product.name)
 
-            if product == self.target_output_flow[-1]:
-                continue
+            # If the product is a raw material, skip it
             if Recipe.recipes[product.name] == None:
                 continue
-        
-            factory_type = self.get_factory(Recipe.recipes[product.name]["tool"])
             
-            recipe_id = Recipe.recipes[product.name]["recipe_id"]
-            assert recipe_id != None, f"Recipe not supported ({product.name})"
-            
-            ingredients = product.get_needed_ingredients(self.prolifirator)
-            print(ingredients)
-            
-            input_indicies = []
-            for ingredient in product.get_ingredients(self.prolifirator):
-                for i in range(len(self.main_belts)):
-                    if self.main_belts[i].name == ingredient.name:
-                        input_indicies.append(i)
-            
-            if debug:
-                print("Generate factory section:")
-                print(f"\tx: {0}")
-                print(f"\ty: {y}")
-                print(f"\tInputs: {input_count}")
-                print(f"\tOutputs: {output_count}")
-                print(f"\tBelt Selectors: {input_indicies}")
-                print(f"\tProduct count: {1}")
-                print(f"\tOutputs: {product.name}")
-            
-            exit(0)    
-            #factoryline_inputs = 
-            #factoryline_outputs = 
-                
             self.factories.append(
                 FactorySection(
                     pos = Vector(0, y),
                     input_count = input_count,
                     output_count = output_count,
-                    factory_line_inputs = factoryline_inputs,
-                    factory_line_outputs = factoryline_outputs,
-                    selector_belts = input_indicies,
-                    product_count = 1,
-                    factory_type = factory_type,
-                    recipe = recipe_id,
-                    factory_count = ceil(product.count_pr_sec * Recipe.recipes[product.name]["time"])
+                    product = product,
+                    recipe = recipe
                 )
             )
             
             if len(self.factories) > 1:
                 self.factories[-2].connect_to_section(self.factories[-1])
             
-            output_count += 1
-            factory_height = 3
-            y += factory_height + len(input_indicies) + 1
+            output_count += self.factories[-1].product_count
+            y += self.factories[-1].height
 
     def get_factory(self, factory_type):
         factories = {

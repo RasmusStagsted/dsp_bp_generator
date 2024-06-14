@@ -1,7 +1,8 @@
-from ..buildings import TeslaTower, ArcSmelter, ConveyorBeltMKI
+from ..buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI
 from ..enums import Item
 from ..utils import Yaw, Vector
 from .factory_block import FactoryBlock
+from .recipes import Recipe
 
 import math
 
@@ -16,10 +17,10 @@ A factory block consist of:
 
 class FactoryLine:
     
-    def __init__(self, pos, input_count, output_count, factory_type, recipe, factory_count):
+    def __init__(self, pos, input_count, output_count, recipe, factory_count):
         
         self.height = 6
-        self._factory_type = factory_type
+        self._factory_type = FactoryLine.select_factory(recipe)
         self.block_width = self._get_factory_width()
         
         # Generate factory_blocks
@@ -28,7 +29,7 @@ class FactoryLine:
             temp_pos = pos + Vector(x = i * self.block_width)
             input_belt_types = [ConveyorBeltMKI for i in range(input_count)]
             output_belt_types = [ConveyorBeltMKI for i in range(output_count)]
-            factory_block = FactoryBlock(temp_pos, input_belt_types, output_belt_types, factory_type, self.block_width, recipe)
+            factory_block = FactoryBlock(temp_pos, input_belt_types, output_belt_types, self._factory_type, self.block_width, recipe)
             factory_blocks.append(factory_block)
         
         # Connect factory_blocks
@@ -40,6 +41,15 @@ class FactoryLine:
     
     def _get_factory_width(self):
         return self._factory_type.get_size().x
+    
+    def select_factory(recipe):
+        if recipe["tool"] == "Smelting Facility":
+            return ArcSmelter
+        elif recipe["tool"] == "Assebling Machine":
+            return AssemblingMachineMKI
+        else:
+            assert False, f"Unknown tool: {recipe['tool']}"
+
         
 class FactoryLine2:
 

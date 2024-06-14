@@ -53,6 +53,9 @@ class ConveyorBelt(Building):
             length = [length]
         assert len(yaw) == len(length), "\"yaw\" and \"length\" must have the same length"
         
+        for l in length:
+            assert l > 0, "Belt length is less than one!"
+        
         belts = []
         for i in range(len(yaw)):
             dx, dy = Yaw.direction_to_unit_vector(yaw[i])
