@@ -37,9 +37,9 @@ Name: {self.name}
 ====================
 Index: {self.index}
 Area index: {self.area_index}
-position 1 x: {self.pos1.x}
-position 1 y: {self.pos1.y}
-position 1 z: {self.pos1.z}
+position 1 x: {self.pos.x}
+position 1 y: {self.pos.y}
+position 1 z: {self.pos.z}
 position 2 x: {self.pos2.x}
 position 2 y: {self.pos2.y}
 position 2 z: {self.pos2.z}
@@ -120,4 +120,4 @@ class Factory3x3(Factory):
         elif slot == 11:
             delta_pos = Vector(x = -0.8, y = 0.75)
 
-        return self.pos1 + delta_pos
+        return self.pos + delta_pos

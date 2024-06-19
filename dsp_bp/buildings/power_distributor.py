@@ -5,7 +5,7 @@ from ..enums import BuildingItem, BuildingModel
 class PowerDistributor(Building):
     def __init__(self, name, pos):
         super().__init__(name)
-        self.pos1 = pos
+        self.pos = pos
         self.pos2 = pos
         self.yaw = Yaw.North
         self.yaw2 = Yaw.North

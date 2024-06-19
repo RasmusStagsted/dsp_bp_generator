@@ -8,3 +8,4 @@ from .smelter import ArcSmelter, PlaneSmelter, NegentrophySmelter
 from .lab import MatrixLab, SelfEvolutionLab
 from .oil_refinary import OilRefinary
 from .chemical_plant import ChemicalPlant, QuantumChemicalPlant
+from .depot import DepotMKI, DepotMKII, LogisticDistributor

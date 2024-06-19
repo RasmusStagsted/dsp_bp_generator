@@ -9,7 +9,7 @@ class BlueprintBuilding:
     def __init__(self):
         self.index = 0
         self.area_index = 0
-        self.pos1 = Vector()
+        self.pos = Vector()
         self.pos2 = Vector()
         self.yaw = 0
         self.yaw2 = 0
@@ -29,17 +29,17 @@ class BlueprintBuilding:
         self.parameters = []
     
     def move_relative(self, pos: Vector):
-        self.pos1.x += pos.x
-        self.pos1.y += pos.y
-        self.pos1.z += pos.z
+        self.pos.x += pos.x
+        self.pos.y += pos.y
+        self.pos.z += pos.z
         self.pos2.x += pos.x
         self.pos2.y += pos.y
         self.pos2.z += pos.z
 
     def move_absolute(self, pos: Vector):
-        self.pos1.x = pos.x
-        self.pos1.y = pos.y
-        self.pos1.z = pos.z
+        self.pos.x = pos.x
+        self.pos.y = pos.y
+        self.pos.z = pos.z
         self.pos2.x = pos.x
         self.pos2.y = pos.y
         self.pos2.z = pos.z
@@ -57,9 +57,9 @@ class BlueprintBuildingV1(BlueprintBuilding):
         super().__init__()
         self.index = building.index
         self.area_index = building.area_index
-        self.pos1.x = building.pos1.x
-        self.pos1.y = building.pos1.y
-        self.pos1.z = building.pos1.z
+        self.pos.x = building.pos.x
+        self.pos.y = building.pos.y
+        self.pos.z = building.pos.z
         self.pos2.x = building.pos2.x
         self.pos2.y = building.pos2.y
         self.pos2.z = building.pos2.z
@@ -88,9 +88,9 @@ class BlueprintBuildingV1(BlueprintBuilding):
         start_size = len(packet.data)
         self.index = packet.parse_int32()
         self.area_index = packet.parse_int8()
-        self.pos1.x = packet.parse_float32()
-        self.pos1.y = packet.parse_float32()
-        self.pos1.z = packet.parse_float32()
+        self.pos.x = packet.parse_float32()
+        self.pos.y = packet.parse_float32()
+        self.pos.z = packet.parse_float32()
         self.pos2.x = packet.parse_float32()
         self.pos2.y = packet.parse_float32()
         self.pos2.z = packet.parse_float32()
@@ -119,9 +119,9 @@ class BlueprintBuildingV1(BlueprintBuilding):
         packet = Packet()
         packet.serialize_int32(self.index)
         packet.serialize_int8(self.area_index)
-        packet.serialize_float32(self.pos1.x)
-        packet.serialize_float32(self.pos1.y)
-        packet.serialize_float32(self.pos1.z)
+        packet.serialize_float32(self.pos.x)
+        packet.serialize_float32(self.pos.y)
+        packet.serialize_float32(self.pos.z)
         packet.serialize_float32(self.pos2.x)
         packet.serialize_float32(self.pos2.y)
         packet.serialize_float32(self.pos2.z)
@@ -157,9 +157,9 @@ Binary data: {packet.data}
 ====================
 Index: {self.index}
 Area index: {self.area_index}
-position 1 x: {self.pos1.x}
-position 1 y: {self.pos1.y}
-position 1 z: {self.pos1.z}
+position 1 x: {self.pos.x}
+position 1 y: {self.pos.y}
+position 1 z: {self.pos.z}
 position 2 x: {self.pos2.x}
 position 2 y: {self.pos2.y}
 position 2 z: {self.pos2.z}
@@ -187,14 +187,13 @@ class BlueprintBuildingV2(BlueprintBuilding):
 
     def __init__(self, building):
         super().__init__()
-        asldkfjh
         self.dummy1 = -100
         self.dummy2 = 0
         self.index = building.index
         self.area_index = building.area_index
-        self.pos1.x = building.pos1.x
-        self.pos1.y = building.pos1.y
-        self.pos1.z = building.pos1.z
+        self.pos.x = building.pos.x
+        self.pos.y = building.pos.y
+        self.pos.z = building.pos.z
         self.pos2.x = building.pos2.x
         self.pos2.y = building.pos2.y
         self.pos2.z = building.pos2.z
@@ -223,9 +222,9 @@ class BlueprintBuildingV2(BlueprintBuilding):
         self.dummy1 = packet.parse_int32()
         self.index = packet.parse_int32()
         self.area_index = packet.parse_int8()
-        self.pos1.x = packet.parse_float32()
-        self.pos1.y = packet.parse_float32()
-        self.pos1.z = packet.parse_float32()
+        self.pos.x = packet.parse_float32()
+        self.pos.y = packet.parse_float32()
+        self.pos.z = packet.parse_float32()
         self.pos2.x = packet.parse_float32()
         self.pos2.y = packet.parse_float32()
         self.pos2.z = packet.parse_float32()
@@ -256,9 +255,9 @@ class BlueprintBuildingV2(BlueprintBuilding):
         packet.serialize_int32(self.dummy1)
         packet.serialize_int32(self.index)
         packet.serialize_int8(self.area_index)
-        packet.serialize_float32(self.pos1.x)
-        packet.serialize_float32(self.pos1.y)
-        packet.serialize_float32(self.pos1.z)
+        packet.serialize_float32(self.pos.x)
+        packet.serialize_float32(self.pos.y)
+        packet.serialize_float32(self.pos.z)
         packet.serialize_float32(self.pos2.x)
         packet.serialize_float32(self.pos2.y)
         packet.serialize_float32(self.pos2.z)
@@ -284,7 +283,6 @@ class BlueprintBuildingV2(BlueprintBuilding):
         return packet
 
     def __str__(self):
-        asdfas
         packet = self.serialize()
         string = f"""
 Blue Print Building:
@@ -297,9 +295,9 @@ Binary data: {packet.data}
 Dummy 1: {self.dummy1}
 Index: {self.index}
 Area index: {self.area_index}
-position 1 x: {self.pos1.x}
-position 1 y: {self.pos1.y}
-position 1 z: {self.pos1.z}
+position 1 x: {self.pos.x}
+position 1 y: {self.pos.y}
+position 1 z: {self.pos.z}
 position 2 x: {self.pos2.x}
 position 2 y: {self.pos2.y}
 position 2 z: {self.pos2.z}

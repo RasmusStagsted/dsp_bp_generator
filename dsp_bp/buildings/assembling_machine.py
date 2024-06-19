@@ -5,7 +5,7 @@ from ..enums import BuildingItem, BuildingModel
 class AssemblingMachine(Factory3x3):
     def __init__(self, name, pos: Vector, item_id: BuildingItem, model_index: int, recipe_id: int = 0):
         super().__init__(name)
-        self.pos1 = pos
+        self.pos = pos
         self.pos2 = pos
         self.yaw = Yaw.North
         self.yaw2 = Yaw.North

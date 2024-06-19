@@ -75,6 +75,8 @@ class FactorySection:
             )
         ]
         
+        
+        
         return belts
     
     def connect_to_factory_line(self, factory_input_count, factory_output_count):

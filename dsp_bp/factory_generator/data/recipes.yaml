@@ -16,7 +16,6 @@ FireIce:
 Log:
 PlantFuel:
 
-StroneBrick:
 Graphene:
 CarbonNanotube:
 Plastic:
@@ -202,6 +201,15 @@ TitaniumGlass:
   time: 5
   tool: Assembling machine
   recipe_id: 30
+SiliconOreAdvanced:
+  name: Silicon Ore
+  input_items:
+    Stone: 10
+  output_items:
+    SiliconOre: 1
+  time: 1
+  tool: Smelting Facility
+  recipe_id: 34
 ParticleBroadband:
   name: Particle Broadband
   input_items:
@@ -484,9 +492,17 @@ SorterMKI:
   output_items:
     SorterMKI: 2
   time: 1
-  tool: Assembing machine
+  tool: Assembling machine
   recipe_id: 85
-DepotMK1:
+DepotMKI:
+  name: Depot MK.I
+  input_items:
+    IronIngot: 4
+    StoneBrick: 4
+  output_items:
+    DepotMKI: 1
+  time: 2
+  tool: Assembling machine
   recipe_id: 86
 Splitter:
   recipe_id: 87
@@ -498,7 +514,7 @@ SorterMKII:
   output_items:
     SorterMKII: 2
   time: 1
-  tool: Assembing machine
+  tool: Assembling machine
   recipe_id: 88
 ConveyorBeltMKII:
   recipe_id: 89
@@ -510,7 +526,7 @@ SorterMKIII:
   output_items:
     SorterMKIII: 2
   time: 1
-  tool: Assembing machine
+  tool: Assembling machine
   recipe_id: 90
 DepotMKII:
   recipe_id: 91
@@ -628,7 +644,16 @@ AdvancedMiningMachine:
   recipe_id: 119
 AutomaticPiler:
   recipe_id: 120
-LogisticDistributer:
+LogisticDistributor:
+  name: Logistic Distributor
+  input_items:
+    IronIngot: 8
+    PlasmaExciter: 4
+    Processor: 4
+  output_items:
+    LogisticDistributor: 1
+  time: 8
+  tool: Assembling machine
   recipe_id: 122
 LogisticBot:
   recipe_id: 123

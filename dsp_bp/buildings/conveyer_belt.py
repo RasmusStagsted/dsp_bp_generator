@@ -5,7 +5,7 @@ from ..enums import BuildingItem, BuildingModel
 class ConveyorBelt(Building):
     def __init__(self, name, pos: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(name)
-        self.pos1 = pos
+        self.pos = pos
         self.pos2 = pos
         self.yaw = yaw
         self.yaw2 = yaw
@@ -18,7 +18,7 @@ class ConveyorBelt(Building):
         
     def connect_to_belt(belt1, belt2):
         dx, dy = Yaw.direction_to_unit_vector(belt1.yaw)
-        if ((int(belt1.pos1.x + dx) == belt2.pos1.x) and (int(belt1.pos1.y + dy) == belt2.pos1.y) and belt1.yaw == belt2.yaw):
+        if ((int(belt1.pos.x + dx) == belt2.pos.x) and (int(belt1.pos.y + dy) == belt2.pos.y) and belt1.yaw == belt2.yaw):
             belt1.output_object_index = belt2.index
             belt1.output_to_slot = 1
         else:
@@ -35,7 +35,7 @@ class ConveyorBelt(Building):
             self.output_to_slot = 2
         else:
             self.output_to_slot = 0
-        if self.pos1.z == 1:
+        if self.pos.z == 1:
             self.output_to_slot += 1
         
         # Move the belt back 0.2 spaces

@@ -42,10 +42,10 @@ class BlueprintArea:
         min_y = 0x7fff
         max_y = -0x7fff
         for building in buildings:
-            min_x = min(min_x, min(building.pos1.x, building.pos2.x))
-            max_x = max(max_x, max(building.pos1.x, building.pos2.x))
-            min_y = min(min_y, min(building.pos1.y, building.pos2.y))
-            max_y = max(max_y, max(building.pos1.y, building.pos2.y))
+            min_x = min(min_x, min(building.pos.x, building.pos2.x))
+            max_x = max(max_x, max(building.pos.x, building.pos2.x))
+            min_y = min(min_y, min(building.pos.y, building.pos2.y))
+            max_y = max(max_y, max(building.pos.y, building.pos2.y))
         size = Vector(max_x - min_x + 1, max_y - min_y + 1)
         offset = Vector((max_x - min_x) // 2, (max_y - min_y) // 2)
         return size, offset

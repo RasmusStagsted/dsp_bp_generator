@@ -4,7 +4,7 @@ from ..utils import Vector, Yaw
 class ChemicalPlant(Factory):
     def __init__(self, name, pos: Vector, yaw: Yaw, recipe_id: int = 0):
         super().__init__(name)
-        self.pos1 = pos
+        self.pos = pos
         self.pos2 = pos
         self.yaw = yaw
         self.yaw2 = yaw
@@ -17,8 +17,8 @@ class ChemicalPlant(Factory):
         self.parameters = [0]
 
     def get_slot_from_pos(self, pos):
-        dx = pos.x - self.pos1.x
-        dy = pos.y - self.pos1.y
+        dx = pos.x - self.pos.x
+        dy = pos.y - self.pos.y
 
         if dx < -0.5:
             if dy < -0.5:

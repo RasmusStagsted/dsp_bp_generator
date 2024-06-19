@@ -33,7 +33,7 @@ class OilRefinary(Factory):
 
     def __init__(self, name, pos: Vector, recipe_id: int = 0):
         super().__init__(name)
-        self.pos1 = pos
+        self.pos = pos
         self.pos2 = pos
         self.yaw = Yaw.North
         self.yaw2 = Yaw.North
@@ -68,4 +68,4 @@ class OilRefinary(Factory):
             delta_pos = Vector(x = 0.0, y = -2.862)
         elif slot == 8:
             delta_pos = Vector(x = 0.9, y = -2.862)
-        return delta_pos + self.pos1
+        return delta_pos + self.pos

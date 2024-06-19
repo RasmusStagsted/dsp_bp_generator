@@ -11,7 +11,7 @@ class Splitter(Building):
     # - BuildingModel.SplitterTwoLayerCross
     def __init__(self, name, pos: Vector, yaw: Yaw, mode):
         super().__init__(name)
-        self.pos1 = pos
+        self.pos = pos
         self.pos2 = pos
         self.yaw = yaw
         self.yaw2 = yaw
@@ -38,7 +38,7 @@ class Splitter(Building):
             belt.input_from_slot = 0
         else:
             belt.input_from_slot = 2
-        if belt.pos1.z == 1:
+        if belt.pos.z == 1:
             belt.input_from_slot += 1
         
         dx, dy = Yaw.direction_to_unit_vector(belt.yaw)
