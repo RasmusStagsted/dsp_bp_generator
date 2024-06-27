@@ -7,7 +7,7 @@ class BeltRouter:
 
     def __init__(self, pos, input_count, output_count, product_count, belt_routing, belt_length):
         self.width = 2 * (input_count + output_count + product_count)
-        print("Belt router width:", self.width)
+        
         self.generate_splitters(pos, input_count, output_count, product_count)
         self.generate_input_belts(pos, input_count, belt_length)
         self.generate_output_belts(pos, input_count, output_count, product_count, belt_length)
@@ -83,16 +83,15 @@ class BeltRouter:
         self.product_belts = []
         self.selector_belts = []
         for route in routes:
-            if route.direction == "input":
+            if route.direction == "product":
                 if route.placement == "top":
                     start_pos = pos + Vector(self.width, 2 + route.belt_index)
                     yaw = [Yaw.West, Yaw.South]
                 else:
-                    start_pos = pos + Vector(self.width, -2 - route.belt_index)
+                    start_pos = pos + Vector(self.width - 1, -2 - route.belt_index)
                     yaw = [Yaw.West, Yaw.North]
                 name = "Productbelt"
-                length = [self.width - 2 * route.router_index, 3 + route.belt_index]
-                print(length)
+                length = [self.width - 1 - 2 * route.router_index, 3 + route.belt_index]
                 self.product_belts.append(ConveyorBeltMKI.generate_belt(name, start_pos, yaw, length))
                 splitter = self.splitters[route.router_index]
                 self.product_belts[-1][-1].connect_to_splitter(splitter)
@@ -100,7 +99,11 @@ class BeltRouter:
                 for i in range(route.belt_index):
                     self.product_belts[-1][-2-i].move_relative(Vector(z = 0.0))
                 
-            elif route.direction == "output":
+                # Raise belt to allow crossing belts to go under
+                for i in range(route.belt_index):
+                    self.product_belts[-1][-3 - i].move_relative(Vector(z = 0.3))
+                
+            elif route.direction == "ingredient":
                 if route.placement == "top":
                     start_pos = pos + Vector(route.router_index * 2, 0)
                     yaw = [Yaw.North, Yaw.East]
@@ -114,6 +117,6 @@ class BeltRouter:
                 splitter = self.splitters[route.router_index]
                 splitter.connect_to_belt(self.selector_belts[-1][0])
                 
+                # Raise belt to allow crossing belts to go under
                 for i in range(route.belt_index):
-                    print(i, 2 + i)
                     self.selector_belts[-1][2 + i].move_relative(Vector(z = 0.3))

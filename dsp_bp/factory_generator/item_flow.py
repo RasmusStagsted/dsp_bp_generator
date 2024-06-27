@@ -6,6 +6,9 @@ class ItemFlow:
         self.name = name
         self.count_pr_sec = count_pr_sec
 
+    def select_recipe(self, item_name):
+        return Recipe.select(item_name)
+
     def get_needed_ingredients(self, prolifirator = None):
         
         if prolifirator == "Mk.I":
@@ -17,27 +20,30 @@ class ItemFlow:
         else:
             scale = 1
 
-        recipe = Recipe.select(self.name)
+        if not 'recipe' in vars(self):
+            print(self.name)
+            self.recipe = self.select_recipe(self.name)
             
-        if recipe == None: # Assumes that this is a raw material
+        if self.recipe == None: # Assumes that this is a raw material
             return []
 
         ingredients = []
 
-        for input_item, input_item_count in recipe["input_items"].items():
-            ingredients.append(ItemFlow(input_item, input_item_count * self.count_pr_sec * scale / recipe["output_items"][self.name]))
+        for input_item, input_item_count in self.recipe["input_items"].items():
+            ingredients.append(ItemFlow(input_item, input_item_count * self.count_pr_sec * scale / self.recipe["output_items"][self.name]))
 
         return ingredients
     
     def get_products(self):
         
-        recipe = Recipe.select(self.name)
+        if not 'recipe' in vars(self):
+            self.recipe = self.select_recipe(self.name)
         
-        if recipe == None: # Assumes that this is a raw material
+        if self.recipe == None: # Assumes that this is a raw material
             return []
 
         products = []
-        for output_item, output_item_count in recipe["output_items"].items():
-            products.append(ItemFlow(output_item, output_item_count * self.count_pr_sec * scale / recipe["output_items"][self.name]))
+        for output_item, output_item_count in self.recipe["output_items"].items():
+            products.append(ItemFlow(output_item, output_item_count * self.count_pr_sec / self.recipe["output_items"][self.name]))
 
         return products

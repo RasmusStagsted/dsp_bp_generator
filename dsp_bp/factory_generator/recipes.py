@@ -24,8 +24,13 @@ class Recipe:
         else:
             raise FileNotFoundError(f'{filename} not found in package')
 
-    def select(recipe):
-        return Recipe.recipes[recipe]
+    def select(item_name):
+        for name in Recipe.recipes.keys():
+            if item_name in name:
+                print(name)
+        if (item_name + "Advanced") in Recipe.recipes.keys():
+            print(1)
+        return Recipe.recipes[item_name]
 
 Recipe.recipes = Recipe.load_from_yaml("data/recipes.yaml")
 

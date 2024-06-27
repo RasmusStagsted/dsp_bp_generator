@@ -97,9 +97,9 @@ if __name__ == "__main__":
     #    sorter_type = buildings.SorterMKI,
     #)
 
-    buildings.Sorter.generate_sorter_from_factory_to_belt(
+    buildings.Sorter.generate_sorter_from_building_to_belt(
         name = "OutputSorter",
-        factory = refinary,
+        building = refinary,
         belt = output_belt[0],
         sorter_type = buildings.SorterMKI,
     )

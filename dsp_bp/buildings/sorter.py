@@ -26,16 +26,16 @@ class Sorter(Building):
     def set_filter(self, item):
         assert False, "Not supported"
 
-    def generate_sorter_from_belt_to_factory(name, belt, factory, sorter_type):
-        yaw = Yaw.get_neares_90_degree(belt.pos, factory.pos)
-        slot = factory.get_nearest_slot_from_position(belt.pos)
-        slot_pos = factory.get_position_of_slot(slot)
+    def generate_sorter_from_belt_to_building(name, belt, building, sorter_type):
+        yaw = Yaw.get_neares_90_degree(belt.pos, building.pos)
+        slot = building.get_nearest_slot_from_position(belt.pos)
+        slot_pos = building.get_position_of_slot(slot)
         return sorter_type(
             name = name,
             pos = belt.pos,
             pos2 = slot_pos,
             yaw = yaw,
-            output_object_index = factory.index,
+            output_object_index = building.index,
             input_object_index = belt.index,
             output_to_slot = slot,
             input_from_slot = -1,
@@ -46,17 +46,17 @@ class Sorter(Building):
             parameters = [1]
         )
 
-    def generate_sorter_from_factory_to_belt(name, factory, belt, sorter_type = None):
-        yaw = Yaw.get_neares_90_degree(factory.pos, belt.pos)
-        slot = factory.get_nearest_slot_from_position(belt.pos)
-        slot_pos = factory.get_position_of_slot(slot)
+    def generate_sorter_from_building_to_belt(name, building, belt, sorter_type = None):
+        yaw = Yaw.get_neares_90_degree(building.pos, belt.pos)
+        slot = building.get_nearest_slot_from_position(belt.pos)
+        slot_pos = building.get_position_of_slot(slot)
         return sorter_type(
             name = name,
             pos = slot_pos,
             pos2 = belt.pos,
             yaw = yaw,
             output_object_index = belt.index,
-            input_object_index = factory.index,
+            input_object_index = building.index,
             output_to_slot = -1,
             input_from_slot = slot,
             output_from_slot = 0,
@@ -66,20 +66,20 @@ class Sorter(Building):
             parameters = [1]
         )
 
-    def generate_sorter_from_factory_to_factory(name, factory_1, factory_2, sorter_type = None):
+    def generate_sorter_from_building_to_building(name, building_1, building_2, sorter_type = None):
         # Only one sorter can be generated from one factory to another
-        yaw = Yaw.get_neares_90_degree(factory_1.pos, factory_2.pos)
-        slot_1 = factory_1.get_nearest_slot_from_position(factory_2.pos)
-        slot_2 = factory_2.get_nearest_slot_from_position(factory_1.pos)
-        slot_1_pos = factory_1.get_position_of_slot(slot_1)
-        slot_2_pos = factory_2.get_position_of_slot(slot_2)
+        yaw = Yaw.get_neares_90_degree(building_1.pos, building_2.pos)
+        slot_1 = building_1.get_nearest_slot_from_position(building_2.pos)
+        slot_2 = building_2.get_nearest_slot_from_position(building_1.pos)
+        slot_1_pos = building_1.get_position_of_slot(slot_1)
+        slot_2_pos = building_2.get_position_of_slot(slot_2)
         return sorter_type(
             name = name,
             pos = slot_1_pos,
             pos2 = slot_2_pos,
             yaw = yaw,
-            output_object_index = factory_2.index,
-            input_object_index = factory_1.index,
+            output_object_index = building_2.index,
+            input_object_index = building_1.index,
             output_to_slot = slot_2,
             input_from_slot = slot_1,
             output_from_slot = 0,
@@ -98,23 +98,56 @@ class SorterMKI(Sorter):
         self.item_id = BuildingItem.SorterMKI
         self.model_index = BuildingModel.SorterMKI
         
-    def generate_sorter_from_factory_to_factory(name, factory_1, factory_2):
-        Sorter.generate_sorter_from_factory_to_factory(name, factory_1, factory_2, SorterMKI)
+    def generate_sorter_from_belt_to_building(name, belt, building):
+        return Sorter.generate_sorter_from_belt_to_building(name, belt, building, SorterMKI)
+    
+    def generate_sorter_from_building_to_belt(name, building, belt):
+        return Sorter.generate_sorter_from_building_to_belt(name, building, belt, SorterMKI)
+    
+    def generate_sorter_from_building_to_building(name, building_1, building_2):
+        return Sorter.generate_sorter_from_building_to_building(name, building_1, building_2, SorterMKI)
 
 class SorterMKII(Sorter):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.item_id = BuildingItem.SorterMKII
         self.model_index = BuildingModel.SorterMKII
+                
+    def generate_sorter_from_belt_to_building(name, belt, building):
+        return Sorter.generate_sorter_from_belt_to_building(name, belt, building, SorterMKII)
+    
+    def generate_sorter_from_building_to_belt(name, building, belt):
+        return Sorter.generate_sorter_from_building_to_belt(name, building, belt, SorterMKII)
+
+    def generate_sorter_from_building_to_building(name, building_1, building_2):
+        return Sorter.generate_sorter_from_building_to_building(name, building_1, building_2, SorterMKII)
 
 class SorterMKIII(Sorter):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.item_id = BuildingItem.SorterMKIII
         self.model_index = BuildingModel.SorterMKIII
+                
+    def generate_sorter_from_belt_to_building(name, belt, building):
+        return Sorter.generate_sorter_from_belt_to_building(name, belt, building, SorterMKIII)
+    
+    def generate_sorter_from_building_to_belt(name, building, belt):
+        return Sorter.generate_sorter_from_building_to_belt(name, building, belt, SorterMKIII)
+
+    def generate_sorter_from_building_to_building(name, building_1, building_2):
+        return Sorter.generate_sorter_from_building_to_building(name, building_1, building_2, SorterMKIII)
 
 class PileSorter(Sorter):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.item_id = BuildingItem.PileSorter
         self.model_index = BuildingModel.PileSorter
+                
+    def generate_sorter_from_belt_to_building(name, belt, building):
+        return Sorter.generate_sorter_from_belt_to_building(name, belt, building, PileSorter)
+    
+    def generate_sorter_from_building_to_belt(name, building, belt):
+        return Sorter.generate_sorter_from_building_to_belt(name, building, belt, PileSorter)
+
+    def generate_sorter_from_building_to_building(name, building_1, building_2):
+        return Sorter.generate_sorter_from_building_to_building(name, building_1, building_2, PileSorter)

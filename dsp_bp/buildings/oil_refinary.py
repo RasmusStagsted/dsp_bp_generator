@@ -45,7 +45,7 @@ class OilRefinary(Factory):
         self.parameter_count = 1
         self.parameters = [0]
 
-    def number_of_slots():
+    def number_of_slots(self):
         return 9
 
     def get_position_of_slot(self, slot):

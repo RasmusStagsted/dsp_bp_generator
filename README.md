@@ -26,6 +26,11 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+Install this package:
+```
+pip install .
+```
+
 To run the blueprint parser, save your blueprint in a file, and run: 
 ```
 python parse.py --input_file=bp_input.txt --output_file=bp_output_data.txt

@@ -41,8 +41,6 @@ if __name__ == "__main__":
             input_depot_positions[i],
             blocked_slots = 29
         )
-        print(ingredient)
-        print(Item[ingredient])
         depot.create_logistic_distributor(
             name = f"Distributor {ingredient}",
             filter_id = Item[ingredient],
@@ -64,8 +62,6 @@ if __name__ == "__main__":
         pos = output_depot_position,
         blocked_slots = 29
     )
-    print(product_string)
-    print(Item[product_string])
     
     output_depot.create_logistic_distributor(
         name = f"Distributor {ingredient}",

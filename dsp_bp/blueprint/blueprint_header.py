@@ -7,7 +7,6 @@ class BlueprintHeader:
         self.version = 1
         self.cursor_offset_x = int(size.x // 2)
         self.cursor_offset_y = int(size.y // 2)
-        print(self.cursor_offset_x)
         self.cursor_target_area = 0
         self.dragbox_size_x = int(size.x)
         self.dragbox_size_y = int(size.y)

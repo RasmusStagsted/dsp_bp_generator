@@ -3,3 +3,5 @@ venv/
 *.pyc
 *.pyo
 *.bp
+build/
+dsp_bp.egg-info/

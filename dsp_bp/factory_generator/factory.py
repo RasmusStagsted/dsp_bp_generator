@@ -80,12 +80,12 @@ class Factory:
             # If the product is a raw material, skip it
             if Recipe.recipes[product.name] == None:
                 continue
-            
             self.factories.append(
                 FactorySection(
                     pos = Vector(0, y),
                     input_count = input_count,
                     output_count = output_count,
+                    main_belts = self.main_belts,
                     product = product,
                     recipe = recipe
                 )

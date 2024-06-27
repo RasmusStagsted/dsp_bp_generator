@@ -138,7 +138,7 @@ class Blueprint:
         blueprint_building_header_data = self.blueprint_building_header.serialize().data
         data = blueprint_building_header_data + data
         if debug:
-            print(blueprint_building_header_data)
+            print("Blueprint data:", blueprint_building_header_data)
 
         # Serialize areas
         size, offset = BlueprintArea.get_area_from_building_list(blueprint_buildings)
@@ -147,7 +147,7 @@ class Blueprint:
         for blueprint_area in self.blueprint_areas:
             blueprint_areas_data += blueprint_area.serialize().data
             if debug:
-                print(blueprint_areas_data)
+                print("Blueprint areas data:", blueprint_areas_data)
         data = blueprint_areas_data + data
 
         # Serialize blueprint header
@@ -155,7 +155,7 @@ class Blueprint:
         blueprint_header_data = self.blueprint_header.serialize().data
         data = blueprint_header_data + data
         if debug:
-            print(blueprint_header_data)
+            print("Blueprint header data:", blueprint_header_data)
         if debug_raw_data:
             print("Uncompressed data:")
             print(data)

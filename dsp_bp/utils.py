@@ -53,7 +53,6 @@ class Yaw:
         return angle
 
     def get_angle(pos1, pos2):
-        # TODO test
         delta_x = pos2.x - pos1.x
         delta_y = pos2.y - pos1.y
         

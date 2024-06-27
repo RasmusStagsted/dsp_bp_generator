@@ -76,18 +76,18 @@ if __name__ == "__main__":
     )
     
     # Generate a sorter picking items from the second piece of the input belt and droping at the assembler
-    sorter = buildings.Sorter.generate_sorter_from_belt_to_factory(
+    sorter = buildings.Sorter.generate_sorter_from_belt_to_building(
         name = "InputSorter",
         belt = input_belts[1],
-        factory = factory,
+        building = factory,
         sorter_type = buildings.SorterMKI,
     )
     
     # Generate a sorter picking items from the assembler and droping at the second piece of the output belt
-    sorter = buildings.Sorter.generate_sorter_from_factory_to_belt(
+    sorter = buildings.Sorter.generate_sorter_from_building_to_belt(
         name = "OutputSorter",
         belt = output_belts[1],
-        factory = factory,
+        building = factory,
         sorter_type = buildings.SorterMKI,
     )
     

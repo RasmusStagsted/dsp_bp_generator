@@ -7,6 +7,7 @@ SiliconOre:
 TitaniumOre:
 Water:
 CrudeOil:
+
 KimberliteOre:
 FractalSilicon:
 GratingCrystal:
@@ -64,7 +65,7 @@ Gear:
   output_items:
     Gear: 1
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 5
 MagneticCoil:
   name: Magnetic Coil
@@ -74,7 +75,7 @@ MagneticCoil:
   output_items:
     MagneticCoil: 2
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 6
 WindTurbine:
   name: Wind Turbine
@@ -85,7 +86,7 @@ WindTurbine:
   output_items:
     WindTurbine: 1
   time: 4
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 7
 TeslaTower:
   input_items:
@@ -94,7 +95,7 @@ TeslaTower:
   output_items:
     TeslaTower: 1
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 8
 MatrixLab:
   input_items:
@@ -105,7 +106,7 @@ MatrixLab:
   output_items:
     MatrixLab: 1
   time: 3
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 10
 Prism:
   name: Prism
@@ -114,7 +115,7 @@ Prism:
   output_items:
     Prism: 2
   time: 2
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 11
 PlasmaExciter:
   name: Plasma Exciter
@@ -124,7 +125,7 @@ PlasmaExciter:
   output_items:
     PlasmaExciter: 1
   time: 2
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 12
 Thruster:
   name: Thruster
@@ -134,7 +135,7 @@ Thruster:
   output_items:
     Thruster: 1
   time: 4
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 20
 ReinforcedThruster:
   name: Reinforced Thruster
@@ -144,7 +145,7 @@ ReinforcedThruster:
   output_items:
     ReinforcedThruster: 1
   time: 8
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 21
 ChemicalPlant:
   name: Chemical Plant
@@ -156,7 +157,7 @@ ChemicalPlant:
   output_items:
     ChemicalPlant: 1
   time: 5
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 22
 TitaniumCrystal:
   name: Titanium Crystal
@@ -166,7 +167,7 @@ TitaniumCrystal:
   output_items:
     TitaniumCrystal: 1
   time: 4
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 26
 CashmirCrystal:
   name: Cashmir Crystal
@@ -177,7 +178,7 @@ CashmirCrystal:
   output_items:
     CashmirCrystal: 1
   time: 4
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 28
 CashmirCrystalAdvanced:
   name: Cashmir Crystal Advanced
@@ -188,7 +189,7 @@ CashmirCrystalAdvanced:
   output_items:
     CashmirCrystalAdvanced: 1
   time: 4
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 29
 TitaniumGlass:
   name: Titanium Glass
@@ -199,7 +200,7 @@ TitaniumGlass:
   output_items:
     TitaniumGlass: 2
   time: 5
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 30
 SiliconOreAdvanced:
   name: Silicon Ore
@@ -219,7 +220,7 @@ ParticleBroadband:
   output_items:
     ParticleBroadband: 1
   time: 8
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 36
 CrystalSilicon:
   name: Crystal Silicone
@@ -238,7 +239,7 @@ PlaneFilter:
   output_items:
     PlaneFilter: 1
   time: 12
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 38
 MiniatureParticleCollider:
   name: Miniature Particle Collider
@@ -251,7 +252,7 @@ MiniatureParticleCollider:
   output_items:
     MiniatureParticleCollider: 1
   time: 15
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 39
 DeuteronFuelRod:
   name: Deuteron Fuel Rod
@@ -262,7 +263,7 @@ DeuteronFuelRod:
   output_items:
     DeuteronFuelRod: 2
   time: 12
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 41
 AnnihilationConstraintSphere:
   name: Annihilation Constraint Sphere
@@ -272,7 +273,7 @@ AnnihilationConstraintSphere:
   output_items:
     AnnihilationConstraintSphere: 1
   time: 20
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 42
 AntimatterFuelRod:
   name: Antimatter Fuel Rod
@@ -284,7 +285,7 @@ AntimatterFuelRod:
   output_items:
     AntimatterFuelRod: 2
   time: 24
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 44
 AssemblingMachineMKI:
   name: Assembling Machine MKI
@@ -295,7 +296,7 @@ AssemblingMachineMKI:
   output_items:
     AssemblingMachineMKI: 1
   time: 2
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 45
 AssemblingMachineMKII:
   name: Assembling Machine MKII
@@ -306,7 +307,7 @@ AssemblingMachineMKII:
   output_items:
     AssemblingMachineMKII: 1
   time: 3
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 46
 AssemblingMachineMKIII:
   name: Assembling Machine MKIII
@@ -317,7 +318,7 @@ AssemblingMachineMKIII:
   output_items:
     AssemblingMachineMKIII: 1
   time: 4
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 47
 MiningMachine:
   name: Mining Machine
@@ -329,7 +330,7 @@ MiningMachine:
   output_items:
     MiningMachine: 1
   time: 3
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 48
 WaterPump:
   name: Water Pump
@@ -341,7 +342,7 @@ WaterPump:
   output_items:
     WaterPump: 1
   time: 4
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 49
 CircuitBoard:
   name: Circuit Board
@@ -351,7 +352,7 @@ CircuitBoard:
   output_items:
     CircuitBoard: 2
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 50
 Processor:
   name: Processor
@@ -361,7 +362,7 @@ Processor:
   output_items:
     Processor: 1
   time: 3
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 51
 QuantumChip:
   name: Quantum Chip
@@ -371,7 +372,7 @@ QuantumChip:
   output_items:
     QuantumChip: 1
   time: 6
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 52
 MicrocrystallineComponent:
   name: Microcrystalline Component
@@ -381,7 +382,7 @@ MicrocrystallineComponent:
   output_items:
     MicrocrystallineComponent: 1
   time: 2
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 53
 OrganicCrystal:
   name: Organic Crystal
@@ -404,7 +405,7 @@ ArcSmelter:
   output_items:
     ArcSmelter: 1
   time: 3
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 56
 HighPuritySilicon:
   name: High Purity Silicon
@@ -422,7 +423,7 @@ CrystalSiliconAdvanced:
   output_items:
     CrystalSiliconAdvanced: 2
   time: 1.5
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 62
 Steel:
   name: Steel
@@ -434,6 +435,16 @@ Steel:
   tool: Smelting Facility
   recipe_id: 63
 ThermalPowerPlant:
+  name: Thermal Power Plant
+  input_items:
+    IronIngot: 10
+    StoneBrick: 4
+    Gear: 4
+    MagneticCoil: 4
+  output_items:
+    ThermalPowerPlant: 1
+  time: 5
+  tool: Assembling Machine
   recipe_id: 64
 TitaniumIngot:
   name: Titanium Ingot
@@ -445,6 +456,15 @@ TitaniumIngot:
   tool: Smelting Facility
   recipe_id: 66
 SolarPanel:
+  name: Solar Panel
+  input_items:
+    CopperIngot: 10
+    HighPuritySilicon: 10
+    CircuitBoard: 5
+  output_items:
+    SolarPanel: 1
+  time: 6
+  tool: Assembling Machine
   recipe_id: 67
 PhotonCombiner:
   name: Photon Combiner
@@ -454,15 +474,52 @@ PhotonCombiner:
   output_items:
     PhotonCombiner: 1
   time: 3
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 68
 PhotonCombinerAdvanced:
+  name: Photon Combiner Advanced
+  input_items:
+    GratingCrystal: 1
+    CircuitBoard: 1
+  output_items:
+    PhotonCombiner: 1
+  time: 3
+  tool: Assembling Machine
   recipe_id: 69
 SolarSail:
+  name: SolarSail
+  input_items:
+    Graphene: 1
+    PhotonCombiner: 1
+  output_items:
+    SolarSail: 2
+  time: 4
+  tool: Assembling Machine
   recipe_id: 70
 EMRailEjector:
+  name: EM Rail Ejector
+  input_items:
+    Steel: 20
+    Gear: 20
+    Processor: 5
+    SuperMagneticRing: 10
+  output_items:
+    EMRailEjector: 1
+  time: 6
+  tool: Assembling Machine
   recipe_id: 71
 RayReceiver:
+  name: Ray Receiver
+  input_items:
+    Steel: 20
+    HighPuritySilicon: 20
+    PhotonCombiner: 10
+    Processor: 5
+    SuperMagneticRing: 20
+  output_items:
+    RayReceiver: 1
+  time: 8
+  tool: Assembling Machine
   recipe_id: 72
 SateliteSubstation:
   recipe_id: 73
@@ -492,7 +549,7 @@ SorterMKI:
   output_items:
     SorterMKI: 2
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 85
 DepotMKI:
   name: Depot MK.I
@@ -502,7 +559,7 @@ DepotMKI:
   output_items:
     DepotMKI: 1
   time: 2
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 86
 Splitter:
   recipe_id: 87
@@ -514,7 +571,7 @@ SorterMKII:
   output_items:
     SorterMKII: 2
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 88
 ConveyorBeltMKII:
   recipe_id: 89
@@ -526,7 +583,7 @@ SorterMKIII:
   output_items:
     SorterMKIII: 2
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 90
 DepotMKII:
   recipe_id: 91
@@ -549,7 +606,7 @@ ElectricMotor:
   output_items:
     ElectricMotor: 1
   time: 2
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 97
 ParticleContainer:
   name: Particle Container
@@ -560,7 +617,7 @@ ParticleContainer:
   output_items:
     ParticleContainer: 1
   time: 4
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 99
 ParticleContainerAdvanced:
   recipe_id: 100
@@ -572,7 +629,7 @@ GravitationLens:
   output_items:
     GravitationLens: 1
   time: 6
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 101
 SuperMagneticRing:
   name: SuperMagnetic Ring
@@ -583,7 +640,7 @@ SuperMagneticRing:
   output_items:
     SuperMagneticRing: 1
   time: 3
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 103
 Engine:
   name: Engine
@@ -593,7 +650,7 @@ Engine:
   output_items:
     Engine: 1
   time: 3
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 105
 ProliferatorMkI:
   name: Proliferator Mk.I
@@ -602,7 +659,7 @@ ProliferatorMkI:
   output_items:
     ProliferatorMkI: 1
   time: 0.5
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 106
 ProliferatorMkII:
   name: Proliferator Mk.II
@@ -612,7 +669,7 @@ ProliferatorMkII:
   output_items:
     ProliferatorMkII: 1
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 107
 ProliferatorMkIII:
   name: Proliferator Mk.III
@@ -622,7 +679,7 @@ ProliferatorMkIII:
   output_items:
     ProliferatorMkIII: 1
   time: 2
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 108
 SprayCoater:
   recipe_id: 109
@@ -653,7 +710,7 @@ LogisticDistributor:
   output_items:
     LogisticDistributor: 1
   time: 8
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 122
 LogisticBot:
   recipe_id: 123
@@ -720,7 +777,7 @@ PileSorter:
   output_items:
     PileSorter: 1
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: 160
 
 Deuterium:
@@ -903,7 +960,7 @@ Foundation:
   output_items:
     Foundation: 1
   time: 1
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: None
 ElectromagneticMatrix:
   name: Electromagnetic Matrix
@@ -933,5 +990,5 @@ ElectromagneticTurbine:
   output_items:
     ElectromagneticTurbine: 1
   time: 2
-  tool: Assembling machine
+  tool: Assembling Machine
   recipe_id: None
