@@ -1,0 +1,8 @@
+__pycache__/
+venv/
+*.pyc
+*.pyo
+*.bp
+dist/
+build/
+dsp_bp.egg-info/
