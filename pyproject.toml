@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "DSP_BP_GENERATOR"
+name = "dsp_bp_generator"
 version = "0.1.0"
 description = "This is a small project to generate blueprint to the game Dyson Sphere Program (DSP)"
 authors = ["Rasmus Stagsted <rasmuskarnoestagsted@gmail.com>"]
@@ -8,7 +8,7 @@ license = "GPL-3.0-only"
 
 
 [tool.poetry.scripts]
-test = "DSP_BP_GENERATOR.main:test"
+test = "dsp_bp_generator.main:test"
 
 
 [tool.poetry.dependencies]
