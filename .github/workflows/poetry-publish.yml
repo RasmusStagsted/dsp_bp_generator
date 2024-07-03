@@ -3,7 +3,7 @@ name: Upload Python Package
 on:
   workflow_dispatch:
   release:
-    types: [created]
+    types: [released]
 
 jobs:
   build:
@@ -14,3 +14,4 @@ jobs:
         uses: JRubics/poetry-publish@v2.0
         with:
           pypi_token: ${{ secrets.PYPI_TOKEN }}
+          poetry_version: "==1.8.3"
