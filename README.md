@@ -1,9 +1,9 @@
 # dsp_bp_generator (Work in progress)
 
-This is a small project to generate blueprint to the game Dyson Sphere Program (DSP).
+This is a small python package to generate blueprint to the game Dyson Sphere Program (DSP).
 The project is inspired from the awesome work put into [dspbptk](https://github.com/johndoe31415/dspbptk), from where the MD5 implementation and the DysonSphereItem enum is taken.
 
-In the beginning, the project aimed to be a tool only to generate a production factory of a user defined item. But since then, it have evolved to be a more generic implementation of a library, to generate and connect various buildings, due to the complexity of the way the blue print is encoded.
+In the beginning, the project aimed to be a tool only to generate a production factory of a user defined item. But due to the complexity of the way the blue print is encoded, phe project have evolved to be a more generic implementation of a blueprint library, to generate and connect various buildings.
 
 ## How to use
 
@@ -11,25 +11,12 @@ A few small examples show how to run the parser and the serializer of blueprints
 
 (tested using Python 3.8.10)
 
-Create virtual environment:
+Install this python package frin [PyPi](https://pypi.org/project/dsp_bp_generator/):
 ```
-python -m venv venv
-```
-
-Activate the virtual environment:
-```
-source venv/bin/activate
+pip install dsp_bp_generator
 ```
 
-Install dependencies:
-```
-pip install -r requirements.txt
-```
-
-Install this package:
-```
-pip install .
-```
+### Try the examples
 
 To run the blueprint parser, save your blueprint in a file, and run: 
 ```
@@ -46,9 +33,21 @@ To generate and serialize a blueprint, try running:
 python generate_and_serialize.py --output_file=bp_output.txt
 ```
 
+### Development
+
+To develop on this project, generate a virtual invironment using poetry:
+```
+poetry shell
+```
+
+Install requirements:
+```
+poetry install
+```
+
 ## Blueprint encoding
 
-A blueprint in Dyson Sphere Program is a list of binary data blobs, each representing a building (this protocol is derived from the awsome work done in [dspbptk](https://github.com/johndoe31415/dspbptk)).
+A blueprint in Dyson Sphere Program is a list of binary data blobs, each representing a building (this protocol is derived from the awsome work done in [dspbptk](https://github.com/johndoe31415/dspbptk)), with a few headers prepended.
 
 <table>
 <tr><th> Building </th><th> Pose </th><th> Connection </th></tr>
@@ -173,8 +172,8 @@ For now only the very basic support of structures are implemented.
 
 Buildings to implement:
  * ~~Tesla Tower~~
- * Wireless Power Tower
- * Satelite Substation
+ * ~~Wireless Power Tower~~
+ * ~~Satelite Substation~~
  * Wind turbine
  * Thermal Power Plant
  * Solar Panel
@@ -190,10 +189,10 @@ Buildings to implement:
  * Automatic Piler
  * Traffic Monitor
  * Spray Coater
- * Depot MK.I
+ * ~~Depot MK.I~~
  * Depot MK.II
  * Storange Tank
- * Logistic Distributor
+ * ~~Logistic Distributor~~
  * Planeraty Logistics Station
  * Interstellar Logistic Station
  * Orbital Collector

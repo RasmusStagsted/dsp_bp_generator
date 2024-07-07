@@ -1,14 +1,16 @@
 import argparse
-from dsp_bp.utils import Yaw, Vector
-from dsp_bp.blueprint import Blueprint
-from dsp_bp.factory_generator import Factory, ItemFlow, recipes
-from dsp_bp.buildings import Building
+from dsp_bp_generator.utils import Yaw, Vector
+from dsp_bp_generator.blueprint import Blueprint
+from dsp_bp_generator.factory_generator import Factory, ItemFlow, recipes
+from dsp_bp_generator.buildings import Building
 import math
 import argparse
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QPushButton, QLabel, QComboBox, QLineEdit
 from PyQt5.QtGui import QDoubleValidator
 
-from dsp_bp.factory_generator import Recipe
+from dsp_bp_generator.factory_generator import FactorySection
+
+from dsp_bp_generator.factory_generator import Recipe
 
 import sys
 import pyperclip
@@ -106,7 +108,7 @@ class ProlifiratorWidget(QWidget):
         self.production_mode_layout.addWidget(self.production_mode_label)
 
         self.production_mode = QComboBox()
-        self.production_mode.addItems(["External production"])
+        self.production_mode.addItems(["External production", "Internal production"])
         self.production_mode.setCurrentText("External production")
         self.production_mode_layout.addWidget(self.production_mode)
 
@@ -180,12 +182,26 @@ class GeneratorWidget(QWidget):
         self.recipiSelector = RecipiSelectorWidget()
         self.layout.addWidget(self.recipiSelector)
         
+        self.generator_button = QPushButton("Generate!")
+        self.generator_button.clicked.connect(self.update_production_flows)
+        self.layout.addWidget(self.generator_button)
+        
         self.blueprint = BlueprintStringWidget()
         self.layout.addWidget(self.blueprint)
 
         self.setLayout(self.layout)
 
+        self.update()
+
+    def update(self):
+
         self.update_production_flows()
+
+        self.generate_factories()
+        
+        blueprint = Blueprint()
+        #blueprint_string = blueprint.serialize(Building.buildings)
+        #self.blueprint.blueprint.setText(blueprint_string)
 
     def update_production_flows(self):
         requirement_stack = []
@@ -193,7 +209,7 @@ class GeneratorWidget(QWidget):
 
         for flow in self.output_flows.flow:
             item = flow.item.currentText()
-            flow_rate = flow.flow_rate
+            flow_rate = float(flow.flow_rate.text())
             requirement_stack.append(
                 ItemFlow(item, flow_rate)
             )
@@ -229,6 +245,50 @@ class GeneratorWidget(QWidget):
                 self.target_output_flow.remove(flow)
 
         #self.blueprint.blueprint.setText()
+
+    def generate_factories(self, debug = True):
+        # Define main belt
+        self.main_belts = []
+        for item in self.input_flow:
+            self.main_belts.append(item)
+        for item in self.target_output_flow:
+            self.main_belts.append(item)
+        
+        # Print debug for main belt
+        if debug:
+            print("Main belts:")
+            for belt in self.main_belts:
+                print(f"\t{belt.name}, {belt.count_pr_sec}/s")
+
+
+        self.factories = []
+        input_count = len(self.input_flow)
+        output_count = 0
+        y = 0
+        
+        for product in self.target_output_flow:
+            
+            recipe = Recipe.select(product.name)
+
+            # If the product is a raw material, skip it
+            if Recipe.recipes[product.name] == None:
+                continue
+            self.factories.append(
+                FactorySection(
+                    pos = Vector(0, y),
+                    input_count = input_count,
+                    output_count = output_count,
+                    main_belts = self.main_belts,
+                    product = product,
+                    recipe = recipe
+                )
+            )
+            
+            if len(self.factories) > 1:
+                self.factories[-2].connect_to_section(self.factories[-1])
+            
+            output_count += self.factories[-1].product_count
+            y += self.factories[-1].height
 
 if __name__ == "__main__":
     
