@@ -1,4 +1,4 @@
-from dsp_bp.blueprint import Blueprint
+from dsp_bp_generator.blueprint import Blueprint
 import argparse
 
 if __name__ == "__main__":

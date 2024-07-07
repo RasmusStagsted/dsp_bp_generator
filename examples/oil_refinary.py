@@ -1,12 +1,7 @@
-from dsp_bp.utils import Yaw, Vector
-from dsp_bp.blueprint import Blueprint
-from dsp_bp.blueprint import BlueprintStringHeader
-from dsp_bp.blueprint import BlueprintHeader
-from dsp_bp.blueprint import BlueprintArea
-from dsp_bp.blueprint import BlueprintBuildingHeader
-from dsp_bp.blueprint import BlueprintBuildingV1
-
-from dsp_bp import buildings
+from dsp_bp_generator.utils import Yaw, Vector
+from dsp_bp_generator.blueprint import Blueprint
+from dsp_bp_generator.blueprint import BlueprintBuildingV1
+from dsp_bp_generator import buildings
 import math
 import argparse
 

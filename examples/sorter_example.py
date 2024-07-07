@@ -1,12 +1,8 @@
-from dsp_bp.utils import Yaw, Vector
-from dsp_bp.blueprint import Blueprint
-from dsp_bp.blueprint import BlueprintStringHeader
-from dsp_bp.blueprint import BlueprintHeader
-from dsp_bp.blueprint import BlueprintArea
-from dsp_bp.blueprint import BlueprintBuildingHeader
-from dsp_bp.blueprint import BlueprintBuildingV1
+from dsp_bp_generator.utils import Yaw, Vector
+from dsp_bp_generator.blueprint import Blueprint
+from dsp_bp_generator.blueprint import BlueprintBuildingV1
 
-from dsp_bp import buildings
+from dsp_bp_generator import buildings
 import math
 import argparse
 
@@ -28,7 +24,7 @@ if __name__ == "__main__":
     # Assembler coordinate = (1.0, 2.0)
     # The sorters has two coordinates. One for pickup and one for drop-off:
     #  - Input Sorter coordinates are (1.0, 4.0) and (1.0, 2.8)
-    #  - Input Sorter coordinates are (1.0, 4.0) and (1.0, 2.8)
+    #  - Output Sorter coordinates are (1.0, 1.2) and (1.0, 0.0)
     #             
     #    ┌───────┬───────┬───────┐
     #    │       │┌─────┐│       │

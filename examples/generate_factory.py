@@ -5,15 +5,15 @@ from dsp_bp_generator.factory_generator import Factory, ItemFlow, recipes
 from dsp_bp_generator.buildings import Building
 import math
 import argparse
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QPushButton, QLabel, QComboBox, QLineEdit
-from PyQt5.QtGui import QDoubleValidator
+
+from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QPushButton, QLabel, QComboBox, QLineEdit
+from PySide6.QtGui import QDoubleValidator
 
 from dsp_bp_generator.factory_generator import FactorySection
-
 from dsp_bp_generator.factory_generator import Recipe
 
 import sys
-import pyperclip
+#import pyperclip
 
 class OutputFlowWidget(QWidget):
     
@@ -292,6 +292,8 @@ class GeneratorWidget(QWidget):
 
 if __name__ == "__main__":
     
+    print("Test")
+    
     # Parse the arguments
     parser = argparse.ArgumentParser(
         prog = "Blueprint parser",
@@ -305,7 +307,7 @@ if __name__ == "__main__":
     widget.setWindowTitle('Simple Qt Widget')
     widget.resize(300, 200)
     widget.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
 
     # Generate the factory
     factory = Factory()

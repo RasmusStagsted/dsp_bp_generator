@@ -1,10 +1,10 @@
-from dsp_bp.utils import Yaw, Vector
-from dsp_bp.blueprint import Blueprint
-from dsp_bp.blueprint import BlueprintBuildingV1
-from dsp_bp.factory_generator.recipes import Recipe
-from dsp_bp.enums import Item, AssemblingRecipe
+from dsp_bp_generator.utils import Vector
+from dsp_bp_generator.blueprint import Blueprint
+from dsp_bp_generator.blueprint import BlueprintBuildingV1
+from dsp_bp_generator.factory_generator.recipes import Recipe
+from dsp_bp_generator.enums import Item, AssemblingRecipe
 
-from dsp_bp import buildings
+from dsp_bp_generator import buildings
 import argparse
 
 if __name__ == "__main__":
@@ -15,7 +15,7 @@ if __name__ == "__main__":
         description = "Apllication to parse blueprints for the game Dyson Sphere program"
     )
     parser.add_argument("--output_file", "--of", type = str, help = "Output file where to save the output to (if not defined, the output will be written to standard output)")
-    parser.add_argument("--item", required = True, type = str, help = "Output item")
+    parser.add_argument("--item", required = True, type = str, help = "Output item (name from the list in 'recipes.yaml')")
     args = parser.parse_args()
 
     product_string = args.item
@@ -37,8 +37,8 @@ if __name__ == "__main__":
     for i, ingredient in enumerate(ingredients):
         # Create input_depot
         depot = buildings.DepotMKI(
-            f"Input depot {ingredient}",
-            input_depot_positions[i],
+            name = f"Input depot {ingredient}",
+            pos = input_depot_positions[i],
             blocked_slots = 29
         )
         depot.create_logistic_distributor(
@@ -50,10 +50,10 @@ if __name__ == "__main__":
         )
         
         # Connect input_depot to assembler
-        sorter = buildings.SorterMKI.generate_sorter_from_factory_to_factory(
+        sorter = buildings.SorterMKI.generate_sorter_from_building_to_building(
             name = f"Input sorter {ingredient}",
-            factory_1 = depot,
-            factory_2 = assembler
+            building_1 = depot,
+            building_2 = assembler
         )
 
     # Create the output depot
@@ -72,10 +72,10 @@ if __name__ == "__main__":
     )
         
     # Connect the assembler to the output depot
-    sorter = buildings.SorterMKI.generate_sorter_from_factory_to_factory(
-        "output sorter",
-        assembler,
-        output_depot
+    sorter = buildings.SorterMKI.generate_sorter_from_building_to_building(
+        name = "output sorter",
+        building_1 = assembler,
+        building_2 = output_depot
     )
     
     # Generate the blueprint
@@ -89,7 +89,5 @@ if __name__ == "__main__":
         print(output_blueprint_string)
     else:
         with open(args.output_file, "w") as file:
-            for building in buildings.Building.buildings:
-                file.write(building.__str__())
             file.write(output_blueprint_string)
             print(output_blueprint_string)
