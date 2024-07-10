@@ -754,6 +754,15 @@ LogisticDistributor:
   tool: Assembling Machine
   recipe_id: 122
 LogisticBot:
+  name: Logistic Bot
+  input_items:
+    IronIngot: 2
+    Engine: 1
+    Processor: 1
+  output_items:
+    LogisticBot: 1
+  time: 2
+  tool: Assembling Machine
   recipe_id: 123
 QuantumChemicalPlant:
   recipe_id: 124

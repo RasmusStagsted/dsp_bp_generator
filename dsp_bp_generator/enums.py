@@ -349,4 +349,5 @@ class Item(enum.IntEnum):
 	GravityMatrix = 6005
 	UniverseMatrix = 6006
  
- 
+	Engine = 6007
+	LogisticBot = 6008
