@@ -22,6 +22,20 @@ CarbonNanotube:
 Plastic:
 StrangeMatter:
 
+OrbitalCollector:
+  name: Orbital Collector
+  input_items:
+    InterstellarLogisticsStation: 1
+    SuperMagneticRing: 50
+    ReinforcedThruster: 20
+    AccumulatorFull: 20
+  output_items:
+    OrbitalCollector: 1
+  time: 30
+  tool: Assembling Machine
+  recipe_id: 0 #TODO: Fix number
+
+
 IronIngot:
   name: Iron Ingot
   input_items:
@@ -590,10 +604,29 @@ DepotMKII:
 ConveyorBeltMKIII:
   recipe_id: 92
 PlanetaryLogisticsStation:
+  name: Planetary Logistics Station
+  input_items:
+    Steel: 40
+    TitaniumIngot: 40
+    Processor: 40
+    ParticleContainer: 20
+  output_items:
+    PlanetaryLogisticsStation: 1
+  time: 20
+  tool: Assembling Machine
   recipe_id: 93
 LogisticDrone:
   recipe_id: 94
 InterstellarLogisticsStation:
+  name: Interstellar Logistic Station
+  input_items:
+    PlanetaryLogisticsStation: 1
+    TitaniumAlloy: 40
+    ParticleContainer: 20
+  output_items:
+    InterstellarLogisticsStation: 1
+  time: 30
+  tool: Assembling Machine
   recipe_id: 95
 LogisticsVessel:
   recipe_id: 96

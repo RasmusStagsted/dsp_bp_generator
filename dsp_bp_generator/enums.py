@@ -17,6 +17,8 @@ class SmeltingRecipe(enum.IntEnum):
     TitaniumAlloy = 66
 
 class AssemblingRecipe(enum.IntEnum):
+	OrbitalCollector = 2105 #TODO: Fix number
+
 	Gear = 5
 	MagneticCoil = 6
 	WindTurbine = 7
