@@ -18,6 +18,7 @@ class SmeltingRecipe(enum.IntEnum):
 
 class AssemblingRecipe(enum.IntEnum):
 	OrbitalCollector = 2105 #TODO: Fix number
+	InterstellarLogisticsVessel = 22222 #TODO: Fix number
 
 	Gear = 5
 	MagneticCoil = 6
@@ -340,7 +341,7 @@ class Item(enum.IntEnum):
 	PlaneSmelter = 2315
 	MatrixLab = 2901
 	LogisticsDrone = 5001
-	LogisticsVessel = 5002
+	InterstellarLogisticsVessel = 5002
 	ElectromagneticMatrix = 6001
 	EnergyMatrix = 6002
 	StructureMatrix = 6003

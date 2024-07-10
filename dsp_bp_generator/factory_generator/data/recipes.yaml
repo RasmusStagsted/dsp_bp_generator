@@ -628,7 +628,15 @@ InterstellarLogisticsStation:
   time: 30
   tool: Assembling Machine
   recipe_id: 95
-LogisticsVessel:
+InterstellarLogisticsVessel:
+  input_items:
+    TitaniumAlloy: 10
+    Processor: 10
+    ReinforcedThruster: 2
+  output_items:
+    InterstellarLogisticsVessel: 1
+  time: 6
+  tool: Assembling Machine
   recipe_id: 96
 ElectricMotor:
   name: Electric Motor
