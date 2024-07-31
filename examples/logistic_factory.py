@@ -23,9 +23,9 @@ if __name__ == "__main__":
     product_string = args.item
 
     if not product_string in Recipe.recipes.keys():
-        closest_match = difflib.get_close_matches(product_string, Recipe.recipes.keys(), n=1, cutoff=0.6)[0]
+        closest_match = difflib.get_close_matches(product_string, Recipe.recipes.keys(), n=1, cutoff=0.6)
         if closest_match:
-            print(f"{product_string} not found, did you mean '{closest_match}'?")
+            print(f"{product_string} not found, did you mean '{closest_match[0]}'?")
             sys.exit(0)
         else:
             print(f"{product_string} not found")
