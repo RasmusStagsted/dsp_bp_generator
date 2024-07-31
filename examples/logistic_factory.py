@@ -6,6 +6,8 @@ from dsp_bp_generator.enums import Item, AssemblingRecipe
 
 from dsp_bp_generator import buildings
 import argparse
+import difflib
+import sys
 
 if __name__ == "__main__":
     
@@ -19,6 +21,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     product_string = args.item
+
+    if not product_string in Recipe.recipes.keys():
+        closest_match = difflib.get_close_matches(product_string, Recipe.recipes.keys(), n=1, cutoff=0.6)[0]
+        if closest_match:
+            print(f"{product_string} not found, did you mean '{closest_match}'?")
+            sys.exit(0)
+        else:
+            print(f"{product_string} not found")
+            sys.exit(0)
 
     product = Recipe.recipes[product_string]
     ingredients = product["input_items"]
