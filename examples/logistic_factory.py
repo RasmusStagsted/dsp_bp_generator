@@ -102,8 +102,3 @@ if __name__ == "__main__":
         with open(args.output_file, "w") as file:
             file.write(output_blueprint_string)
             print(output_blueprint_string)
-            
-            
-            
-            
-!blueprint 0eNrNmt1uozAQhd/F12SFMfaM8yqrqkopbdGmJBtItVWVd1/SNA3tEjxnrvaqP4GP0RyOzxD8Zu7W+3q7a9reLN9MU23azix/vpmueWxX6+P/+tdtbZam6etnk5l29Xz8a7dq1uaQmaa9r/+YpT3cZKZu+6Zv6tP573+83rb757t6NxzweWa1373U94t3QGa2m244Z9MeLzRwCldm5tUsF9YWA/2+2dXV6WM6ZP9Ai09ot7/r+tX7kRNMPjPLwwTFySjezlJKGSX4WYqXUTifpQQZJc73hWSSOVtckayYgPKltH7gPT71V++EeMbaNDaKsaUFsDaXcx3CtXKuR7iFnEsI18m5iGy2FHM9pJuXcyHdgpwL6UZyLqSb3G4e0k3ut4DoVsj9FhDdCrnfAqJbIfdbQHQr5H4LiG6F3G8E6Sb3G0G6yf1GkG5yvxGkm9xvBOkm9xsjujm53xjRzcn9xohuTu43RnRzcr8xopuT+y1Cusn9FiHd5H6LkG5yv0VIN7nfIqSb2G8uR3QrczkX0a20ci6iW1nIuYhu5dhvq+rXomm7etcPH009B/w4l5wPv36Fl1Pwi+nWm8em65tqUT3V3VB6/Xs//ExehofLTIH9l8ffxccj8tQD50zJYYoc5P0oLdoPAuA5CmdNs8eXudbsqALbJNjnQDsKsB3eqqou0lUXQNUBrdqpqqZ01Sorjuu/BvZAOwhtB+JGRuGkakl6dfI6J3IaHIF2oIt1yDVVe5esOlh51WOcrOpCVbVPV61yoi/T4BJoR4m2A3DjuAkyeFC1JL2GBCAXPbqkBpUbQzq+gioXQzpwCcjFgI4JBLgxoAMOqdwY0msIqdwY0mlOgBsDOoMQ4MaArnwEZGNAg5dU2RjScwgxUDWa6ATkY0DzkVX5GNLjAqsm1ZAeFxiYVAldR1jlSEqvfqyaVCmd6OxV4HSiM+BEQkOXgWwkdFxgVTZS2uasykZKjwoRyEZCV70IZCOhc0hUZSOn55AIfIXDaKJHlRs5HbxR5UZOjwoRcCOjoRsBNzI6LkSVGzm9QEUgFxldQ2yuCkZO55fNVcnIUUAGopEj3BHEkQzTVZaMuaArKk9GKyADpow53BHAldHCdJUt47e7MDMfR98+NOvhlNPerPOmrc8rtPtqXa92i4d9ffw+u9rsj9vB3LGuj2Mvd261WY2OGXx4uJms/+L+h9VQ9Vxz4Fvdaszvcv+/NGe0/yfRnC9FC5tzKef4zqZddP1mO/fGJo/f3thk5rxpbGnM5CWc7E2Iy+ffhNxkp22Fy9EuxMy8DFKcCmFbUhkp0GBlHw6Hv2ElKu0=
