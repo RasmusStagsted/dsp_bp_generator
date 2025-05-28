@@ -20,7 +20,7 @@ class AssemblingMachine(Factory3x3):
     def get_size():
         return Vector(4.0, 4.0)
     
-    def get_offset():
+    def get_offset(self):
         return Vector(2.0, 2.0)
         
 class AssemblingMachineMKI(AssemblingMachine):

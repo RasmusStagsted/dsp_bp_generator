@@ -25,16 +25,14 @@ class Recipe:
             raise FileNotFoundError(f'{filename} not found in package')
 
     def select(item_name):
-        for name in Recipe.recipes.keys():
-            if item_name in name:
-                print(name)
-        if (item_name + "Advanced") in Recipe.recipes.keys():
-            print(1)
+        recipe = Recipe.recipes[item_name]
+        if recipe == None:
+            print("Recipe not found: " + item_name)
         return Recipe.recipes[item_name]
 
 Recipe.recipes = Recipe.load_from_yaml("data/recipes.yaml")
 
 if __name__ == "__main__":
     filename = "data/recipes.yaml"
-    recipes = load_from_yaml(filename)
+    recipes = Recipe.load_from_yaml(filename)
     print(recipes)

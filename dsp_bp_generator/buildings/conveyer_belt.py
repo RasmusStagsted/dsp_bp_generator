@@ -17,13 +17,12 @@ class ConveyorBelt(Building):
         self.input_from_slot = 0
         
     def connect_to_belt(belt1, belt2):
-        dx, dy = Yaw.direction_to_unit_vector(belt1.yaw)
-        if ((int(belt1.pos.x + dx) == belt2.pos.x) and (int(belt1.pos.y + dy) == belt2.pos.y) and belt1.yaw == belt2.yaw):
+        dir = Yaw.direction_to_unit_vector(belt1.yaw)
+        if ((int(belt1.pos.x + dir.x) == belt2.pos.x) and (int(belt1.pos.y + dir.y) == belt2.pos.y) and belt1.yaw == belt2.yaw):
             belt1.output_object_index = belt2.index
             belt1.output_to_slot = 1
         else:
-            dx, dy = Yaw.direction_to_unit_vector(belt2.yaw)
-            assert False, "Wrong use of belt-to_belt connection"
+            assert False, f"Wrong use of belt-to_belt connection. Belt1: pos = {belt1.pos}, dir = {belt1.yaw}; Belt2: pos = {belt2.pos}, dir = {belt2.yaw}"
             
     def connect_to_splitter(self, splitter):
         assert (int(splitter.yaw - self.yaw) % 180 == 0), f"Wrong orientation (splitter: {splitter.yaw}, belt: {self.yaw})"
@@ -46,7 +45,6 @@ class ConveyorBelt(Building):
         pass
 
     def generate_belt(name, pos, yaw, length: int, belt_type):
-        
         if type(yaw) != list:
             yaw = [yaw]
         if type(length) != list:
@@ -58,7 +56,7 @@ class ConveyorBelt(Building):
         
         belts = []
         for i in range(len(yaw)):
-            dx, dy = Yaw.direction_to_unit_vector(yaw[i])
+            dir = Yaw.direction_to_unit_vector(yaw[i])
             for j in range(length[i]):
                 belt = belt_type(
                     name = f"{name}:{len(belts)}",
@@ -68,7 +66,7 @@ class ConveyorBelt(Building):
                     output_to_slot = 1
                 )
                 belts.append(belt)
-                pos += Vector(dx, dy)
+                pos += Vector(dir.x, dir.y)
             
             if (i != len(yaw) - 1):
                 belt.yaw = Yaw.direction_average(yaw[i], yaw[i + 1])

@@ -161,7 +161,8 @@ class BlueprintStringWidget(QWidget):
         self.setLayout(self.layout)
 
     def copy_blueprint(self):
-        pyperclip.copy(self.blueprint.text())
+        print(self.blueprint.text())
+        #pyperclip.copy(self.blueprint.text())
 
     def set_blueprint_string(self, bp_string):
         self.blueprint.setText(bp_string)
@@ -302,13 +303,14 @@ if __name__ == "__main__":
     parser.add_argument("--output_file", "--of", type = str, help = "Output file where to save the output to (if not defined, the output will be written to standard output)")
     args = parser.parse_args()
 
+    """
     app = QApplication(sys.argv)
     widget = GeneratorWidget()
-    widget.setWindowTitle('Simple Qt Widget')
+    widget.setWindowTitle('Factory generator')
     widget.resize(300, 200)
     widget.show()
     sys.exit(app.exec())
-
+    """
     # Generate the factory
     factory = Factory()
     output_flow = [ItemFlow("PhotonCombiner", 1.0)]

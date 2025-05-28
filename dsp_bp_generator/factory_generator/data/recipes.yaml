@@ -413,7 +413,7 @@ ArcSmelter:
   name: Arc Smelter
   input_items:
     IronIngot: 4
-    StroneBrick: 2
+    StoneBrick: 2
     CircuitBoard: 4
     MagneticCoil: 2
   output_items:
@@ -739,6 +739,17 @@ ItemMonitor:
 GeothermalPowerPlant:
   recipe_id: 118
 AdvancedMiningMachine:
+  name: Advanced Mining Machine
+  input_items:
+    Steel: 20
+    ParticleContainer: 10
+    QuantumChip: 10
+    PlaneFilter: 4
+    GratingCrystal: 40
+  output_items:
+    AdvancedMiningMachine: 1
+  time: 20
+  tool: Assembling Machine
   recipe_id: 119
 AutomaticPiler:
   recipe_id: 120

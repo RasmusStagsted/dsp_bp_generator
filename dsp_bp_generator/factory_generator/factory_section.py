@@ -26,13 +26,13 @@ class FactorySection:
         # Create factory line
         factory_line_pos = pos + Vector(x = self.router_width)
         factory_count = 5
-        self.factory_line = FactoryLine(factory_line_pos, belt_routing, recipe, factory_count)
+        #self.factory_line = FactoryLine(factory_line_pos, belt_routing, recipe, factory_count)
         
         # Create router
         self.router = BeltRouter(pos, input_count, output_count, self.product_count, belt_routing, self.height)
         
         # Connect factory line and router
-        self.connect_to_factory_line(len(recipe["input_items"].keys()), self.product_count)
+        #self.connect_to_factory_line(len(recipe["input_items"].keys()), self.product_count)
         
     def get_belt_routing(product, main_belts, recipe):
         ingredients = product.get_needed_ingredients()
