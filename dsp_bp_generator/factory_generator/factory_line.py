@@ -1,7 +1,9 @@
-from ..buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI
+from ..buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI, SorterMKI
 from ..enums import Item
 from ..utils import Yaw, Vector
 from .factory_block import FactoryBlock
+from .factory_block_interface import FactoryBlockInterface
+from .proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
 from .recipes import Recipe
 from ..blueprint import Blueprint, BlueprintBuildingV1
 from ..buildings import Building
@@ -11,7 +13,7 @@ import math
 class FactoryLine:
     """Represents a line of factory blocks with connected belts and sorters."""
 
-    def __init__(self, pos, belt_routing, recipe, factory_count, factory_type = None):
+    def __init__(self, pos, belt_routing_per_block, recipe, factory_count, factory_type = None, belt_type = None, sorter_type = None):
         """Initialize the factory line and generate its factory blocks."""
         self.height = 6
         if factory_type is None:
@@ -22,7 +24,9 @@ class FactoryLine:
         self.factory_blocks = []
         for i in range(factory_count):
             temp_pos = pos + Vector(x = i * self.block_width)
-            factory_block = FactoryBlock(temp_pos, belt_routing, factory_type, recipe)
+            for connection in belt_routing_per_block:
+                connection.factory_block_index = factory_count - i - 1
+            factory_block = FactoryBlock(temp_pos, belt_routing_per_block, recipe, factory_type, belt_type, sorter_type)
             self.factory_blocks.append(factory_block)
 
         # Connect factory_blocks
@@ -33,43 +37,88 @@ class FactoryLine:
                 self.factory_blocks[i + 1]
             )
         
-        #self.input_belts = [self.factory_blocks[0].input_belts[i][0] for i in range(self.input_count)]
-        #self.output_belts = [self.factory_blocks[0].output_belts[i][-1] for i in range(self.output_count)]
-    
     @staticmethod
     def select_factory(recipe):
         """Select the appropriate factory type based on the recipe's tool."""
-        if recipe["tool"] == "Smelting Facility":
+        if recipe.tool == "Smelting Facility":
             return ArcSmelter
-        elif recipe["tool"] == "Assembling Machine":
+        elif recipe.tool == "Assembling Machine":
             return AssemblingMachineMKI
         else:
             raise ValueError(f"Unknown tool: {recipe['tool']}, Recipe: {recipe['name']}, ID: {recipe['recipe_id']}")
 
 if __name__ == "__main__":
-    # Example Route class for demonstration
-    class Route:
-        def __init__(self, placement, direction, belt_index):
-            self.placement = placement
-            self.direction = direction
-            self.belt_index = belt_index
-
-    # Example recipe dictionary
-    example_recipe = {
-        "tool": "Assembling Machine",
-        "name": "Example Product",
-        "recipe_id": 1
-    }
+    INGREDIENT = FactoryBlockInterface.Direction.INGREDIENT
+    PRODUCT = FactoryBlockInterface.Direction.PRODUCT
+    BUTTOM = FactoryBlockInterface.Placement.BOTTOM
+    TOP = FactoryBlockInterface.Placement.TOP
 
     pos = Vector(x = 0, y = 0)
-    belt_routing = [
-        Route(placement = "top", direction = "ingredient", belt_index = 0),
-        Route(placement = "buttom", direction = "product", belt_index = 1)
+    factory_routing = [
+        FactoryBlockInterface(
+            name = "Magnet interface",
+            item_type = "Magnet",
+            direction = INGREDIENT,
+            placement = BUTTOM,
+            belt_index = 0,
+            factory_block_index = 4,
+            proliferator = ProliferatorMKIII
+        ),
+        FactoryBlockInterface(
+            name = "Copper interface",
+            item_type = "CopperIngot",
+            direction = INGREDIENT,
+            placement = BUTTOM,
+            belt_index = 1,
+            factory_block_index = 4,
+            proliferator = ProliferatorMKIII
+        ),
+        FactoryBlockInterface(
+            name = "MagneticCoil interface",
+            item_type = "MagneticCoil",
+            direction = PRODUCT,
+            placement = TOP,
+            belt_index = 0,
+            factory_block_index = 4,
+            proliferator = ProliferatorMKIII
+        ),
     ]
-    factory_count = 2
+    recipe = Recipe.recipes["MagneticCoil"]
+    factory_count = 5
     factory_type = None  # Let FactoryLine select the factory type based on the recipe
 
-    factory_line = FactoryLine(pos, belt_routing, example_recipe, factory_count, factory_type)
+    factory_line = FactoryLine(pos, factory_routing, recipe, factory_count, factory_type)
+    blueprint = Blueprint()
+    output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version = BlueprintBuildingV1)
+    print(f"FactoryLine created: {output_blueprint_string}")
+    Building.buildings.clear()  # Clear the buildings for the next example
+    
+    pos = Vector(x = 0, y = 0)
+    factory_routing = [
+        FactoryBlockInterface(
+            name = "Iron ore interface",
+            item_type = "IronOre",
+            direction = INGREDIENT,
+            placement = BUTTOM,
+            belt_index = 0,
+            factory_block_index = 0,
+            proliferator = ProliferatorMKIII
+        ),
+        FactoryBlockInterface(
+            name = "Iron ingot interface",
+            item_type = "IronIngot",
+            direction = PRODUCT,
+            placement = TOP,
+            belt_index = 0,
+            factory_block_index = 0,
+            proliferator = ProliferatorMKIII
+        ),
+    ]
+    recipe = Recipe.recipes["IronIngot"]
+    factory_count = 5
+    factory_type = None  # Let FactoryLine select the factory type based on the recipe
+
+    factory_line = FactoryLine(pos, factory_routing, recipe, factory_count, factory_type)
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version = BlueprintBuildingV1)
     print(f"FactoryLine created: {output_blueprint_string}")

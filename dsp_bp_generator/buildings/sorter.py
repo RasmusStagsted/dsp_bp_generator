@@ -93,6 +93,7 @@ class Sorter(Building):
         assert False, "Not supported"
 
 class SorterMKI(Sorter):
+    MAX_THROUGHPUT = 1.5
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.item_id = BuildingItem.SorterMKI
@@ -108,6 +109,7 @@ class SorterMKI(Sorter):
         return Sorter.generate_sorter_from_building_to_building(name, building_1, building_2, SorterMKI)
 
 class SorterMKII(Sorter):
+    MAX_THROUGHPUT = 3.0
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.item_id = BuildingItem.SorterMKII
@@ -123,6 +125,7 @@ class SorterMKII(Sorter):
         return Sorter.generate_sorter_from_building_to_building(name, building_1, building_2, SorterMKII)
 
 class SorterMKIII(Sorter):
+    MAX_THROUGHPUT = 6.0
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.item_id = BuildingItem.SorterMKIII
@@ -138,6 +141,7 @@ class SorterMKIII(Sorter):
         return Sorter.generate_sorter_from_building_to_building(name, building_1, building_2, SorterMKIII)
 
 class PileSorter(Sorter):
+    MAX_THROUGHPUT = 20.0
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.item_id = BuildingItem.PileSorter

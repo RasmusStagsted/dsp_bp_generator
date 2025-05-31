@@ -38,8 +38,8 @@ class ConveyorBelt(Building):
             self.output_to_slot += 1
         
         # Move the belt back 0.2 spaces
-        dx, dy = Yaw.direction_to_unit_vector(self.yaw)
-        self.move_relative(Vector(-dx * 0.2, -dy * 0.2))
+        dir = Yaw.direction_to_unit_vector(self.yaw)
+        self.move_relative(Vector(-dir.x * 0.2, -dir.y * 0.2))
 
     def connect_to_sorter(self, sorter):
         pass
@@ -76,6 +76,7 @@ class ConveyorBelt(Building):
         return belts
         
 class ConveyorBeltMKI(ConveyorBelt):
+    MAX_THROUGHPUT = 6.0
     def __init__(self, name, pos: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(
             name = name,
@@ -92,6 +93,7 @@ class ConveyorBeltMKI(ConveyorBelt):
         return ConveyorBelt.generate_belt(name, pos, yaw, length, ConveyorBeltMKI)
         
 class ConveyorBeltMKII(ConveyorBelt):
+    MAX_THROUGHPUT = 12.0
     def __init__(self, name, pos: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(
             name = name,
@@ -108,6 +110,7 @@ class ConveyorBeltMKII(ConveyorBelt):
         return ConveyorBelt.generate_belt(name, pos, yaw, length, ConveyorBeltMKII)
         
 class ConveyorBeltMKIII(ConveyorBelt):
+    MAX_THROUGHPUT = 30.0
     def __init__(self, name, pos: Vector, yaw: Yaw, output_object_index: int = -1, input_object_index: int = -1, output_to_slot: int = 0):
         super().__init__(
             name = name,
