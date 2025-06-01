@@ -5,8 +5,8 @@ from .factory_block_interface import FactoryBlockInterface
 from ..factory_generator.proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
 from ..blueprint import Blueprint, BlueprintBuildingV1
 from ..buildings import Building
-from ..buildings import ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII
-from ..buildings import SorterMKI, SorterMKII, SorterMKIII, PileSorter
+from ..buildings import ConveyorBelt
+from ..buildings import Sorter
 from ..buildings import ArcSmelter, PlaneSmelter, NegentrophySmelter
 from ..buildings import AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler
 from ..buildings import MatrixLab, SelfEvolutionLab
@@ -26,20 +26,22 @@ class FactoryBlock:
     """
 
     @staticmethod
-    def select_belt_type(required_throughput, factory_block_index):
-        belt_types = [ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII]
-        for belt_type in belt_types:
-            if required_throughput * (1 + factory_block_index) <= belt_type.MAX_THROUGHPUT:
-                return belt_type
-        raise ValueError(f"Required throughput {required_throughput * (1 + factory_block_index)}/s exceeds maximum throughput of all belt types.")
-
+    def select_belt_type(required_throughput):
+        return ConveyorBelt.get_minimum_required_belt_type(required_throughput)
+                
     @staticmethod
-    def select_sorter_type(required_throughput, belt_index):
-        sorter_types = [SorterMKI, SorterMKII, SorterMKIII, PileSorter]
-        for sorter_type in sorter_types:
-            if required_throughput <= sorter_type.MAX_THROUGHPUT / (1 + belt_index):
-                return sorter_type
-        raise ValueError(f"Required throughput {required_throughput}/s exceeds maximum throughput of all sorter types.")
+    def select_sorter_type(connection, recipe):
+        distance = connection.belt_index + 1
+        if connection.direction == FactoryBlockInterface.Direction.INGREDIENT:
+            throughput = recipe.input_items[connection.item_type] * connection.proliferator.SPEED / recipe.time
+        elif connection.direction == FactoryBlockInterface.Direction.PRODUCT:
+            throughput = recipe.output_items[connection.item_type] * connection.proliferator.SPEED * connection.proliferator.PRODUCTIVITY / recipe.time            
+        else:
+            raise ValueError(f"Unknown direction: {connection.direction} for connection: {connection.name}")
+        return Sorter.get_minimum_required_sorter_type(
+            required_throughput = throughput,
+            distance = distance
+        )
 
     def __init__(self, pos, connections, recipe, factory_type, belt_type, sorter_type):
         """Initialize the factory block and generate its components."""
@@ -64,17 +66,17 @@ class FactoryBlock:
         
         for connection in connections:
             # Calculate throughput based on recipe and connection
-            throughput = connection.get_throughput(recipe) / recipe.time * prolifirator_speedup
+            throughput = connection.throughput / recipe.time * prolifirator_speedup
             if connection.direction == FactoryBlockInterface.Direction.PRODUCT:
                 throughput *= proliferator_productivity
 
             # Determine belt and sorter types based on throughput and connection properties
             if requested_belt_type is None:
-                belt_type = FactoryBlock.select_belt_type(throughput, connection.factory_block_index)
+                belt_type = FactoryBlock.select_belt_type(throughput)
             else:
                 belt_type = requested_belt_type
             if requested_sorter_type is None:
-                sorter_type = FactoryBlock.select_sorter_type(throughput, connection.belt_index)
+                sorter_type = FactoryBlock.select_sorter_type(connection, recipe)
             else:
                 sorter_type = requested_sorter_type
 
@@ -246,8 +248,8 @@ if __name__ == "__main__":
             item_type = "Magnet",
             direction = INGREDIENT,
             placement = BUTTOM,
+            throughput = 2.0,
             belt_index = 0,
-            factory_block_index = 4,
             proliferator = ProliferatorMKIII
         ),
         FactoryBlockInterface(
@@ -255,8 +257,8 @@ if __name__ == "__main__":
             item_type = "CopperIngot",
             direction = INGREDIENT,
             placement = BUTTOM,
+            throughput = 1.0,
             belt_index = 1,
-            factory_block_index = 4,
             proliferator = ProliferatorMKIII
         ),
         FactoryBlockInterface(
@@ -264,8 +266,8 @@ if __name__ == "__main__":
             item_type = "MagneticCoil",
             direction = PRODUCT,
             placement = TOP,
+            throughput = 2.0,
             belt_index = 0,
-            factory_block_index = 4,
             proliferator = ProliferatorMKIII
         ),
     ]
@@ -274,14 +276,13 @@ if __name__ == "__main__":
     belt_type = None  # Let FactoryBlock select the belt type based on throughput
     sorter_type = None  # Let FactoryBlock select the sorter type based on throughput
     block = FactoryBlock(pos, factory_routing, recipe, factory_type, belt_type, sorter_type)
-    print(f"FactoryBlock created: {block}")
 
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(
         blueprint_buildings = Building.buildings,
         blueprint_building_version = BlueprintBuildingV1
     )
-    print("Smelter blueprint:\n" + output_blueprint_string)
+    print(f"\nAssembly block created:\n{output_blueprint_string}\n")
     Building.buildings.clear()  # Clear the buildings for the next example
     
     pos = Vector(x = 0, y = 0)
@@ -291,8 +292,8 @@ if __name__ == "__main__":
             item_type = "IronOre",
             direction = INGREDIENT,
             placement = BUTTOM,
+            throughput = 1.0,
             belt_index = 0,
-            factory_block_index = 0,
             proliferator = ProliferatorMKIII
         ),
         FactoryBlockInterface(
@@ -300,8 +301,8 @@ if __name__ == "__main__":
             item_type = "IronIngot",
             direction = PRODUCT,
             placement = TOP,
+            throughput = 1.0,
             belt_index = 0,
-            factory_block_index = 0,
             proliferator = ProliferatorMKIII
         ),
     ]
@@ -310,12 +311,11 @@ if __name__ == "__main__":
     belt_type = None  # Let FactoryBlock select the belt type based on throughput
     sorter_type = None  # Let FactoryBlock select the sorter type based on throughput
     block = FactoryBlock(pos, factory_routing, recipe, factory_type, belt_type, sorter_type)
-    print(f"FactoryBlock created: {block}")
 
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(
         blueprint_buildings = Building.buildings,
         blueprint_building_version = BlueprintBuildingV1
     )
-    print("Smelter blueprint:\n" + output_blueprint_string)
+    print(f"Smeltery block created:\n{output_blueprint_string}")
     Building.buildings.clear()  # Clear the buildings

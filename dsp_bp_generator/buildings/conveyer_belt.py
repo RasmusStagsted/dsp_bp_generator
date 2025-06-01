@@ -44,7 +44,7 @@ class ConveyorBelt(Building):
     def connect_to_sorter(self, sorter):
         pass
 
-    def generate_belt(name, pos, yaw, length: int, belt_type):
+    def generate_belt(name, pos, yaw: Yaw, length: int, belt_type):
         if type(yaw) != list:
             yaw = [yaw]
         if type(length) != list:
@@ -74,6 +74,15 @@ class ConveyorBelt(Building):
                 belt.output_object_index = -1
                 belt.output_to_slot = 0
         return belts
+        
+    @staticmethod
+    def get_minimum_required_belt_type(required_throughput):
+        belt_types = [ConveyorBeltMKI, ConveyorBeltMKII, ConveyorBeltMKIII]
+        for belt_type in belt_types:
+            if required_throughput <= belt_type.MAX_THROUGHPUT:
+                return belt_type
+        raise ValueError(f"Required throughput {required_throughput}/s exceeds maximum throughput of all belt types.")
+
         
 class ConveyorBeltMKI(ConveyorBelt):
     MAX_THROUGHPUT = 6.0

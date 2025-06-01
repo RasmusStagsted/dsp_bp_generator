@@ -1,5 +1,8 @@
 from .factory_line import FactoryLine
+from .recipes import Recipe
 from ..blueprint import Blueprint, BlueprintBuildingV1
+from .factory_router_interface import FactoryRouterInterface
+from .factory_block_interface import FactoryBlockInterface
 from ..buildings import Building
 from .factory_router import FactoryRouter
 from ..utils import Vector
@@ -23,6 +26,21 @@ class FactorySection:
                     f"direction={self.direction}, placement={self.placement}, "
                     f"router_index={self.router_index}, belt_index={self.belt_index})")
     
+    def __init__(self, pos, factory_router_interface, recipe, factory_count, proliferator = None):
+
+        block_interface = []
+        factory_line_pos = pos + Vector(x = 2 * (len(factory_router_interface) + len(recipe.output_items)))
+        self.factory_line = FactoryLine(factory_line_pos, block_interface, recipe, factory_count)
+
+        self.factory_router = FactoryRouter(
+            pos = pos,
+            factory_router_interface = factory_router_interface,
+            factory_block_interface = block_interface,
+            proliferator = None
+        )
+
+    
+    """        
     def __init__(self, pos, input_count, output_count, main_belts, product, recipe):
         self.product_count = len(recipe["output_items"].keys())
         
@@ -110,38 +128,46 @@ class FactorySection:
             section2.router.input_splitters[i].connect_to_belt(self.router.input_belts[i])
         for i in range(len(self.router.output_belts)):
             self.router.output_belts[i].connect_to_splitter(section2.router.output_splitters[i])
-    
+    """
+
 if __name__ == "__main__":
-    # Minimal mock classes for demonstration
-    class MockProduct:
-        def __init__(self, name):
-            self.name = name
-            self.count_pr_sec = 1.0
-        def get_needed_ingredients(self):
-            return [MockProduct("IronIngot"), MockProduct("CopperIngot")]
-        def get_products(self):
-            return [MockProduct(self.name)]
 
-    # Example recipe dictionary
-    example_recipe = {
-        "output_items": {"ExampleProduct": 1},
-        "input_items": {"IronIngot": 1, "CopperIngot": 1},
-        "tool": "Assembling Machine",
-        "recipe_id": 1
-    }
+    pos = Vector(x = 0, y = 0)
+    
+    INGREDIENT = FactoryBlockInterface.Direction.INGREDIENT
+    PRODUCT = FactoryBlockInterface.Direction.PRODUCT
+    
+    factory_router_interface = [
+        FactoryRouterInterface(
+            name = "Belt router interface iron ore",
+            item_type = "IronOre",
+            direction = INGREDIENT,
+            pos = Vector(0, 0),
+            throughput = 6,
+            proliferator = None,
+        ),
+        FactoryRouterInterface(
+            name = "Belt router interface copper ore",
+            item_type = "CopperOre",
+            direction = INGREDIENT,
+            pos = Vector(2, 0),
+            throughput = 10,
+            proliferator = None,
+        ),
+        FactoryRouterInterface(
+            name = "Belt router interface iron ingot",
+            item_type = "IronIngot",
+            direction = PRODUCT,
+            pos = Vector(4, 0),
+            throughput = 20,
+            proliferator = None,
+        ),
+    ]
 
-    pos = Vector(x=0, y=0)
-    input_count = 2
-    output_count = 2
-    main_belts = [MockProduct("IronIngot"), MockProduct("CopperIngot"), MockProduct("ExampleProduct")]
-    product = MockProduct("ExampleProduct")
-    recipe = example_recipe
+    recipe = Recipe.recipes["MagneticCoil"]
+    factory_count = 3
 
-    section = FactorySection(pos, input_count, output_count, main_belts, product, recipe)
-    print(f"FactorySection created: {section}")
-    print("BeltRouting examples:")
-    for route in FactorySection.get_belt_routing(product, main_belts, recipe):
-        print(route)
+    FactorySection(pos, factory_router_interface, recipe, factory_count)
         
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version=BlueprintBuildingV1)

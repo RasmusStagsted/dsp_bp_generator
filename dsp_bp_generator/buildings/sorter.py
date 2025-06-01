@@ -92,6 +92,14 @@ class Sorter(Building):
     def generate_sorter_from_belt_to_belt(name, factory, belt, sorter_type = None):
         assert False, "Not supported"
 
+    @staticmethod
+    def get_minimum_required_sorter_type(required_throughput, distance):
+        sorter_types = [SorterMKI, SorterMKII, SorterMKIII, PileSorter]
+        for sorter_type in sorter_types:
+            if required_throughput <= sorter_type.MAX_THROUGHPUT / distance:
+                return sorter_type
+        raise ValueError(f"Required throughput {required_throughput}/s/m exceeds maximum throughput of all sorter types.")
+
 class SorterMKI(Sorter):
     MAX_THROUGHPUT = 1.5
     def __init__(self, **kwargs):

@@ -71,6 +71,7 @@ class Recipe:
                 return (k, v)
             if hasattr(k, 'value') and item_name == k.value:
                 return (k, v)
+        print(f"Item '{item_name}' not found in recipe '{self.name}'")
         return None
 
     def select(item_name):

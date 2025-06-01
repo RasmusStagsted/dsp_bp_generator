@@ -113,11 +113,15 @@ class Blueprint:
             blueprint_building.parse(packet)
             self.blueprint_buildings.append(blueprint_building)
             if debug:
+                print(type(blueprint_building))
                 print(blueprint_building)
 
         return self.blueprint_buildings
 
     def serialize(self, blueprint_buildings, debug = False, debug_raw_data = False, blueprint_building_version = BlueprintBuildingV1):
+
+        if blueprint_buildings == []:
+            raise ValueError("No buildings to serialize.\nPlease generate buildings before calling Blueprint.serialize.")
 
         data = bytes()
 

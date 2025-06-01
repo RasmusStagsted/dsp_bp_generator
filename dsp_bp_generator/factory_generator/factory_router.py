@@ -1,7 +1,7 @@
 from ..utils import Vector, Yaw
 from .factory_router_interface import FactoryRouterInterface
 from .factory_block_interface import FactoryBlockInterface
-from ..buildings import ConveyorBeltMKI, Splitter
+from ..buildings import ConveyorBelt, Splitter
 from ..enums import BuildingModel
 from ..blueprint import Blueprint, BlueprintBuildingV1
 from ..buildings import Building
@@ -9,154 +9,132 @@ from ..buildings import Building
 class FactoryRouter:
     """Handles the routing of routing belts and splitters for factory layouts."""
 
-    def __init__(self, pos, input_count, output_count, product_count, belt_routing, belt_length):
-        self.width = 2 * (input_count + output_count + product_count)
-        self.generate_splitters(pos, input_count, output_count, product_count)
-        self.generate_input_belts(pos, input_count, belt_length)
-        self.generate_output_belts(pos, input_count, output_count, product_count, belt_length)
-        self.generate_router_belts(pos, belt_routing)
-
-    def generate_splitters(self, pos, input_count, output_count, product_count):
-        """Generate input, output, and product splitters."""
-        self.input_splitters = []
-        self.output_splitters = []
-        self.product_splitters = []
-        input_splitter_properties = {
-            "buffer": self.input_splitters,
-            "name": "InputSplitter",
-            "pos": pos,
-            "count": input_count,
-        }
-        output_splitter_properties = {
-            "buffer": self.output_splitters,
-            "name": "OutputSplitter",
-            "pos": pos + Vector(x = 2 * input_count),
-            "count": output_count,
-        }
-        product_splitter_properties = {
-            "buffer": self.product_splitters,
-            "name": "ProductSplitter",
-            "pos": pos + Vector(x = 2 * (input_count + output_count)),
-            "count": product_count,
-        }
-        self.generate_splitter_section(**input_splitter_properties)
-        self.generate_splitter_section(**output_splitter_properties)
-        self.generate_splitter_section(**product_splitter_properties)
-        self.splitters = self.input_splitters + self.output_splitters + self.product_splitters
+    def __init__(self, pos, factory_router_interface, factory_block_interface, proliferator = None):
         
-    def generate_splitter_section(self, buffer, name, pos, count):
-        """Generate splitter section."""
-        for i in range(count):
-            temp_pos = Vector(pos.x + 2 * i, pos.y)
-            splitter = Splitter(
-                name = f"{name}:{i}",
-                pos = temp_pos,
+        self.width = max([con.pos.x for con in factory_router_interface]) + 1
+        self.height = 6
+        self.generate_splitters(pos, factory_router_interface)
+        self.generate_bus_belts(pos, factory_router_interface)
+        self.generate_router_belts(pos, factory_router_interface, factory_block_interface, proliferator)
+
+    def generate_splitters(self, pos, factory_router_interface):
+        self.splitters = {}
+        for connection in factory_router_interface:
+            self.splitters[connection] = Splitter(
+                name = f"{connection.name}",
+                pos = pos + connection.pos,
                 yaw = Yaw.North,
                 mode = BuildingModel.SplitterTwoLayerStraight
             )
-            buffer.append(splitter)
-        
-    def generate_input_belts(self, pos, input_count, belt_length):
-        """Generate input belts and connect them to input splitters."""
-        self.input_belts = []
-        for i in range(input_count):
-            temp_pos = Vector(pos.x + 2 * i, pos.y + belt_length - 1, 1)
-            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:InputBelt:{i}", temp_pos, Yaw.South, belt_length)
-            belt_start = belts[0]
-            belt_end = belts[-1]
-            self.input_belts.append(belt_start)
-            splitter = self.input_splitters[i]
-            belt_end.connect_to_splitter(splitter)
+            
+    def generate_bus_belts(self, pos, factory_router_interface):
+        self.bus_belts = {}
+        for connection in factory_router_interface:
+            belt_type = ConveyorBelt.get_minimum_required_belt_type(connection.throughput)
+            if connection.direction == FactoryBlockInterface.Direction.INGREDIENT:
+                self.bus_belts[connection] = belt_type.generate_belt(
+                    name = f"{connection.name}:BusBelt",
+                    pos = pos + connection.pos + Vector(y = self.height - 1.0, z = 1.0),
+                    yaw = Yaw.South,
+                    length = self.height
+                )
+                self.bus_belts[connection][-1].connect_to_splitter(self.splitters[connection])
+            elif connection.direction == FactoryBlockInterface.Direction.PRODUCT:
+                
+                self.bus_belts[connection] = belt_type.generate_belt(
+                    name = f"{connection.name}:BusBelt",
+                    pos = pos + connection.pos + Vector(z = 1.0),
+                    yaw = Yaw.North,
+                    length = self.height
+                )
+                self.splitters[connection].connect_to_belt(self.bus_belts[connection][0])
+            else:
+                raise ValueError(f"Unknown direction: {connection.direction} for router interface connection: {connection.name}")
+    
+    def generate_router_belts(self, pos, factory_router_interface, factory_block_interface, proliferator):
+        self.router_belts = {}
+        for block_connection in factory_block_interface:
+            for router_connection in factory_router_interface:
+                if block_connection.item_type == router_connection.item_type:
+                    self.route_splitter_to_factory_line(pos, router_connection, block_connection, proliferator)
+                    continue
+                    
+    def route_splitter_to_factory_line(self, pos, router_connection, block_connection, proliferator):
+        initial_direction = Yaw.Unknown
+        if block_connection.placement == FactoryBlockInterface.Placement.TOP:
+            initial_direction = Yaw.North
+        elif block_connection.placement == FactoryBlockInterface.Placement.BOTTOM:
+            initial_direction = Yaw.South            
+        else:
+            raise ValueError(f"Unknown placement: {block_connection.placement} for block connection: {block_connection.name}")
 
-    def generate_output_belts(self, pos, input_count, output_count, product_count, belt_length):
-        """Generate output and product belts, and connect them to splitters."""
-        self.output_belts = []
-        for i in range(output_count):
-            temp_pos = Vector(pos.x + 2 * (i + input_count), pos.y, 1)
-            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:OutputBelt:{i}", temp_pos, Yaw.North, belt_length)
-            belt_start = belts[0]
-            belt_end = belts[-1]
-            self.output_belts.append(belt_end)
-            splitter = self.output_splitters[i]
-            splitter.connect_to_belt(belt_start)
-        for i in range(product_count):
-            temp_pos = Vector(pos.x + 2 * (i + input_count + output_count), pos.y, 1)
-            belts = ConveyorBeltMKI.generate_belt(f"BeltRouter:ProductBelt:{i}", temp_pos, Yaw.North, belt_length)
-            belt_start = belts[0]
-            belt_end = belts[-1]
-            self.output_belts.append(belt_end)
-            splitter = self.product_splitters[i]
-            splitter.connect_to_belt(belt_start)
+        belt_type = ConveyorBelt.get_minimum_required_belt_type(block_connection.throughput)
 
-    def generate_router_belts(self, pos, routes):
-        """Generate product and selector belts based on routing information."""
-        self.product_belts = []
-        self.selector_belts = []
-        for route in routes:
-            if route.direction == "product":
-                if route.placement == "top":
-                    start_pos = pos + Vector(self.width - 1, 2 + route.belt_index)
-                    yaw = [Yaw.West, Yaw.South]
-                else:
-                    start_pos = pos + Vector(self.width - 1, -2 - route.belt_index)
-                    yaw = [Yaw.West, Yaw.North]
-                name = "Productbelt"
-                length = [self.width - 1 - 2 * route.router_index, 3 + route.belt_index]
-                belt = ConveyorBeltMKI.generate_belt(name, start_pos, yaw, length)
-                self.product_belts.append(belt)
-                splitter = self.splitters[route.router_index]
-                belt[-1].connect_to_splitter(splitter)
-                for i in range(route.belt_index):
-                    belt[-2 - i].move_relative(Vector(z = 0.0))
-                for i in range(route.belt_index):
-                    belt[-3 - i].move_relative(Vector(z = 0.3))
-            elif route.direction == "ingredient":
-                if route.placement == "top":
-                    start_pos = pos + Vector(route.router_index * 2, 0)
-                    yaw = [Yaw.North, Yaw.East]
-                else:
-                    start_pos = pos + Vector(route.router_index * 2, 0)
-                    yaw = [Yaw.South, Yaw.East]
-                name = "SelectorBelt"
-                length = [2 + route.belt_index, self.width - 2 * route.router_index]
-                belt = ConveyorBeltMKI.generate_belt(name, start_pos, yaw, length)
-                self.selector_belts.append(belt)
-                splitter = self.splitters[route.router_index]
-                splitter.connect_to_belt(belt[0])
-                for i in range(route.belt_index):
-                    belt[2 + i].move_relative(Vector(z = 0.3))
+        self.router_belts[block_connection] = ConveyorBelt.generate_belt(
+            name = f"{block_connection.name}:RouterBelt",
+            pos = pos + router_connection.pos,
+            yaw = [initial_direction, Yaw.East],
+            length = [2 + block_connection.belt_index, 5 + self.width - router_connection.pos.x],
+            belt_type = belt_type
+        )
+        self.splitters[router_connection].connect_to_belt(self.router_belts[block_connection][0])
 
 if __name__ == "__main__":
     
+    pos = Vector(x = 0, y = 0)
+    
+    INGREDIENT = FactoryBlockInterface.Direction.INGREDIENT
+    PRODUCT = FactoryBlockInterface.Direction.PRODUCT
+    
     factory_router_interface = [
         FactoryRouterInterface(
+            name = "Belt router interface iron ore",
+            item_type = "IronOre",
+            direction = INGREDIENT,
+            pos = Vector(0, 0),
+            throughput = 6,
+            proliferator = None,
+        ),
+        FactoryRouterInterface(
+            name = "Belt router interface copper ore",
+            item_type = "CopperOre",
+            direction = INGREDIENT,
+            pos = Vector(2, 0),
+            throughput = 10,
+            proliferator = None,
+        ),
+        FactoryRouterInterface(
             name = "Belt router interface iron ingot",
-            item_type = "",
-            direction = "ingredient",
+            item_type = "IronIngot",
+            direction = PRODUCT,
+            pos = Vector(4, 0),
+            throughput = 20,
+            proliferator = None,
         ),
     ]
     
     factory_block_interface = [
         FactoryBlockInterface(
-            name="FactoryBlock",
-            item_type="FactoryBlock",
-            direction="product",
-            placement="top",
-            belt_index=0,
-            factory_block_index=0,
-            proliferator=None
+            name = "FactoryBlock",
+            item_type = "IronOre",
+            direction = INGREDIENT,
+            placement = FactoryBlockInterface.Placement.BOTTOM,
+            throughput = 6.0,
+            belt_index = 0,
+            proliferator = None
+        ),
+        FactoryBlockInterface(
+            name = "FactoryBlock",
+            item_type = "IronIngot",
+            direction = PRODUCT,
+            placement = FactoryBlockInterface.Placement.TOP,
+            throughput = 20.0,
+            belt_index = 0,
+            proliferator = None
         ),
     ]
-    
-    # Example usage
-    pos = Vector(x = 0, y = 0)
-    input_count = 3
-    output_count = 3
-    product_count = 3
-    belt_length = 3
 
-
-    router = BeltRouter(pos, input_count, output_count, product_count, belt_routing, belt_length)
+    router = FactoryRouter(pos, factory_router_interface, factory_block_interface, proliferator = None)
     print(f"BeltRouter created: {router}")
 
     blueprint = Blueprint()
