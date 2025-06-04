@@ -4,8 +4,46 @@ from dsp_bp_generator.factory_generator.proliferator import Proliferator
 
 from dsp_bp_generator.factory_generator.recipes import Recipe
 
+from dataclasses import dataclass
+
+@dataclass
 class FactoryBlockInterface:
+
+    belts: list = None
     
+    def get_ingredient_count(self):
+        ingredient_count = 0
+        for belt in self.belts:
+            if belt.direction == FactoryBlockBelt.Direction.INGREDIENT:
+                ingredient_count += 1
+        return ingredient_count
+    
+    def get_product_count(self):
+        product_count = 0
+        for belt in self.belts:
+            if belt.direction == FactoryBlockBelt.Direction.PRODUCT:
+                product_count += 1
+        return product_count
+
+    def get_top_belt_count(self):
+        top_belt_count = 0
+        for belt in self.belts:
+            if belt.placement == FactoryBlockBelt.Placement.TOP:
+                top_belt_count += 1
+        return top_belt_count
+    
+    def get_bottom_belt_count(self):
+        bottom_belt_count = 0
+        for belt in self.belts:
+            if belt.placement == FactoryBlockBelt.Placement.BOTTOM:
+                bottom_belt_count += 1
+        return bottom_belt_count
+    
+    def get_belt_count(self):
+        return len(self.belts)
+
+class FactoryBlockBelt:
+
     class Direction(IntEnum):
         INGREDIENT = 0
         PRODUCT = 1
@@ -34,8 +72,8 @@ class FactoryBlockInterface:
         return (
             f"[FactoryBlockInterface] {self.name}\n"
             f"  Item type: {self.item_type}\n"
-            f"  Direction: {FactoryBlockInterface.Direction(self.direction).name}\n"
-            f"  Placement: {FactoryBlockInterface.Placement(self.placement).name}\n"
+            f"  Direction: {FactoryBlockBelt.Direction(self.direction).name}\n"
+            f"  Placement: {FactoryBlockBelt.Placement(self.placement).name}\n"
             f"  Throughput: {self.throughput} items/s\n"
             f"  Belt index: {self.belt_index}\n"
             f"  Proliferator: {self.proliferator.name if self.proliferator else 'None'}\n"
