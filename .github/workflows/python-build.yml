@@ -64,3 +64,6 @@ jobs:
       # pyproject.toml and makes that if you add things like console-scripts at some point that
       # they'll be installed and working.
       - run: poetry install --no-interaction
+
+      - name: Run test.py
+        run: poetry run python test.py
