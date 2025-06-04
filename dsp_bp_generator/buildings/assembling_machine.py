@@ -20,6 +20,10 @@ class AssemblingMachine(Factory3x3):
     def get_size():
         return Vector(4.0, 4.0)
     
+    @staticmethod
+    def get_height():
+        return 3.0
+    
     def get_offset(self):
         return Vector(2.0, 2.0)
         

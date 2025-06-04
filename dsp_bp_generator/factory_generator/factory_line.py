@@ -2,7 +2,7 @@ from ..buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBe
 from ..enums import Item
 from ..utils import Yaw, Vector
 from .factory_block import FactoryBlock
-from .factory_block_interface import FactoryBlockInterface
+from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
 from .proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
 from .recipes import Recipe
 from ..blueprint import Blueprint, BlueprintBuildingV1
@@ -40,12 +40,14 @@ class FactoryLine:
         
     @staticmethod
     def reduce_throughput(block_interface, recipe):
-        for interface in block_interface:
-            if interface.direction == FactoryBlockInterface.Direction.INGREDIENT:
-                proliferator_scale = interface.proliferator.SPEED
+        for interface in block_interface.belts:
+            speed = 1 if interface.proliferator is None else interface.proliferator.SPEED
+            productivity = 1 if interface.proliferator is None else interface.proliferator.PRODUCTIVITY
+            if interface.direction == FactoryBlockBelt.Direction.INGREDIENT:
+                proliferator_scale = speed
                 throughput_reduction = recipe.input_items[interface.item_type] * proliferator_scale
-            elif interface.direction == FactoryBlockInterface.Direction.PRODUCT:
-                proliferator_scale = interface.proliferator.SPEED * interface.proliferator.PRODUCTIVITY
+            elif interface.direction == FactoryBlockBelt.Direction.PRODUCT:
+                proliferator_scale = speed * productivity
                 throughput_reduction = recipe.output_items[interface.item_type] * proliferator_scale
             else:
                 raise ValueError(f"Unknown direction: {interface.direction} for item type: {interface.item_type}")
@@ -61,78 +63,81 @@ class FactoryLine:
         else:
             raise ValueError(f"Unknown tool: {recipe['tool']}, Recipe: {recipe['name']}, ID: {recipe['recipe_id']}")
 
+    def get_height(self):
+        return self.height
+
 if __name__ == "__main__":
-    INGREDIENT = FactoryBlockInterface.Direction.INGREDIENT
-    PRODUCT = FactoryBlockInterface.Direction.PRODUCT
-    BUTTOM = FactoryBlockInterface.Placement.BOTTOM
-    TOP = FactoryBlockInterface.Placement.TOP
+    INGREDIENT = FactoryBlockBelt.Direction.INGREDIENT
+    PRODUCT = FactoryBlockBelt.Direction.PRODUCT
+    BUTTOM = FactoryBlockBelt.Placement.BOTTOM
+    TOP = FactoryBlockBelt.Placement.TOP
 
     pos = Vector(x = 0, y = 0)
-    block_interface = [
-        FactoryBlockInterface(
+    interface = FactoryBlockInterface(belts = [
+        FactoryBlockBelt(
             name = "Magnet interface",
             item_type = "Magnet",
             direction = INGREDIENT,
             placement = BUTTOM,
-            throughput = 12.0,
+            throughput = 2.0,
             belt_index = 0,
             proliferator = ProliferatorMKIII
         ),
-        FactoryBlockInterface(
+        FactoryBlockBelt(
             name = "Copper interface",
             item_type = "CopperIngot",
             direction = INGREDIENT,
             placement = BUTTOM,
-            throughput = 6.0,
+            throughput = 1.0,
             belt_index = 1,
             proliferator = ProliferatorMKIII
         ),
-        FactoryBlockInterface(
+        FactoryBlockBelt(
             name = "MagneticCoil interface",
             item_type = "MagneticCoil",
             direction = PRODUCT,
             placement = TOP,
-            throughput = 15.0,
+            throughput = 2.0,
             belt_index = 0,
             proliferator = ProliferatorMKIII
         ),
-    ]
+    ])
     recipe = Recipe.recipes["MagneticCoil"]
     factory_count = 3
     factory_type = None  # Let FactoryLine select the factory type based on the recipe
 
-    factory_line = FactoryLine(pos, block_interface, recipe, factory_count, factory_type)
+    factory_line = FactoryLine(pos, interface, recipe, factory_count, factory_type)
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version = BlueprintBuildingV1)
     print(f"\nAssembly line created:\n{output_blueprint_string}\n")
     Building.buildings.clear()  # Clear the buildings for the next example
     
     pos = Vector(x = 0, y = 0)
-    block_interface = [
-        FactoryBlockInterface(
+    interface = FactoryBlockInterface(belts = [
+        FactoryBlockBelt(
             name = "Iron ore interface",
             item_type = "IronOre",
             direction = INGREDIENT,
             placement = BUTTOM,
-            throughput = 6.0,
+            throughput = 1.0,
             belt_index = 0,
             proliferator = ProliferatorMKIII
         ),
-        FactoryBlockInterface(
+        FactoryBlockBelt(
             name = "Iron ingot interface",
             item_type = "IronIngot",
             direction = PRODUCT,
             placement = TOP,
-            throughput = 7.5,
+            throughput = 1.0,
             belt_index = 0,
             proliferator = ProliferatorMKIII
         ),
-    ]
+    ])
     recipe = Recipe.recipes["IronIngot"]
     factory_count = 3
     factory_type = None  # Let FactoryLine select the factory type based on the recipe
 
-    factory_line = FactoryLine(pos, block_interface, recipe, factory_count, factory_type)
+    factory_line = FactoryLine(pos, interface, recipe, factory_count, factory_type)
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version = BlueprintBuildingV1)
     print(f"Smeltery line created:\n{output_blueprint_string}")

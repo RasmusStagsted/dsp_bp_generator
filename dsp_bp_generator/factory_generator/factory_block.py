@@ -1,7 +1,7 @@
 from ..enums import Item
 from ..utils import Vector, Yaw
 from ..factory_generator.recipes import Recipe
-from .factory_block_interface import FactoryBlockInterface
+from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
 from ..factory_generator.proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
 from ..blueprint import Blueprint, BlueprintBuildingV1
 from ..buildings import Building
@@ -25,33 +25,18 @@ class FactoryBlock:
     - One to three output sorters
     """
 
-    @staticmethod
-    def select_belt_type(required_throughput):
-        return ConveyorBelt.get_minimum_required_belt_type(required_throughput)
-                
-    @staticmethod
-    def select_sorter_type(connection, recipe):
-        distance = connection.belt_index + 1
-        if connection.direction == FactoryBlockInterface.Direction.INGREDIENT:
-            throughput = recipe.input_items[connection.item_type] * connection.proliferator.SPEED / recipe.time
-        elif connection.direction == FactoryBlockInterface.Direction.PRODUCT:
-            throughput = recipe.output_items[connection.item_type] * connection.proliferator.SPEED * connection.proliferator.PRODUCTIVITY / recipe.time            
-        else:
-            raise ValueError(f"Unknown direction: {connection.direction} for connection: {connection.name}")
-        return Sorter.get_minimum_required_sorter_type(
-            required_throughput = throughput,
-            distance = distance
-        )
-
-    def __init__(self, pos, connections, recipe, factory_type, belt_type, sorter_type):
+    def __init__(self, pos, interface: FactoryBlockInterface, recipe, factory_type, belt_type, sorter_type):
         """Initialize the factory block and generate its components."""
-        factory_pos = pos + FactoryBlock.get_factory_offset(factory_type)
+        if factory_type is None:
+            factory_type = FactoryBlock.select_factory(recipe)
+        factory_pos = pos + FactoryBlock.get_factory_offset(factory_type) + Vector(y = -interface.get_top_belt_count())
         self.generate_factory(factory_pos, factory_type, recipe)
-        top_belt_pos = pos + FactoryBlock.get_top_belt_offset(factory_type)
-        buttom_belt_pos = pos + FactoryBlock.get_buttom_belt_offset(factory_type)
-        self.generate_belts_and_sorters(connections, recipe, top_belt_pos, buttom_belt_pos, belt_type, sorter_type, self.factory)
+        
+        top_belt_pos = pos + Vector(y = 1 - interface.get_top_belt_count())
+        buttom_belt_pos = pos + Vector(y = -factory_type.get_height() - interface.get_top_belt_count())
+        self.generate_belts_and_sorters(interface, recipe, top_belt_pos, buttom_belt_pos, belt_type, sorter_type, self.factory)
 
-    def generate_belts_and_sorters(self, connections, recipe, top_belt_pos, buttom_belt_pos, requested_belt_type, requested_sorter_type, factory):
+    def generate_belts_and_sorters(self, interface, recipe, top_belt_pos, buttom_belt_pos, requested_belt_type, requested_sorter_type, factory):
         """Generate ingredient and product belts and connect them to the factory."""
         width = int(type(factory).get_size().x)
         self.ingredient_belts = []
@@ -60,14 +45,19 @@ class FactoryBlock:
         # Fetch lowest level of proliferator properties
         prolifirator_speedup = 1
         proliferator_productivity = 1
-        for connection in connections:
-            prolifirator_speedup = min(prolifirator_speedup, connection.proliferator.PRODUCTIVITY)
-            proliferator_productivity = min(proliferator_productivity, connection.proliferator.PRODUCTIVITY)
+        for belt in interface.belts:
+            if belt.proliferator == None:
+                prolifirator_speedup = 1
+                proliferator_productivity = 1
+                break
+            else:
+                prolifirator_speedup = min(prolifirator_speedup, belt.proliferator.PRODUCTIVITY)
+                proliferator_productivity = min(proliferator_productivity, belt.proliferator.PRODUCTIVITY)
         
-        for connection in connections:
+        for belt in interface.belts:
             # Calculate throughput based on recipe and connection
-            throughput = connection.throughput / recipe.time * prolifirator_speedup
-            if connection.direction == FactoryBlockInterface.Direction.PRODUCT:
+            throughput = belt.throughput / recipe.time * prolifirator_speedup
+            if belt.direction == FactoryBlockBelt.Direction.PRODUCT:
                 throughput *= proliferator_productivity
 
             # Determine belt and sorter types based on throughput and connection properties
@@ -76,24 +66,24 @@ class FactoryBlock:
             else:
                 belt_type = requested_belt_type
             if requested_sorter_type is None:
-                sorter_type = FactoryBlock.select_sorter_type(connection, recipe)
+                sorter_type = FactoryBlock.select_sorter_type(belt, recipe)
             else:
                 sorter_type = requested_sorter_type
 
             # Generate the belt based on the connection properties
-            if connection.placement == FactoryBlockInterface.Placement.TOP:
-                pos = top_belt_pos + Vector(y = connection.belt_index)
-            elif connection.placement == FactoryBlockInterface.Placement.BOTTOM:
-                pos = buttom_belt_pos - Vector(y = connection.belt_index)
+            if belt.placement == FactoryBlockBelt.Placement.TOP:
+                pos = top_belt_pos + Vector(y = belt.belt_index)
+            elif belt.placement == FactoryBlockBelt.Placement.BOTTOM:
+                pos = buttom_belt_pos - Vector(y = belt.belt_index)
             else:
-                raise ValueError(f"Unknown placement: {connection.placement}")
-            if connection.direction == FactoryBlockInterface.Direction.PRODUCT:
+                raise ValueError(f"Unknown placement: {belt.placement}")
+            if belt.direction == FactoryBlockBelt.Direction.PRODUCT:
                 yaw = Yaw.West
                 pos += Vector(x = width - 1)
-            elif connection.direction == FactoryBlockInterface.Direction.INGREDIENT:
+            elif belt.direction == FactoryBlockBelt.Direction.INGREDIENT:
                 yaw = Yaw.East
             else:
-                raise ValueError(f"Unknown direction: {connection.direction}")
+                raise ValueError(f"Unknown direction: {belt.direction}")
             belts = belt_type.generate_belt(
                 name = "",
                 pos = pos,
@@ -102,16 +92,16 @@ class FactoryBlock:
             )
             
             # Connect the belts to the factory using sorters
-            if connection.direction == FactoryBlockInterface.Direction.PRODUCT:
-                sorter_belt_index = width - 1 - connection.belt_index
+            if belt.direction == FactoryBlockBelt.Direction.PRODUCT:
+                sorter_belt_index = width - 1 - belt.belt_index
                 sorter_type.generate_sorter_from_belt_to_building(
                     name = "Sorter",
                     belt = belts[sorter_belt_index],
                     building = factory
                 )
                 self.product_belts.append(belts)
-            elif connection.direction == FactoryBlockInterface.Direction.INGREDIENT:
-                sorter_belt_index = connection.belt_index
+            elif belt.direction == FactoryBlockBelt.Direction.INGREDIENT:
+                sorter_belt_index = belt.belt_index
                 sorter_type.generate_sorter_from_building_to_belt(
                     name = "Sorter",
                     building = factory,
@@ -119,7 +109,7 @@ class FactoryBlock:
                 )
                 self.ingredient_belts.append(belts)
             else:
-                raise ValueError(f"Unknown direction: {connection.direction}")
+                raise ValueError(f"Unknown direction: {belt.direction}")
 
     def generate_factory(self, pos, factory_type, recipe):
         """Instantiate the factory building for this block."""
@@ -127,6 +117,30 @@ class FactoryBlock:
             name = "FactoryBlock",
             pos = pos,
             recipe_id = recipe.recipe_id,
+        )
+
+    def get_height(self):
+        return 0#int(self.factory.get_size().y + max(self.))
+
+    @staticmethod
+    def select_belt_type(required_throughput):
+        return ConveyorBelt.get_minimum_required_belt_type(required_throughput)
+    
+    @staticmethod
+    def select_sorter_type(belt, recipe):
+        distance = belt.belt_index + 1
+        speed = 1 if belt.proliferator is None else belt.proliferator.SPEED
+        productivity = 1 if belt.proliferator is None else belt.proliferator.PRODUCTIVITY
+        
+        if belt.direction == FactoryBlockBelt.Direction.INGREDIENT:
+            throughput = recipe.input_items[belt.item_type] * speed / recipe.time
+        elif belt.direction == FactoryBlockBelt.Direction.PRODUCT:
+            throughput = recipe.output_items[belt.item_type] * speed * productivity / recipe.time            
+        else:
+            raise ValueError(f"Unknown direction: {belt.direction} for belt: {belt.name}")
+        return Sorter.get_minimum_required_sorter_type(
+            required_throughput = throughput,
+            distance = distance
         )
 
     @staticmethod
@@ -225,7 +239,7 @@ class FactoryBlock:
     def get_factory_offset(factory_type):
         """Get the factory offset vector for a given factory type."""
         if factory_type in (ArcSmelter, PlaneSmelter, NegentrophySmelter, AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler):
-            return Vector(x = 1)
+            return Vector(x = 1, y = -1)
         elif factory_type in (MatrixLab, SelfEvolutionLab):
             raise NotImplementedError("Labs aren't supported yet")
         elif factory_type == OilRefinary:
@@ -236,14 +250,14 @@ class FactoryBlock:
             raise NotImplementedError(f"Unsupported factory type: {factory_type}")
 
 if __name__ == "__main__":
-    INGREDIENT = FactoryBlockInterface.Direction.INGREDIENT
-    PRODUCT = FactoryBlockInterface.Direction.PRODUCT
-    BUTTOM = FactoryBlockInterface.Placement.BOTTOM
-    TOP = FactoryBlockInterface.Placement.TOP
+    INGREDIENT = FactoryBlockBelt.Direction.INGREDIENT
+    PRODUCT = FactoryBlockBelt.Direction.PRODUCT
+    BUTTOM = FactoryBlockBelt.Placement.BOTTOM
+    TOP = FactoryBlockBelt.Placement.TOP
     
     pos = Vector(x = 0, y = 0)
-    factory_routing = [
-        FactoryBlockInterface(
+    interface = FactoryBlockInterface(belts = [
+        FactoryBlockBelt(
             name = "Magnet interface",
             item_type = "Magnet",
             direction = INGREDIENT,
@@ -252,7 +266,7 @@ if __name__ == "__main__":
             belt_index = 0,
             proliferator = ProliferatorMKIII
         ),
-        FactoryBlockInterface(
+        FactoryBlockBelt(
             name = "Copper interface",
             item_type = "CopperIngot",
             direction = INGREDIENT,
@@ -261,7 +275,7 @@ if __name__ == "__main__":
             belt_index = 1,
             proliferator = ProliferatorMKIII
         ),
-        FactoryBlockInterface(
+        FactoryBlockBelt(
             name = "MagneticCoil interface",
             item_type = "MagneticCoil",
             direction = PRODUCT,
@@ -270,12 +284,12 @@ if __name__ == "__main__":
             belt_index = 0,
             proliferator = ProliferatorMKIII
         ),
-    ]
+    ])
     recipe = Recipe.recipes["MagneticCoil"]
     factory_type = AssemblingMachineMKI
     belt_type = None  # Let FactoryBlock select the belt type based on throughput
     sorter_type = None  # Let FactoryBlock select the sorter type based on throughput
-    block = FactoryBlock(pos, factory_routing, recipe, factory_type, belt_type, sorter_type)
+    block = FactoryBlock(pos, interface, recipe, factory_type, belt_type, sorter_type)
 
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(
@@ -286,8 +300,8 @@ if __name__ == "__main__":
     Building.buildings.clear()  # Clear the buildings for the next example
     
     pos = Vector(x = 0, y = 0)
-    factory_routing = [
-        FactoryBlockInterface(
+    interface = FactoryBlockInterface(belts = [
+        FactoryBlockBelt(
             name = "Iron ore interface",
             item_type = "IronOre",
             direction = INGREDIENT,
@@ -296,7 +310,7 @@ if __name__ == "__main__":
             belt_index = 0,
             proliferator = ProliferatorMKIII
         ),
-        FactoryBlockInterface(
+        FactoryBlockBelt(
             name = "Iron ingot interface",
             item_type = "IronIngot",
             direction = PRODUCT,
@@ -305,12 +319,12 @@ if __name__ == "__main__":
             belt_index = 0,
             proliferator = ProliferatorMKIII
         ),
-    ]
+    ])
     recipe = Recipe.recipes["IronIngot"]
     factory_type = ArcSmelter
     belt_type = None  # Let FactoryBlock select the belt type based on throughput
     sorter_type = None  # Let FactoryBlock select the sorter type based on throughput
-    block = FactoryBlock(pos, factory_routing, recipe, factory_type, belt_type, sorter_type)
+    block = FactoryBlock(pos, interface, recipe, factory_type, belt_type, sorter_type)
 
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(

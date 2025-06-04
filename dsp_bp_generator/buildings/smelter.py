@@ -22,6 +22,10 @@ class Smelter(Factory3x3):
     def get_size():
         return Vector(3.0, 3.0)
     
+    @staticmethod
+    def get_height():
+        return 3.0
+    
     def get_offset():
         return Vector(1.5, 1.5)
         

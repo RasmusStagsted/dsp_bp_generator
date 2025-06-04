@@ -1,7 +1,35 @@
 from enum import IntEnum
 from dsp_bp_generator.factory_generator.proliferator import Proliferator
 
+from dataclasses import dataclass
+
+@dataclass
 class FactoryRouterInterface:
+    
+    belts: list = None
+    
+    def get_ingredient_count(self):
+        ingredient_count = 0
+        for belt in self.belts:
+            if belt.direction == FactoryRouterBelt.Direction.INGREDIENT:
+                ingredient_count += 1
+        return ingredient_count
+    
+    def get_product_count(self):
+        product_count = 0
+        for belt in self.belts:
+            if belt.direction == FactoryRouterBelt.Direction.PRODUCT:
+                product_count += 1
+        return product_count
+    
+    def get_belt_count(self):
+        return len(self.belts)
+
+    def get_width(self):
+        width = self.get_belt_count() * 2
+        return width
+    
+class FactoryRouterBelt:
 
     class Direction(IntEnum):
         INGREDIENT = 0
@@ -17,7 +45,7 @@ class FactoryRouterInterface:
 
     def __str__(self):
         return (
-            f"[FactoryBlockInterface] {self.name}\n"
+            f"[FactoryRouterBelt] {self.name}\n"
             f"  Item type: {self.item_type}\n"
             f"  Direction: {self.direction.name.title()}\n"
             f"  Position: {self.pos.x}, {self.pos.y}, {self.pos.z}\n"
