@@ -25,7 +25,7 @@ if __name__ == "__main__":
     
     # Parse the blueprint
     bp = Blueprint()
-    buildings = bp.parse(input_blueprint_string, debug = True)
+    buildings = bp.parse(input_blueprint_string, debug = False)
     # Validate hash
     assert bp.validate_hash(), "Could not validate hash of input blueprint string"
 

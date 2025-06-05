@@ -42,6 +42,54 @@ class FactoryBlockInterface:
     def get_belt_count(self):
         return len(self.belts)
 
+    @staticmethod
+    def generate_interface(recipe: Recipe, factory_count: int = 1, proliferator: Proliferator = None):
+        belts = []
+        for item_name, flow_rate in recipe.input_items.items():
+            belts.append(FactoryBlockBelt(
+                name = f"{item_name} input",
+                item_type = item_name,
+                direction = FactoryBlockBelt.Direction.INGREDIENT,
+                placement = FactoryBlockBelt.Placement.BOTTOM,
+                throughput = flow_rate * factory_count,
+                belt_index = 0,
+                proliferator = proliferator
+            ))
+            if proliferator is not None:
+                belts[-1].throughput *= proliferator.SPEED
+        for item_name, flow_rate in recipe.output_items.items():
+            belts.append(FactoryBlockBelt(
+                name = f"{item_name} output",
+                item_type = item_name,
+                direction = FactoryBlockBelt.Direction.PRODUCT,
+                placement = FactoryBlockBelt.Placement.TOP,
+                throughput = flow_rate * factory_count,
+                belt_index = 0,
+                proliferator = proliferator
+            ))
+            if proliferator is not None:
+                belts[-1].throughput *= proliferator.SPEED * proliferator.PRODUCTIVITY
+        belts.sort(key=lambda x: x.throughput, reverse = True)
+
+        for i in range(len(belts)):
+            belts[i].placement = FactoryBlockBelt.Placement.TOP if i % 2 == 0 else FactoryBlockBelt.Placement.BOTTOM
+            belts[i].belt_index = (i // 2)
+
+        return FactoryBlockInterface(belts = belts)
+
+    def __str__(self):
+        text = (
+            f"[Factory Block Interface] {len(self.belts)} belts\n"
+            f"  Ingredient count: {self.get_ingredient_count()}\n"
+            f"  Product count: {self.get_product_count()}\n"
+            f"  Top belt count: {self.get_top_belt_count()}\n"
+            f"  Bottom belt count: {self.get_bottom_belt_count()}\n"
+            f"  Total belt count: {self.get_belt_count()}\n"
+        )
+        for index, belt in enumerate(self.belts):
+            text += str(belt)
+        return text
+
 class FactoryBlockBelt:
 
     class Direction(IntEnum):
@@ -70,7 +118,7 @@ class FactoryBlockBelt:
         
     def __str__(self):
         return (
-            f"[FactoryBlockInterface] {self.name}\n"
+            f"[Factory Block Belt] {self.name}\n"
             f"  Item type: {self.item_type}\n"
             f"  Direction: {FactoryBlockBelt.Direction(self.direction).name}\n"
             f"  Placement: {FactoryBlockBelt.Placement(self.placement).name}\n"
@@ -78,3 +126,7 @@ class FactoryBlockBelt:
             f"  Belt index: {self.belt_index}\n"
             f"  Proliferator: {self.proliferator.name if self.proliferator else 'None'}\n"
         )
+
+if __name__ == "__main__":
+    interface = FactoryBlockInterface.generate_interface(Recipe.recipes["MagneticCoil"])
+    print(interface.__str__())

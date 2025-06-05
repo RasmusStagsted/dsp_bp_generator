@@ -29,6 +29,16 @@ class FactoryRouterInterface:
         width = self.get_belt_count() * 2
         return width
     
+    def __str__(self):
+        text = (
+            f"[FactoryRouterInterface] Belts count: {self.get_belt_count()}\n"
+            f"  Ingredient count: {self.get_ingredient_count()}\n"
+            f"  Product count: {self.get_product_count()}\n"
+        )
+        for belt in self.belts:
+            text += str(belt) + "\n"
+        return text.strip()
+
 class FactoryRouterBelt:
 
     class Direction(IntEnum):

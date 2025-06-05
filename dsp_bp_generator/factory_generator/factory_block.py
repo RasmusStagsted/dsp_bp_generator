@@ -324,12 +324,15 @@ if __name__ == "__main__":
     factory_type = ArcSmelter
     belt_type = None  # Let FactoryBlock select the belt type based on throughput
     sorter_type = None  # Let FactoryBlock select the sorter type based on throughput
+    interface = FactoryBlockInterface.generate_interface(recipe = recipe)
     block = FactoryBlock(pos, interface, recipe, factory_type, belt_type, sorter_type)
 
     blueprint = Blueprint()
+    print(2)
     output_blueprint_string = blueprint.serialize(
         blueprint_buildings = Building.buildings,
         blueprint_building_version = BlueprintBuildingV1
     )
+    print(1)
     print(f"Smeltery block created:\n{output_blueprint_string}")
     Building.buildings.clear()  # Clear the buildings
