@@ -3,9 +3,10 @@ from .recipes import Recipe
 
 class ItemFlow:
 
-    def __init__(self, name, count_pr_sec):
+    def __init__(self, name, count_pr_sec, proliferator = "None"):
         self.name = name
         self.count_pr_sec = count_pr_sec
+        self.proliferator = proliferator
 
     def select_recipe(self, item_name):
         return Recipe.select(item_name)
@@ -28,12 +29,12 @@ class ItemFlow:
             return []
 
         ingredients = []
-        output_count = self.recipe["output_items"].get(self.name, 1)
+        output_count = self.recipe.output_items.get(self.name, 1)
         if output_count == 0:
             logging.warning(f"Output count for {self.name} is zero. Skipping ingredient calculation.")
             return []
 
-        for input_item, input_item_count in self.recipe["input_items"].items():
+        for input_item, input_item_count in self.recipe.input_items.items():
             ingredients.append(ItemFlow(input_item, input_item_count * self.count_pr_sec * scale / output_count))
 
         return ingredients
@@ -47,12 +48,12 @@ class ItemFlow:
             return []
 
         products = []
-        output_count = self.recipe["output_items"].get(self.name, 1)
+        output_count = self.recipe.output_items.get(self.name, 1)
         if output_count == 0:
             logging.warning(f"Output count for {self.name} is zero. Skipping product calculation.")
             return []
 
-        for output_item, output_item_count in self.recipe["output_items"].items():
+        for output_item, output_item_count in self.recipe.output_items.items():
             products.append(ItemFlow(output_item, output_item_count * self.count_pr_sec / output_count))
 
         return products

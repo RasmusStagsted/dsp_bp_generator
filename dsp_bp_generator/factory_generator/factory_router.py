@@ -77,7 +77,7 @@ class FactoryRouter:
                     self.route_splitter_to_factory_line(pos, router_connection, block_connection, proliferator)
                     break
                 elif router_connection == factory_router_interface.belts[-1]:
-                    raise ValueError(f"Unable to find {block_connection.item_type} on the bus. {[interface.item_type for interface in factory_router_interface]}")
+                    raise ValueError(f"Unable to find {block_connection.item_type} on the bus. {[belt.item_type for belt in factory_router_interface.belts]}")
                     
     def route_splitter_to_factory_line(self, pos, router_connection, block_connection, proliferator):
         initial_direction = Yaw.Unknown

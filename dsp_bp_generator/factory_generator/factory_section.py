@@ -1,8 +1,8 @@
 from .factory_line import FactoryLine
 from .recipes import Recipe
 from ..blueprint import Blueprint, BlueprintBuildingV1
-from .factory_router_interface import FactoryRouterInterface
-from .factory_block_interface import FactoryBlockInterface
+from .factory_router_interface import FactoryRouterInterface, FactoryRouterBelt
+from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
 from ..buildings import Building
 from .factory_router import FactoryRouter
 from ..utils import Vector
@@ -26,119 +26,32 @@ class FactorySection:
                     f"direction={self.direction}, placement={self.placement}, "
                     f"router_index={self.router_index}, belt_index={self.belt_index})")
     
-    def __init__(self, pos, factory_router_interface, recipe, factory_count, proliferator = None):
+    def __init__(self, pos, factory_router_interface, factory_block_interfaces, recipe, factory_count, proliferator = None):
 
-        block_interface = []
-        factory_line_pos = pos + Vector(x = 2 * (len(factory_router_interface) + len(recipe.output_items)))
-        self.factory_line = FactoryLine(factory_line_pos, block_interface, recipe, factory_count)
+        factory_line_pos = pos + Vector(x = 2 * (factory_router_interface.get_belt_count() + len(recipe.output_items)) - 2)
+        self.factory_line = FactoryLine(factory_line_pos, factory_block_interfaces, recipe, factory_count)
 
         self.factory_router = FactoryRouter(
             pos = pos,
             factory_router_interface = factory_router_interface,
-            factory_block_interface = block_interface,
+            factory_block_interface = factory_block_interfaces,
+            height = 8, 
+            splitter_offset = Vector(y = -2),
             proliferator = None
         )
-
-    
-    """        
-    def __init__(self, pos, input_count, output_count, main_belts, product, recipe):
-        self.product_count = len(recipe["output_items"].keys())
         
-        self.router_width = 2 * (input_count + output_count + self.product_count)
-        self.height = 7
-
-        belt_routing = FactorySection.get_belt_routing(product, main_belts, recipe)
-        factory_line_pos = pos + Vector(x = self.router_width)
-        factory_count = 5
-        self.factory_line = FactoryLine(factory_line_pos, belt_routing, recipe, factory_count)
-        
-        # Create router
-        self.router = FactoryRouter(pos, input_count, output_count, self.product_count, belt_routing, self.height)
-        
-        # Connect factory line and router
-        self.connect_to_factory_line(len(recipe["input_items"].keys()), self.product_count)
-        
-    def get_belt_routing(product, main_belts, recipe):
-        ingredients = product.get_needed_ingredients()
-        normalized_products = recipe["output_items"]
-        products = product.get_products()
-        
-        routes = []
-        for ingredient in ingredients:
-            routes.append(
-                FactorySection.BeltRouting(
-                    name = ingredient.name,
-                    max_count_per_second = ingredient.count_pr_sec,
-                    item_type = "",
-                    direction = "ingredient",
-                    placement = "top",
-                    router_index = 0,
-                    belt_index = 0
-                )
-            )
-            
-        for product in products:
-            routes.append(
-                FactorySection.BeltRouting(
-                    name = product.name,
-                    max_count_per_second = product.count_pr_sec,
-                    item_type = "",
-                    direction = "product",
-                    placement = "top",
-                    router_index = 0,
-                    belt_index = 0
-                )
-            )
-        
-        routes.sort(reverse = True, key = lambda flow: flow.max_count_per_second)
-        
-        top_count = 0
-        buttom_count = 0
-        for i, route in enumerate(routes):
-            if i % 2 == 0:
-                route.placement = "top"
-                route.belt_index = top_count
-                top_count += 1
-            else:
-                route.placement = "buttom"
-                route.belt_index = buttom_count
-                buttom_count += 1
-            for i, belt in enumerate(main_belts):
-                if belt.name == route.name:
-                    route.router_index = i
-                    break
-            
-        return routes
-    
-    def connect_to_factory_line(self, factory_input_count, factory_output_count):
-        for i in range(factory_input_count):
-            print(self.router.selector_belts[i][-1])
-            print(self.factory_line.factory_blocks[0].ingredient_belts[factory_input_count - i - 1][0])
-            #self.router.selector_belts[i][-1].connect_to_belt(self.factory_line.factory_blocks[0].ingredient_belts[factory_input_count - i - 1][0])
-        for i in range(factory_output_count):
-            self.factory_line.factory_blocks[0].product_belts[i][-1].connect_to_belt(self.router.product_belts[i][0])
-                
-    def connect_to_section(self, section2):
-        assert \
-            len(self.router.input_belts) == len(section2.router.input_splitters) and \
-            len(self.router.output_belts) == len(section2.router.output_splitters), \
-                "The two sections must have same dimensions of input- and output belts"
-        
-        for i in range(len(self.router.input_belts)):
-            section2.router.input_splitters[i].connect_to_belt(self.router.input_belts[i])
-        for i in range(len(self.router.output_belts)):
-            self.router.output_belts[i].connect_to_splitter(section2.router.output_splitters[i])
-    """
+    def get_height(self):
+        return self.factory_line.get_height()
 
 if __name__ == "__main__":
 
     pos = Vector(x = 0, y = 0)
     
-    INGREDIENT = FactoryBlockInterface.Direction.INGREDIENT
-    PRODUCT = FactoryBlockInterface.Direction.PRODUCT
+    INGREDIENT = FactoryBlockBelt.Direction.INGREDIENT
+    PRODUCT = FactoryBlockBelt.Direction.PRODUCT
     
-    factory_router_interface = [
-        FactoryRouterInterface(
+    factory_router_interface = FactoryRouterInterface([
+        FactoryRouterBelt(
             name = "Belt router interface iron ore",
             item_type = "IronOre",
             direction = INGREDIENT,
@@ -146,7 +59,7 @@ if __name__ == "__main__":
             throughput = 6,
             proliferator = None,
         ),
-        FactoryRouterInterface(
+        FactoryRouterBelt(
             name = "Belt router interface copper ore",
             item_type = "CopperOre",
             direction = INGREDIENT,
@@ -154,20 +67,40 @@ if __name__ == "__main__":
             throughput = 10,
             proliferator = None,
         ),
-        FactoryRouterInterface(
-            name = "Belt router interface iron ingot",
-            item_type = "IronIngot",
+        FactoryRouterBelt(
+            name = "Belt router interface magnet",
+            item_type = "Magnet",
             direction = PRODUCT,
             pos = Vector(4, 0),
             throughput = 20,
             proliferator = None,
         ),
-    ]
+    ])
+    factory_block_interfaces = FactoryBlockInterface([
+        FactoryBlockBelt(
+            name = "FactoryBlock",
+            item_type = "IronOre",
+            direction = INGREDIENT,
+            placement = FactoryBlockBelt.Placement.BOTTOM,
+            throughput = 4.5,
+            belt_index = 0,
+            proliferator = None
+        ),
+        FactoryBlockBelt(
+            name = "FactoryBlock",
+            item_type = "Magnet",
+            direction = PRODUCT,
+            placement = FactoryBlockBelt.Placement.TOP,
+            throughput = 4.5,
+            belt_index = 0,
+            proliferator = None
+        ),
+    ])
 
-    recipe = Recipe.recipes["MagneticCoil"]
+    recipe = Recipe.recipes["Magnet"]
     factory_count = 3
-
-    FactorySection(pos, factory_router_interface, recipe, factory_count)
+    proliferator = None # Not implemented yet, set to None for now
+    FactorySection(pos, factory_router_interface, factory_block_interfaces, recipe, factory_count, proliferator)
         
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version=BlueprintBuildingV1)

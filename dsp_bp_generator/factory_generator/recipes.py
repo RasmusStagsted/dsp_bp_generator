@@ -75,10 +75,19 @@ class Recipe:
         return None
 
     def select(item_name):
-        recipe = Recipe.recipes[item_name]
-        if recipe == None:
+        if not item_name in Recipe.recipes:
             print("Recipe not found: " + item_name)
-        return Recipe.recipes[item_name]
+            return None
+        recipe = Recipe.recipes[item_name]
+        return recipe
+
+    def get_item_list_sorted_by_throughput(self):
+        items = {**self.input_items, **self.output_items}
+        return sorted(d, key=lambda k: d[k], reverse=True)
+
+    def get_item_list_sorted_by_throughput(self):
+        items = {**self.input_items, **self.output_items}
+        return sorted(d, key=lambda k: d[k], reverse=True)
 
 Recipe.recipes = Recipe.load_from_yaml("data/recipes.yaml")
 

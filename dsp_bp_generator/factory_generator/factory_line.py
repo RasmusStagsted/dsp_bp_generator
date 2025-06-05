@@ -61,7 +61,7 @@ class FactoryLine:
         elif recipe.tool == "Assembling Machine":
             return AssemblingMachineMKI
         else:
-            raise ValueError(f"Unknown tool: {recipe['tool']}, Recipe: {recipe['name']}, ID: {recipe['recipe_id']}")
+            raise ValueError(f"Unknown tool: {recipe.tool}, Recipe: {recipe.name}, ID: {recipe.recipe_id}")
 
     def get_height(self):
         return self.height
