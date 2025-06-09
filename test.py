@@ -20,17 +20,24 @@ def run(cmd, enable_output = False):
         result = subprocess.run(cmd, stderr=subprocess.DEVNULL, stdout=subprocess.DEVNULL)
     if result.returncode != 0:
         log_failed(cmd)
+        return False
     else:
         log_passed(cmd)
+        return True
 
 print("\n\n\n")
 print("Running factory module tests...")
-run(["python", "-m", "dsp_bp_generator.factory_generator.factory_block"])
-run(["python", "-m", "dsp_bp_generator.factory_generator.factory_line"])
-run(["python", "-m", "dsp_bp_generator.factory_generator.factory_router"])
-run(["python", "-m", "dsp_bp_generator.factory_generator.factory_section"])
-run(["python", "-m", "dsp_bp_generator.factory_generator.factory"])
+success = True
+success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_block"])
+success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_line"])
+success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_router"])
+success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_section"])
+success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory"])
 
+if success:
+    exit(0)
+else:
+    exit(1)
 #print("Running other tests...")
 #run(["python3", "examples/buildings.py"])
 #run(["python3", "examples/generate_factory.py"])
