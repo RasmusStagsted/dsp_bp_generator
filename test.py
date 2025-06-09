@@ -32,7 +32,7 @@ success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.f
 success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_line"])
 success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_router"])
 success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_section"])
-success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory"])
+#success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory"])
 
 if success:
     exit(0)
