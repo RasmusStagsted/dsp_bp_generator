@@ -1,5 +1,5 @@
 import yaml
-
+import logging
 import pkgutil 
 
 class Recipe:
@@ -74,9 +74,10 @@ class Recipe:
         print(f"Item '{item_name}' not found in recipe '{self.name}'")
         return None
 
+    @staticmethod
     def select(item_name):
         if not item_name in Recipe.recipes:
-            print("Recipe not found: " + item_name)
+            logging.debug("Recipe not found: " + item_name)
             return None
         recipe = Recipe.recipes[item_name]
         return recipe
@@ -88,6 +89,12 @@ class Recipe:
     def get_item_list_sorted_by_throughput(self):
         items = {**self.input_items, **self.output_items}
         return sorted(d, key=lambda k: d[k], reverse=True)
+
+    def get_input_flow_rate(self, input_item_name, output_item_name, output_flow_rate, proliferator = None):
+        return self.input_items.get(input_item_name, 0) * output_flow_rate / self.output_items.get(output_item_name, 1)
+
+    def compact_string(self):
+        return f"Recipe(name={self.name}, input_items={self.input_items}, output_items={self.output_items}, time={self.time}, tool={self.tool}, recipe_id={self.recipe_id})"
 
 Recipe.recipes = Recipe.load_from_yaml("data/recipes.yaml")
 

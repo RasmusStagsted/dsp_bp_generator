@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QPushButton, QLabel,
-    QComboBox, QLineEdit, QTableWidget, QStyledItemDelegate, QTabWidget
+    QComboBox, QLineEdit, QTableWidget, QStyledItemDelegate, QTabWidget, QHeaderView, QFrame
 )
 from PySide6.QtGui import QDoubleValidator
 from PySide6.QtCore import Qt
@@ -13,144 +13,16 @@ from PySide6.QtCore import Qt
 from dsp_bp_generator.utils import Yaw, Vector
 from dsp_bp_generator.blueprint import Blueprint
 from dsp_bp_generator.factory_generator import (
-    Factory, ItemFlow, recipes, FactorySection, Recipe
+    Factory, ItemFlow, Process, FactorySection
 )
+from dsp_bp_generator.factory_generator.recipes import Recipe
 from dsp_bp_generator.factory_generator.factory_router_interface import FactoryRouterInterface, FactoryRouterBelt
 from dsp_bp_generator.factory_generator.factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
 from dsp_bp_generator.buildings import Building
 
-# import pyperclip
-
-class OutputFlows(QWidget):
-    def __init__(self):
-        super().__init__()
-
-        self.item = []
-        self.flow_rate = []
-        self.proliferator = []
-        self.delete_button = []
-
-        self.layout = QVBoxLayout()
-
-        self.table = QTableWidget(2, 4)
-        self.table.setColumnWidth(0, 200)
-        self.table.setColumnWidth(1, 150)
-        self.table.setColumnWidth(2, 100)
-        self.table.setColumnWidth(3, 150)
-        self.table.verticalHeader().setVisible(False)
-        self.table.horizontalHeader().setVisible(False)
-        self.layout.addWidget(self.table)
-
-        label_item = QLabel("Item name")
-        label_item.setAlignment(Qt.AlignCenter)
-        self.table.setCellWidget(0, 0, label_item)
-
-        label_flow = QLabel("Flow rate [items/s]")
-        label_flow.setAlignment(Qt.AlignCenter)
-        self.table.setCellWidget(0, 1, label_flow)
-
-        label_proliferator = QLabel("Proliferator")
-        label_proliferator.setAlignment(Qt.AlignCenter)
-        self.table.setCellWidget(0, 2, label_proliferator)
-
-        label_add = QLabel("Add/Delete flow")
-        label_add.setAlignment(Qt.AlignCenter)
-        self.table.setCellWidget(0, 3, label_add)
-
-        self.add_button = QPushButton("Add flow")
-        self.table.setCellWidget(1, 3, self.add_button)
-        self.add_button.clicked.connect(lambda: self.add_flow())
-
-        self.add_flow()
-        
-        self.setLayout(self.layout)
-
-    def add_flow(self):
-        table_row = self.table.rowCount() - 1
-        flow_index = table_row - 1
-        
-        self.table.insertRow(table_row)
-
-        self.item.append(QComboBox())
-        self.item[flow_index].addItems(["None"] + list(Recipe.recipes.keys()))
-        # Set default to 'Gear' if it exists
-        idx = self.item[flow_index].findText("Gear")
-        if idx != -1:
-            self.item[flow_index].setCurrentIndex(idx)
-        self.table.setCellWidget(table_row, 0, self.item[flow_index])
-
-        self.flow_rate.append(QLineEdit())
-        self.flow_rate[flow_index].setText("1.0")
-        self.flow_rate[flow_index].setValidator(QDoubleValidator(0.0, 1e6, 3))
-        self.table.setCellWidget(table_row, 1, self.flow_rate[flow_index])
-
-        self.proliferator.append(QComboBox())
-        self.proliferator[flow_index].addItems(["None", "MK.I", "MK.II", "MK.III"])
-        self.table.setCellWidget(table_row, 2, self.proliferator[flow_index])
-
-        self.delete_button.append(QPushButton("Delete flow"))
-        self.delete_button[flow_index].clicked.connect(lambda _, btn = self.delete_button[flow_index]: self.remove_flow(btn))
-        self.table.setCellWidget(table_row, 3, self.delete_button[flow_index])
-        
-    def remove_flow(self, button):
-        table_row = self.get_row_from_button(button)
-        if table_row == -1:
-            return  # Button not found
-        else:
-            flow_index = table_row - 1
-        
-        for col in range(4):
-            widget = self.table.cellWidget(table_row, col)
-            if widget is not None:
-                widget.deleteLater()
-                self.table.removeCellWidget(table_row, col)
-        self.table.removeRow(table_row)
-        
-        self.item.pop(flow_index)
-        self.flow_rate.pop(flow_index)
-        self.proliferator.pop(flow_index)
-        self.delete_button.pop(flow_index)
-
-    def get_row_from_button(self, button):
-        row = -1
-        for r in range(self.table.rowCount()):
-            if self.table.cellWidget(r, 3) == button:
-                row = r
-                break
-        return row
-
-class ProliferatorAssemblySelection(QWidget):
-    def __init__(self):
-        super().__init__()
-
-        self.layout = QVBoxLayout()
-
-        self.mki_label = QLabel("Proliferator MK.I assembly:")
-        self.mki = QComboBox()
-        self.mki.addItems(["Local", "External"])
-        self.layout.addWidget(self.mki_label)
-        self.layout.addWidget(self.mki)
-
-        self.mkii_label = QLabel("Proliferator MK.II assembly:")
-        self.mkii = QComboBox()
-        self.mkii.addItems(["Local", "External"])
-        self.layout.addWidget(self.mkii_label)
-        self.layout.addWidget(self.mkii)
-
-        self.mkiii_label = QLabel("Proliferator MK.III assembly:")
-        self.mkiii = QComboBox()
-        self.mkiii.addItems(["Local", "External"])
-        self.layout.addWidget(self.mkiii_label)
-        self.layout.addWidget(self.mkiii)
-
-        self.setLayout(self.layout)
-        
-    def get_proliferator_assembly(self):
-        return {
-            "MK.I": self.mki.currentText(),
-            "MK.II": self.mkii.currentText(),
-            "MK.III": self.mkiii.currentText()
-        }
+from dsp_bp_generator.factory_generator.gui.output_flows import OutputFlows
+from dsp_bp_generator.factory_generator.gui.input_flows import InputFlows
+from dsp_bp_generator.factory_generator.gui.proliferator_production_option import ProliferatorProductionOption
 
 class BlueprintStringWidget(QWidget):
     
@@ -193,20 +65,34 @@ class GeneratorWidget(QWidget):
         self.output_flows = OutputFlows()
         self.factory_layout.addWidget(self.output_flows)
 
-        self.proliferator = ProliferatorAssemblySelection()
+        self.insert_horizontal_line()
+
+        self.proliferator = ProliferatorProductionOption()
         self.factory_layout.addWidget(self.proliferator)
 
+        self.insert_horizontal_line()
+
+        self.input_flow_widget = InputFlows()
+        self.factory_layout.addWidget(self.input_flow_widget)
+        
+        self.insert_horizontal_line()
+        
         self.generator_button = QPushButton("Generate blueprint!")
         self.generator_button.clicked.connect(self.update_production_flows)
         self.factory_layout.addWidget(self.generator_button)
+        
+        self.insert_horizontal_line()
 
         self.factory_layout.addWidget(QLabel("Blueprint string:"))
-
         self.blueprint = BlueprintStringWidget()
         self.factory_layout.addWidget(self.blueprint)
+        
+        self.insert_horizontal_line()
 
         self.factory_tab.setLayout(self.factory_layout)
         self.tabs.addTab(self.factory_tab, "Output flows")
+
+        # TODO: Add trash output info
 
         # Second tab: About (example)
         self.about_tab = QWidget()
@@ -229,6 +115,15 @@ class GeneratorWidget(QWidget):
         self.setLayout(main_layout)
 
         self.update()
+        
+        self.output_flows.set_proliferator_change_callback(self.proliferator.update)
+        self.output_flows.set_any_update_callback(self.update_production_flows)
+        
+    def insert_horizontal_line(self):
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
+        self.factory_layout.addWidget(line)
 
     def update(self):
 
@@ -240,48 +135,73 @@ class GeneratorWidget(QWidget):
         #blueprint_string = blueprint.serialize(Building.buildings)
         #self.blueprint.blueprint.setText(blueprint_string)
 
-    def update_production_flows(self):
-        requirement_stack = []
-        production_stack = []
-
-        for i in range(len(self.output_flows.item)):
-            item = self.output_flows.item[i].currentText()
-            flow_rate = float(self.output_flows.flow_rate[i].text())
-            proliferator = self.output_flows.proliferator[i].currentText()
-            requirement_stack.append(
-                ItemFlow(item, flow_rate, proliferator)
-            )
-
-        while len(requirement_stack) > 0:
+    
+    def update_process_graph(self):
+        requirement_stack = self.output_flows.item_flows.copy()
+        self.requirement_stack = [flow for flow in self.requirement_stack if flow.name != "None"]
+        
+        while len(self.requirement_stack) > 0:
             
-            item = requirement_stack.pop()
+            item_flow = self.requirement_stack.pop()
+            print("Name:", item_flow.name)
+
+            if item_flow.name in [flow.name for flow in self.item_flow_stack]:
+                print("Old item flow")
+                # Update flows and processes
+            else:
+                self.item_flow_stack.append(item_flow)
+                process = Process(
+                    name = item_flow.name,
+                    recipe = Recipe.select(item_flow.name)
+                )
+                self.production_stack.append(process)
             
             # Add ingredients to stack
-            for ingredient in item.get_needed_ingredients("None"):
-                requirement_stack.append(ingredient)
+            proliferator = None
+            
+            for ingredient in process.get_needed_ingredients("None"): # TODO define proliferator
+                self.requirement_stack.append(ingredient)
 
-            # Add item to production stack
-            index = -1
-            for i in range(len(production_stack)):
-                if production_stack[i].name == item.name:
-                    index = i
-                    break
-            if index != -1:
-                ingredient_to_bump = production_stack.pop(index)
-                ingredient_to_bump.count_pr_sec += item.count_pr_sec
-                production_stack.append(ingredient_to_bump)
+    def update_production_flows(self, proliferator = {}):
+        self.requirement_stack = self.output_flows.item_flows.copy()
+        self.requirement_stack = [flow for flow in self.requirement_stack if flow.name != "None"]
+        self.production_stack = []
+        self.item_flow_stack = []
+
+        while len(self.requirement_stack) > 0:
+            
+            item_flow = self.requirement_stack.pop()
+            print("Name:", item_flow.name)
+
+            if item_flow.name in [flow.name for flow in self.item_flow_stack]:
+                print("Old item flow")
+                # Update flows and processes
             else:
-                production_stack.append(item)
+                self.item_flow_stack.append(item_flow)
+                process = Process(
+                    name = item_flow.name,
+                    recipe = Recipe.select(item_flow.name)
+                )
+                self.production_stack.append(process)
+            
+            # Add ingredients to stack
+            proliferator = None
+            
+            for ingredient in process.get_needed_ingredients("None"): # TODO define proliferator
+                self.requirement_stack.append(ingredient)
 
-        self.target_output_flow = production_stack
+        self.target_output_flow = self.item_flow_stack
         self.input_flow = []
         for flow in self.target_output_flow:
             if not flow.name in Recipe.recipes:
                 self.input_flow.append(flow)
                 self.target_output_flow.remove(flow)
 
-        production_stack = production_stack[::-1] 
-        self.generate_factories()
+        self.item_flow_stack = self.item_flow_stack[::-1]
+        
+        self.input_flow_widget.update(self.input_flow)
+        
+        #self.generate_factories()
 
     def generate_factories(self, debug = False):
 
@@ -392,7 +312,7 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = GeneratorWidget()
     widget.setWindowTitle('Factory generator')
-    widget.resize(700, 500)
+    widget.resize(700, 800)
     widget.show()
     sys.exit(app.exec())
     

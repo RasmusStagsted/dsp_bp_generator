@@ -1,28 +1,72 @@
 from dsp_bp_generator.factory_generator.recipes import Recipe
 
-class Proliferator:
+class ProliferatorNone:
     NUMBER_OF_SPRAYS = 0
     PRODUCTIVITY = 1.0
     SPEED = 1.0
     ENERGY_CONSUMPTION = 1.0
     
-class ProliferatorMKI(Proliferator):
+    def __str__(self):
+        return "ProliferatorNone"
+    
+    @staticmethod
+    def get_process_input_multiplier():
+        return ProliferatorNone.SPEED
+
+    @staticmethod
+    def get_process_output_multiplier():
+        return ProliferatorNone.SPEED * ProliferatorNone.PRODUCTIVITY
+        
+class ProliferatorMKI(ProliferatorNone):
     NUMBER_OF_SPRAYS = 13
     PRODUCTIVITY = 1.125
     SPEED = 1.25
     ENERGY_CONSUMPTION = 1.3
     
-class ProliferatorMKII(Proliferator):
+    def __str__(self):
+        return "ProliferatorMKI"
+    
+    @staticmethod
+    def get_process_input_multiplier():
+        return ProliferatorMKI.SPEED
+
+    @staticmethod
+    def get_process_output_multiplier():
+        return ProliferatorMKI.SPEED * ProliferatorMKI.PRODUCTIVITY
+    
+class ProliferatorMKII(ProliferatorNone):
     NUMBER_OF_SPRAYS = 24
     PRODUCTIVITY = 1.2
     SPEED = 1.5
     ENERGY_CONSUMPTION = 1.7
     
-class ProliferatorMKIII(Proliferator):
+    def __str__(self):
+        return "ProliferatorMKII"
+    
+    @staticmethod
+    def get_process_input_multiplier():
+        return ProliferatorMKII.SPEED
+
+    @staticmethod
+    def get_process_output_multiplier():
+        return ProliferatorMKII.SPEED * ProliferatorMKII.PRODUCTIVITY
+    
+class ProliferatorMKIII(ProliferatorNone):
     NUMBER_OF_SPRAYS = 60
     PRODUCTIVITY = 1.25
     SPEED = 2
     ENERGY_CONSUMPTION = 2.5
+    
+    def __str__(self):
+        return "ProliferatorMKIII"
+    
+    @staticmethod
+    def get_process_input_multiplier():
+        return ProliferatorMKIII.SPEED
+
+    @staticmethod
+    def get_process_output_multiplier():
+        return ProliferatorMKIII.SPEED * ProliferatorMKIII.PRODUCTIVITY
 
 if __name__ == "__main__":
     
