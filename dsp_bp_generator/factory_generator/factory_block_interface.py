@@ -1,6 +1,6 @@
 from enum import IntEnum
 
-from dsp_bp_generator.factory_generator.proliferator import Proliferator
+from dsp_bp_generator.factory_generator.proliferator import ProliferatorNone
 
 from dsp_bp_generator.factory_generator.recipes import Recipe
 
@@ -43,7 +43,7 @@ class FactoryBlockInterface:
         return len(self.belts)
 
     @staticmethod
-    def generate_interface(recipe: Recipe, factory_count: int = 1, proliferator: Proliferator = None):
+    def generate_interface(recipe: Recipe, factory_count: int = 1, proliferator: ProliferatorNone = None):
         belts = []
         for item_name, flow_rate in recipe.input_items.items():
             belts.append(FactoryBlockBelt(
@@ -100,7 +100,7 @@ class FactoryBlockBelt:
         TOP = 0
         BOTTOM = 1
     
-    def __init__(self, name: str, item_type: str, direction: Direction, placement: Placement, throughput: float, belt_index: int, proliferator: Proliferator = None):
+    def __init__(self, name: str, item_type: str, direction: Direction, placement: Placement, throughput: float, belt_index: int, proliferator: ProliferatorNone = None):
         # Name of the connection
         self.name = name
         # Type of item being transported

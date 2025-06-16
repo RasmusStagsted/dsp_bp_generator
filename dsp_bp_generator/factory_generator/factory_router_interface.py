@@ -1,5 +1,5 @@
 from enum import IntEnum
-from dsp_bp_generator.factory_generator.proliferator import Proliferator
+from dsp_bp_generator.factory_generator.proliferator import ProliferatorNone
 
 from dataclasses import dataclass
 
@@ -45,7 +45,7 @@ class FactoryRouterBelt:
         INGREDIENT = 0
         PRODUCT = 1
         
-    def __init__(self, name: str, item_type: str, direction: Direction, pos, throughput: float, proliferator: Proliferator = None):
+    def __init__(self, name: str, item_type: str, direction: Direction, pos, throughput: float, proliferator: ProliferatorNone = None):
         self.name = name
         self.item_type = item_type
         self.direction = direction
