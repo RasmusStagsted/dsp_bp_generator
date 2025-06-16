@@ -25,7 +25,7 @@ class ItemFlow:
             self.recipe = self.select_recipe(self.name)
 
         if self.recipe is None:  # Assumes that this is a raw material
-            logging.warning(f"No recipe found for {self.name}")
+            logging.info(f"No recipe found for {self.name}")
             return []
 
         ingredients = []
@@ -44,7 +44,7 @@ class ItemFlow:
             self.recipe = self.select_recipe(self.name)
 
         if self.recipe is None:  # Assumes that this is a raw material
-            logging.warning(f"No recipe found for {self.name}")
+            logging.info(f"No recipe found for {self.name}")
             return []
 
         products = []

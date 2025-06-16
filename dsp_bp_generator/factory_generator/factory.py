@@ -1,5 +1,5 @@
 from dsp_bp_generator.factory_generator.factory_router_interface import FactoryRouterInterface
-from dsp_bp_generator.factory_generator.proliferator import Proliferator
+from dsp_bp_generator.factory_generator.proliferator import ProliferatorNone
 from dsp_bp_generator.factory_generator.factory_block_interface import FactoryBlockInterface
 from dsp_bp_generator.factory_generator.recipes import Recipe
 from dsp_bp_generator.factory_generator.factory_section import FactorySection
