@@ -1,6 +1,9 @@
+import networkx as nx
 from .connection import Connection
 
-class ProductionGraph:
+from .graphical_graph import GraphicalGraph
+
+class ProductionGraph(GraphicalGraph):
     
     class ProcessList:
 
@@ -70,7 +73,10 @@ class ProductionGraph:
             text += "]"
             return text
         
-    def __init__(self):
+    def __init__(self, graph = None, parent = None):
+        if graph is None:
+            graph = nx.DiGraph()
+        super().__init__(graph, parent)
         self.output_flows = ProductionGraph.ItemFlowList()
         self.input_flows = ProductionGraph.ItemFlowList()
         

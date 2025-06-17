@@ -9,11 +9,11 @@ from PySide6.QtCore import Qt
 from .factory_generator import Process
 from .factory_generator.recipes import Recipe
 
-from .factory_generator.gui.output_flows import OutputFlows
-from .factory_generator.gui.input_flows import InputFlows
-from .factory_generator.gui.proliferator_production_option import ProliferatorProductionOption
-from .factory_generator.gui.blueprint_string_widget import BlueprintStringWidget
-from .factory_generator.gui.graph_plot import GraphView
+from .factory_generator.gui_elements.output_flows import OutputFlows
+from .factory_generator.gui_elements.input_flows import InputFlows
+from .factory_generator.gui_elements.proliferator_production_option import ProliferatorProductionOption
+from .factory_generator.gui_elements.blueprint_string_widget import BlueprintStringWidget
+from .factory_generator.gui_elements.graph_plot import GraphPlotWidget
 
 from .factory_generator.production_graph.production_graph import ProductionGraph
 from .factory_generator.production_graph.item_flow import ItemFlow
@@ -88,9 +88,8 @@ class GeneratorWidget(QWidget):
     def generate_factory_graph_layout(self, layout):
         self.factory_graph_layout = QVBoxLayout()
         layout.addLayout(self.factory_graph_layout)
-        self.graph = nx.DiGraph()
-        self.view = GraphView(self.graph)
-        self.factory_graph_layout.addWidget(self.view)
+        self.graph_plot_widget = GraphPlotWidget()
+        self.factory_graph_layout.addWidget(self.graph_plot_widget)
     
     def generate_about_tab(self):
         self.about_tab = QWidget()
@@ -125,11 +124,11 @@ class GeneratorWidget(QWidget):
                 proliferator[index]
             )
         )
-        self.graph.add_node(item[index].currentText())
+        self.graph_plot_widget.add_node(item[index].currentText())
     
     def flow_deleted_callback(self, item, flow_rate, proliferator, index):
         #self.production_graph.remove_output_item_flow()
-        self.graph.remove_node(item[index].currentText())
+        self.graph_plot_widget.graph.remove_node(item[index].currentText())
     
     def item_changed_callback(self, item, flow_rate, proliferator, index):
         old_item = self.output_flows.last_item_text[index]
@@ -137,7 +136,7 @@ class GeneratorWidget(QWidget):
         print(f"Item changed from {old_item} to {new_item}")
         
         #self.production_graph.remove_output_item_flow()
-        self.graph.remove_node(old_item)
+        self.graph_plot_widget.remove_node(old_item)
         
         self.production_graph.add_output_item_flow(
             ItemFlow(
@@ -146,14 +145,14 @@ class GeneratorWidget(QWidget):
                 proliferator[index]
             )
         )
-        self.graph.add_node(new_item)
+        self.graph_plot_widget.add_node(new_item)
         self.output_flows.last_item_text[index] = new_item
         
     def proliferator_changed_callback(self, item, flow_rate, proliferator, index):
         self.proliferator.update(proliferator, index)
         
     def any_changed_callback(self):
-        self.view._load_graph()
+        self.graph_plot_widget.refresh()
 
     def post_setup(self):
         self.output_flows.add_flow()

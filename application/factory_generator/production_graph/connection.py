@@ -1,6 +1,6 @@
+from .graphical_edge import GraphicalEdge
 
-
-class Connection:
+class Connection(GraphicalEdge):
     
     def __init__(self, source, destination, name, count_per_sec):
         self.source = source
