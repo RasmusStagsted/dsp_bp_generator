@@ -18,7 +18,7 @@ pip install dsp_bp_generator
 
 ### Try the examples
 
-To run the blueprint parser, save your blueprint in a file, and run (obs. the blueprint parser only work with older blueprint versions): 
+To run the blueprint parser, save your blueprint in a file, and run (obs. the blueprint parser only works with the older blueprint versions): 
 ```
 
 python parse.py --input_file=bp_input.txt --output_file=bp_output_data.txt
@@ -41,7 +41,7 @@ To develop on this project, clone the repo and generate a virtual invironment us
 poetry shell
 ```
 
-Install requirements:
+Install the requirements:
 ```
 poetry install
 ```
@@ -146,11 +146,19 @@ Before this big datablob, represnting a list of buildings, is a couple of header
 This whole data blob is finnaly compressed using gzip and then base64 encoded.
 Furthermore a fixed string is prepended, and a hash is appended.
 
+<<<<<<< HEAD
 ### Blueprint version 2
 
 Not supported!
 
 ### Blueprint structure
+=======
+### Blueprint verison 2
+
+Not supported yet!
+
+### Bluepring structure
+>>>>>>> Updated README.md
 
 For now only the most basic features is implemented.
 Generate and connects:
