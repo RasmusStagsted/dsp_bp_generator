@@ -1,64 +1,34 @@
 import sys
-import math
-import argparse
-from dataclasses import dataclass
-
-import copy
-from PySide6.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QCheckBox, QPushButton, QLabel,
-    QComboBox, QLineEdit, QTableWidget, QStyledItemDelegate, QTabWidget, QHeaderView, QFrame,
-    QGraphicsObject, QGraphicsScene, QGraphicsView,QStyleOptionGraphicsItem, QGraphicsItem
-)
-from PySide6.QtGui import QDoubleValidator, QPainter, QColor, QPen, QBrush, QPolygonF
-from PySide6.QtCore import Qt, QRectF, QPointF, QLineF, QPropertyAnimation, QParallelAnimationGroup, QEasingCurve
-
-from dsp_bp_generator.utils import Yaw, Vector
-from dsp_bp_generator.blueprint import Blueprint
-from dsp_bp_generator.factory_generator import (
-    Factory, ItemFlow, Process, FactorySection
-)
-from dsp_bp_generator.factory_generator.recipes import Recipe
-from dsp_bp_generator.factory_generator.factory_router_interface import FactoryRouterInterface, FactoryRouterBelt
-from dsp_bp_generator.factory_generator.factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
-from dsp_bp_generator.buildings import Building
-
-from dsp_bp_generator.factory_generator.gui.output_flows import OutputFlows
-from dsp_bp_generator.factory_generator.gui.input_flows import InputFlows
-from dsp_bp_generator.factory_generator.gui.proliferator_production_option import ProliferatorProductionOption
-
 import networkx as nx
-from dsp_bp_generator.factory_generator.gui.graph_plot import GraphView
+
+from PySide6.QtWidgets import (
+    QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
+    QComboBox, QTabWidget, QFrame
+)
+from PySide6.QtCore import Qt
+from .factory_generator import Process
+from .factory_generator.recipes import Recipe
+
+from .factory_generator.gui.output_flows import OutputFlows
+from .factory_generator.gui.input_flows import InputFlows
+from .factory_generator.gui.proliferator_production_option import ProliferatorProductionOption
+from .factory_generator.gui.blueprint_string_widget import BlueprintStringWidget
+from .factory_generator.gui.graph_plot import GraphView
+
+from .factory_generator.production_graph.production_graph import ProductionGraph
+from .factory_generator.production_graph.item_flow import ItemFlow
 
 VERSION = "0.1.0"
-
-class BlueprintStringWidget(QWidget):
-    
-    def __init__(self):
-        super().__init__()
-        self.layout = QVBoxLayout()
-        self.blueprint = QLineEdit()
-        self.layout.addWidget(self.blueprint)
-        self.copy = QPushButton("Copy blueprint!")
-        self.copy.clicked.connect(self.copy_blueprint)
-        self.layout.addWidget(self.copy)
-        self.setLayout(self.layout)
-
-    def copy_blueprint(self):
-        try:
-            import pyperclip
-            pyperclip.copy(self.blueprint.text())
-        except ImportError:
-            print("pyperclip not installed, clipboard copy skipped.")
-        print(self.blueprint.text())
-
-    def set_blueprint_string(self, bp_string):
-        self.blueprint.setText(bp_string)
 
 class GeneratorWidget(QWidget):
     
     def __init__(self):
         super().__init__()
+        self.initialize_production_graph()
         self.generate_gui_elements()
+    
+    def initialize_production_graph(self):
+        self.production_graph = ProductionGraph()
     
     def generate_gui_elements(self):
         # Setup layout
@@ -69,37 +39,27 @@ class GeneratorWidget(QWidget):
         # Add widgets
         self.generate_factory_tab()
         self.generate_about_tab()
-        # Setup the production graph
-        self.update()
         # Setup callbacks
         self.setup_callbacks()
+        # Post setup
+        self.post_setup()
+        # Setup the production graph
+        self.update()
 
-    def setup_callbacks(self):
-        self.output_flows.set_callbacks(
-            #flow_created_callback = self.update,
-            #flow_deleted_callback = self.update,
-            #item_changed_callback = self.update,
-            #flow_rate_changed_callback = self.update,
-            proliferator_changed_callback = self.proliferator.update,
-            #any_changed_callback = self.update
-        )
-        #self.output_flows.set_proliferator_change_callback(self.proliferator.update)
-        self.output_flows.set_any_update_callback(self.update)
-        
     def generate_factory_tab(self):
         # Setup layout
         self.factory_tab = QWidget()
         self.factory_layout = QHBoxLayout()
         self.factory_tab.setLayout(self.factory_layout)
-        self.tabs.addTab(self.factory_tab, "Output flows")
+        self.tabs.addTab(self.factory_tab, "Factory")
         # Add widgets
-        self.generate_settings_layout()
-        self.generate_graph_layout()
+        self.generate_factory_settings_layout(self.factory_layout)
+        self.generate_factory_graph_layout(self.factory_layout)
 
-    def generate_settings_layout(self):
+    def generate_factory_settings_layout(self, layout):
         # Setup layout
         self.factory_settings_layout = QVBoxLayout()
-        self.factory_layout.addLayout(self.factory_settings_layout)
+        layout.addLayout(self.factory_settings_layout)
         # Add widgets
         self.output_flows = OutputFlows()
         self.factory_settings_layout.addWidget(self.output_flows)
@@ -110,11 +70,6 @@ class GeneratorWidget(QWidget):
         self.input_flow_widget = InputFlows()
         self.factory_settings_layout.addWidget(self.input_flow_widget)
         self.insert_horizontal_line(self.factory_settings_layout)
-        self.generator_button = QPushButton("Generate blueprint!")
-        self.generator_button.clicked.connect(self.update_production_flows)
-        self.factory_settings_layout.addWidget(self.generator_button)
-        self.insert_horizontal_line(self.factory_settings_layout)
-        self.factory_settings_layout.addWidget(QLabel("Blueprint string:"))
         self.blueprint = BlueprintStringWidget()
         self.factory_settings_layout.addWidget(self.blueprint)
         self.insert_horizontal_line(self.factory_settings_layout)
@@ -123,20 +78,19 @@ class GeneratorWidget(QWidget):
 
         # TODO: Add Graph
         #https://doc.qt.io/qtforpython-6/examples/example_external_networkx.html
+        
+    def insert_horizontal_line(self, layout):
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Sunken)
+        layout.addWidget(line)
     
-    def generate_graph_layout(self):
+    def generate_factory_graph_layout(self, layout):
         self.factory_graph_layout = QVBoxLayout()
-        self.factory_layout.addLayout(self.factory_graph_layout)
+        layout.addLayout(self.factory_graph_layout)
         self.graph = nx.DiGraph()
-        self.graph.add_edges_from([("IronOre", "IronIngot"), ("CopperOre", "CopperIngot"), ("IronOre", "Magnet"), ("IronIngot", "Gear"), ("CopperIngot", "MagneticCoil"), ("Magnet", "MagneticCoil")])   
         self.view = GraphView(self.graph)
-        self.choice_combo = QComboBox()
-        self.choice_combo.addItems(self.view.get_nx_layouts())
-        v_layout = QVBoxLayout()
-        v_layout.addWidget(self.choice_combo)
-        v_layout.addWidget(self.view)
-        self.choice_combo.currentTextChanged.connect(self.view.set_nx_layout)
-        self.factory_graph_layout.addLayout(v_layout)
+        self.factory_graph_layout.addWidget(self.view)
     
     def generate_about_tab(self):
         self.about_tab = QWidget()
@@ -152,23 +106,71 @@ class GeneratorWidget(QWidget):
         github_label.setAlignment(Qt.AlignCenter)
         about_layout.addWidget(github_label)
         self.about_tab.setLayout(about_layout)
+
+    def setup_callbacks(self):
+        self.output_flows.set_callbacks(
+            flow_created_callback = self.flow_created_callback,
+            #flow_deleted_callback = self.update,
+            item_changed_callback = self.item_changed_callback,
+            #flow_rate_changed_callback = self.update,
+            proliferator_changed_callback = self.proliferator_changed_callback,
+            any_changed_callback = self.any_changed_callback
+        )
         
-    def insert_horizontal_line(self, layout):
-        line = QFrame()
-        line.setFrameShape(QFrame.HLine)
-        line.setFrameShadow(QFrame.Sunken)
-        layout.addWidget(line)
+    def flow_created_callback(self, item, flow_rate, proliferator, index):
+        self.production_graph.add_output_item_flow(
+            ItemFlow(
+                item[index],
+                flow_rate[index],
+                proliferator[index]
+            )
+        )
+        self.graph.add_node(item[index].currentText())
+    
+    def flow_deleted_callback(self, item, flow_rate, proliferator, index):
+        #self.production_graph.remove_output_item_flow()
+        self.graph.remove_node(item[index].currentText())
+    
+    def item_changed_callback(self, item, flow_rate, proliferator, index):
+        old_item = self.output_flows.last_item_text[index]
+        new_item = item[index].currentText()
+        print(f"Item changed from {old_item} to {new_item}")
+        
+        #self.production_graph.remove_output_item_flow()
+        self.graph.remove_node(old_item)
+        
+        self.production_graph.add_output_item_flow(
+            ItemFlow(
+                item[index],
+                flow_rate[index],
+                proliferator[index]
+            )
+        )
+        self.graph.add_node(new_item)
+        self.output_flows.last_item_text[index] = new_item
+        
+    def proliferator_changed_callback(self, item, flow_rate, proliferator, index):
+        self.proliferator.update(proliferator, index)
+        
+    def any_changed_callback(self):
+        self.view._load_graph()
+
+    def post_setup(self):
+        self.output_flows.add_flow()
 
     def update(self):
 
-        self.update_process_graph()
-        self.plot_process_graph()
+        pass
+        #self.update_process_graph()
+        #self.plot_process_graph()
 
         #self.generate_factories()
         
         #blueprint = Blueprint()
         #blueprint_string = blueprint.serialize(Building.buildings)
         #self.blueprint.blueprint.setText(blueprint_string)
+
+    """
 
     def plot_process_graph(self):
         print("Plot process graph")
@@ -188,6 +190,9 @@ class GeneratorWidget(QWidget):
         v_layout.addWidget(self.choice_combo)
         v_layout.addWidget(self.view)
         self.choice_combo.currentTextChanged.connect(self.view.set_nx_layout)
+
+    """
+    """
 
     def update_process_graph(self):
         print("Update process graph")
@@ -215,7 +220,8 @@ class GeneratorWidget(QWidget):
             
             #for ingredient in process.get_needed_ingredients("None"): # TODO define proliferator
             #    self.requirement_stack.append(ingredient)
-        
+    """
+    """        
 
     def update_production_flows(self, proliferator = {}):
         self.requirement_stack = self.output_flows.item_flows.copy()
@@ -257,6 +263,7 @@ class GeneratorWidget(QWidget):
         self.input_flow_widget.update(self.input_flow)
         
         #self.generate_factories()
+    """
     """
     def generate_factories(self, debug = False):
 
@@ -356,7 +363,12 @@ class GeneratorWidget(QWidget):
     """
 
 if __name__ == "__main__":
-    
+    import argparse
+    parser = argparse.ArgumentParser(description='DSP Factory Blueprint Generator')
+    parser.add_argument('--test', action='store_true', help='Run in test mode')
+    args = parser.parse_args()
+    if args.test:
+        sys.exit(0)
     app = QApplication(sys.argv)
     widget = GeneratorWidget()
     widget.setWindowTitle('Factory generator')

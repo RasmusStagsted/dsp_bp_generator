@@ -1,5 +1,4 @@
 import networkx as nx
-
 import math
 
 from PySide6.QtCore import (QEasingCurve, QLineF,
@@ -12,14 +11,7 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QGraphicsItem,
 
 class Node(QGraphicsObject):
 
-    """A QGraphicsItem representing node in a graph"""
-
     def __init__(self, name: str, parent=None):
-        """Node constructor
-
-        Args:
-            name (str): Node label
-        """
         super().__init__(parent)
         self._name = name
         self._edges = []
@@ -32,27 +24,14 @@ class Node(QGraphicsObject):
         self.setCacheMode(QGraphicsItem.CacheMode.DeviceCoordinateCache)
 
     def boundingRect(self) -> QRectF:
-        """Override from QGraphicsItem
-
-        Returns:
-            QRect: Return node bounding rect
-        """
         return self._rect
 
     def paint(self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget = None):
-        """Override from QGraphicsItem
-
-        Draw node
-
-        Args:
-            painter (QPainter)
-            option (QStyleOptionGraphicsItem)
-        """
         painter.setRenderHints(QPainter.RenderHint.Antialiasing)
         painter.setPen(
             QPen(
                 QColor(self._color).darker(),
-                2,
+                2.0,
                 Qt.PenStyle.SolidLine,
                 Qt.PenCapStyle.RoundCap,
                 Qt.PenJoinStyle.RoundJoin,
@@ -67,38 +46,17 @@ class Node(QGraphicsObject):
         painter.drawText(self.boundingRect(), Qt.AlignmentFlag.AlignCenter, self._name)
 
     def add_edge(self, edge):
-        """Add an edge to this node
-
-        Args:
-            edge (Edge)
-        """
         self._edges.append(edge)
 
     def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value):
-        """Override from QGraphicsItem
-
-        Args:
-            change (QGraphicsItem.GraphicsItemChange)
-            value (Any)
-
-        Returns:
-            Any
-        """
         if change == QGraphicsItem.GraphicsItemChange.ItemPositionHasChanged:
             for edge in self._edges:
                 edge.adjust()
 
         return super().itemChange(change, value)
 
-
 class Edge(QGraphicsItem):
     def __init__(self, source: Node, dest: Node, parent: QGraphicsItem = None):
-        """Edge constructor
-
-        Args:
-            source (Node): source node
-            dest (Node): destination node
-        """
         super().__init__(parent)
         self._source = source
         self._dest = dest
@@ -115,11 +73,6 @@ class Edge(QGraphicsItem):
         self.adjust()
 
     def boundingRect(self) -> QRectF:
-        """Override from QGraphicsItem
-
-        Returns:
-            QRect: Return node bounding rect
-        """
         return (
             QRectF(self._line.p1(), self._line.p2())
             .normalized()
@@ -132,10 +85,6 @@ class Edge(QGraphicsItem):
         )
 
     def adjust(self):
-        """
-        Update edge position from source and destination node.
-        This method is called from Node::itemChange
-        """
         self.prepareGeometryChange()
         self._line = QLineF(
             self._source.pos() + self._source.boundingRect().center(),
@@ -143,13 +92,6 @@ class Edge(QGraphicsItem):
         )
 
     def _draw_arrow(self, painter: QPainter, start: QPointF, end: QPointF):
-        """Draw arrow from start point to end point.
-
-        Args:
-            painter (QPainter)
-            start (QPointF): start position
-            end (QPointF): end position
-        """
         painter.setBrush(QBrush(self._color))
 
         line = QLineF(end, start)
@@ -173,11 +115,6 @@ class Edge(QGraphicsItem):
         painter.drawPolygon(arrow_head)
 
     def _arrow_target(self) -> QPointF:
-        """Calculate the position of the arrow taking into account the size of the destination node
-
-        Returns:
-            QPointF
-        """
         target = self._line.p1()
         center = self._line.p2()
         radius = self._dest._radius
@@ -191,15 +128,6 @@ class Edge(QGraphicsItem):
         return target
 
     def paint(self, painter: QPainter, option: QStyleOptionGraphicsItem, widget=None):
-        """Override from QGraphicsItem
-
-        Draw Edge. This method is called from Edge.adjust()
-
-        Args:
-            painter (QPainter)
-            option (QStyleOptionGraphicsItem)
-        """
-
         if self._source and self._dest:
             painter.setRenderHints(QPainter.RenderHint.Antialiasing)
 
@@ -219,13 +147,6 @@ class Edge(QGraphicsItem):
 
 class GraphView(QGraphicsView):
     def __init__(self, graph: nx.DiGraph, parent=None):
-        """GraphView constructor
-
-        This widget can display a directed graph
-
-        Args:
-            graph (nx.DiGraph): a networkx directed graph
-        """
         super().__init__()
         self._graph = graph
         self._scene = QGraphicsScene()
@@ -249,7 +170,6 @@ class GraphView(QGraphicsView):
         }
 
         self._load_graph()
-        self.set_nx_layout("circular")
 
     def get_nx_layouts(self) -> list:
         """Return all layout names
@@ -303,3 +223,17 @@ class GraphView(QGraphicsView):
             source = self._nodes_map[a]
             dest = self._nodes_map[b]
             self.scene().addItem(Edge(source, dest))
+        self.set_nx_layout("kamada_kawai_layout")
+
+class GraphPlotWidget(QWidget):
+    def __init__(self, graph: nx.DiGraph, parent=None):
+        super().__init__(parent)
+        self._graph = graph
+        self._layout = QVBoxLayout(self)
+        self._view = GraphView(graph)
+        self._layout.addWidget(self._view)
+        self.setLayout(self._layout)
+
+    def set_graph(self, graph: nx.DiGraph):
+        self._graph = graph
+        self._view.set_graph(graph)

@@ -1,9 +1,11 @@
-from dsp_bp_generator.factory_generator.factory_router_interface import FactoryRouterInterface
-from dsp_bp_generator.factory_generator.proliferator import ProliferatorNone
-from dsp_bp_generator.factory_generator.factory_block_interface import FactoryBlockInterface
-from dsp_bp_generator.factory_generator.recipes import Recipe
-from dsp_bp_generator.factory_generator.factory_section import FactorySection
-from ..utils import Vector
+from dsp_bp_generator.utils import Vector
+
+from .factory_router_interface import FactoryRouterInterface
+from .factory_block_interface import FactoryBlockInterface
+from .factory_section import FactorySection
+
+from ..proliferator import ProliferatorNone
+from ..recipes import Recipe
 
 class Factory:
 

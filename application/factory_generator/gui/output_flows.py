@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QLabel,
     QComboBox, QDoubleSpinBox, QTableWidget, QHeaderView
@@ -5,10 +6,8 @@ from PySide6.QtWidgets import (
 from PySide6.QtGui import QDoubleValidator
 from PySide6.QtCore import Qt
 
-from dsp_bp_generator.factory_generator.recipes import Recipe
-from dsp_bp_generator.factory_generator import ItemFlow
-
-from dataclasses import dataclass
+from ..recipes import Recipe
+from ..item_flow import ItemFlow
 
 class OutputFlows(QWidget):
     
@@ -26,6 +25,7 @@ class OutputFlows(QWidget):
         
         self.callbacks = self.Callbacks()
         
+        self.last_item_text = []
         self.item = []
         self.flow_rate = []
         self.proliferator = []
@@ -34,7 +34,7 @@ class OutputFlows(QWidget):
         self.layout = QVBoxLayout()
         self.table_label = QLabel("Select output flows:")
         self.layout.addWidget(self.table_label)
-        self.table = QTableWidget(1, 4)
+        self.table = QTableWidget(0, 4)
         self.table.setHorizontalHeaderLabels(["Item", "Flow rate [items/s]", "Proliferator", "Add/Delete flow"])
         self.table.setSizePolicy(self.table.sizePolicy().horizontalPolicy(), self.table.sizePolicy().verticalPolicy())
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
@@ -44,14 +44,10 @@ class OutputFlows(QWidget):
         self.add_button = QPushButton("Add flow")
         self.add_button.clicked.connect(lambda: self.add_flow())
         self.layout.addWidget(self.add_button)
-        self.set_flow(0, "IronIngot", 1.0, "None")
         self.setLayout(self.layout)
 
     def set_proliferator_change_callback(self, callback = None):
         self.proliferator_update_callback = callback
-
-    def set_any_update_callback(self, callback = None):
-        self.any_update_callback = callback
 
     def set_callbacks(self, flow_created_callback = None, flow_deleted_callback = None,
                       item_changed_callback = None, flow_rate_changed_callback = None,
@@ -75,9 +71,14 @@ class OutputFlows(QWidget):
         options.sort()
         self.item[row].addItems(options)
         self.item[row].currentIndexChanged.connect(lambda _, r=row: self.item_changed(r))
+        if item_name is None:
+            self.item[row].setCurrentIndex(0)
+            item_name = self.item[row].currentText()
         idx = self.item[row].findText(item_name)
         if idx != -1:
             self.item[row].setCurrentIndex(idx)
+        print(f"Setting item {item_name} at row {row}")
+        self.last_item_text.append(item_name)
         self.table.setCellWidget(row, 0, self.item[row])
         self.flow_rate.append(QDoubleSpinBox())
         self.flow_rate[row].setRange(0, 1e6)
@@ -101,7 +102,7 @@ class OutputFlows(QWidget):
         flow_index = self.table.rowCount()
         flow_index = flow_index
         self.table.insertRow(flow_index)
-        self.set_flow(flow_index, "None", 1.0, "None")
+        self.set_flow(flow_index, None, 1.0, "None")
         if update:
             self.changed()
         
@@ -114,6 +115,7 @@ class OutputFlows(QWidget):
                 widget.deleteLater()
                 self.table.removeCellWidget(flow_index, col)
         self.table.removeRow(flow_index)
+        self.last_item_text.pop(flow_index)
         self.item.pop(flow_index)
         self.flow_rate.pop(flow_index)
         self.proliferator.pop(flow_index)
@@ -141,17 +143,17 @@ class OutputFlows(QWidget):
 
     def item_changed(self, index):
         if self.callbacks.item_changed_callback is not None:
-            self.callbacks.item_changed_callback(self.item, index)
+            self.callbacks.item_changed_callback(self.item, self.flow_rate, self.proliferator, index)
         self.changed()
 
     def flow_rate_changed(self, index):
         if self.callbacks.flow_rate_changed_callback is not None:
-            self.callbacks.flow_rate_changed_callback(self.flow_rate, index)
+            self.callbacks.flow_rate_changed_callback(self.item, self.flow_rate, self.proliferator, index)
         self.changed()
 
     def proliferator_changed(self, index):
         if self.callbacks.proliferator_changed_callback != None:
-            self.callbacks.proliferator_changed_callback(self.proliferator, index)
+            self.callbacks.proliferator_changed_callback(self.item, self.flow_rate, self.proliferator, index)
         self.changed()
 
     def changed(self):

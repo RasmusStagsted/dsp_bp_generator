@@ -1,4 +1,4 @@
-from dsp_bp_generator.factory_generator.production_graph.connection import Connection
+from .connection import Connection
 
 class ProductionGraph:
     
@@ -104,16 +104,17 @@ class ProductionGraph:
         text += "Input Flows:\n" + str(self.input_flows) + "\n\n"
         return text
 
-    def add_output_item_flow(self, item_flow, count_per_sec):
-        self._add_item_flow(item_flow, count_per_sec)
+    def add_output_item_flow(self, item_flow):
+        print("Adding output item flow:", item_flow.name, "with count per sec:", item_flow.count_per_second)
+        self._add_item_flow(item_flow)
         if not item_flow in self.output_flows:
             self.output_flows.add_flow(item_flow)
 
-    def _add_item_flow(self, item_flow, count_per_sec, destination = None):
+    def _add_item_flow(self, item_flow, destination = None):
         if not item_flow in self.item_flows:
-            self._generate_item_flow(item_flow, count_per_sec, destination)
-        else:
-            self._add_to_item_flow(item_flow, count_per_sec, destination)
+            self._generate_item_flow(item_flow, destination)
+        #else:
+        #    self._add_to_item_flow(item_flow, destination)
             
     def reduce_output_item_flow(self, item_flow):
         if not self.output_flows.includes(item_flow):
@@ -124,7 +125,7 @@ class ProductionGraph:
             if self.item_flows.includes(item_flow):
                 self.reduce_item_flow(item_flow)
     
-    def _add_to_item_flow(self, item_flow, count_per_sec, destination = None):
+    def _add_to_item_flow(self, item_flow, destination = None):
         if not item_flow in self.item_flows:
             raise ValueError(f"Item flow {item_flow.name} does not exist in item flows.")
         else:
@@ -159,7 +160,7 @@ class ProductionGraph:
             count_per_sec = count_per_sec
         )
     
-    def _generate_item_flow(self, new_item_flow, count_per_sec, destination = None, round_up = False):
+    def _generate_item_flow(self, new_item_flow, destination = None, round_up = False):
         if new_item_flow in self.item_flows:
             raise ValueError(f"Item flow {new_item_flow.name} already exists in item flow list.")
         else:
@@ -167,17 +168,17 @@ class ProductionGraph:
             if not destination is None:
                 self._connect_item_flow_to_process_input(new_item_flow, destination)
             
-            recipe = Recipe.select(new_item_flow.name)
-            
-            if recipe is None:
-                if new_item_flow in self.input_flows:
-                    raise ValueError(f"Item flow {new_item_flow.name} already exists in input flows, cannot add as output flow.")
-                else:
-                    self.input_flows.add_flow(new_item_flow)
-            elif len(recipe.output_items) != 1:
-                raise ValueError(f"Recipe for {new_item_flow.name} has multiple outputs, cannot handle this case.")
-            else:
-                self._generate_process_for_item_flow(new_item_flow, count_per_sec, recipe)
+            #recipe = Recipe.select(new_item_flow.name)
+            #
+            #if recipe is None:
+            #    if new_item_flow in self.input_flows:
+            #        raise ValueError(f"Item flow {new_item_flow.name} already exists in input flows, cannot add as output flow.")
+            #    else:
+            #        self.input_flows.add_flow(new_item_flow)
+            #elif len(recipe.output_items) != 1:
+            #    raise ValueError(f"Recipe for {new_item_flow.name} has multiple outputs, cannot handle this case.")
+            #else:
+            #    self._generate_process_for_item_flow(new_item_flow, count_per_sec, recipe)
 
     def _generate_process_for_item_flow(self, item_flow, count_per_sec, recipe, round_up = False):
         factory_count = count_per_sec * recipe.time / recipe.output_items[item_flow.name]

@@ -1,15 +1,16 @@
-from ..buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI, SorterMKI
-from ..enums import Item
-from ..utils import Yaw, Vector
+from copy import deepcopy
+import math
+
+from dsp_bp_generator.buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI, SorterMKI
+from dsp_bp_generator.enums import Item
+from dsp_bp_generator.utils import Yaw, Vector
+from dsp_bp_generator.blueprint import Blueprint, BlueprintBuildingV1
+from dsp_bp_generator.buildings import Building
+
 from .factory_block import FactoryBlock
 from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
-from .proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
-from .recipes import Recipe
-from ..blueprint import Blueprint, BlueprintBuildingV1
-from ..buildings import Building
-from copy import deepcopy
-
-import math
+from ..proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
+from ..recipes import Recipe
 
 class FactoryLine:
     """Represents a line of factory blocks with connected belts and sorters."""

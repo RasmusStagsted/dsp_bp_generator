@@ -1,10 +1,8 @@
 from enum import IntEnum
-
-from dsp_bp_generator.factory_generator.proliferator import ProliferatorNone
-
-from dsp_bp_generator.factory_generator.recipes import Recipe
-
 from dataclasses import dataclass
+
+from ..proliferator import ProliferatorNone
+from ..recipes import Recipe
 
 @dataclass
 class FactoryBlockInterface:

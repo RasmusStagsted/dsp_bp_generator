@@ -1,10 +1,11 @@
-from ..utils import Vector, Yaw
+from dsp_bp_generator.utils import Vector, Yaw
+from dsp_bp_generator.buildings import ConveyorBelt, Splitter
+from dsp_bp_generator.enums import BuildingModel
+from dsp_bp_generator.blueprint import Blueprint, BlueprintBuildingV1
+from dsp_bp_generator.buildings import Building
+
 from .factory_router_interface import FactoryRouterInterface, FactoryRouterBelt
 from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
-from ..buildings import ConveyorBelt, Splitter
-from ..enums import BuildingModel
-from ..blueprint import Blueprint, BlueprintBuildingV1
-from ..buildings import Building
 
 class FactoryRouter:
     """Handles the routing of routing belts and splitters for factory layouts."""

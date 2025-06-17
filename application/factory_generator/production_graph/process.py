@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-from dsp_bp_generator.factory_generator.recipes import Recipe
-from dsp_bp_generator.factory_generator.proliferator import ProliferatorNone
+from ..recipes import Recipe
+from ..proliferator import ProliferatorNone
 
 @dataclass
 class Process:

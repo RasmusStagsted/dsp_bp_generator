@@ -3,7 +3,8 @@ from PySide6.QtWidgets import (
     QComboBox, QLineEdit, QTableWidget, QHeaderView
 )
 from PySide6.QtGui import QDoubleValidator
-from dsp_bp_generator.factory_generator.recipes import Recipe
+
+from ..recipes import Recipe
 
 class InputFlows(QWidget):
     
