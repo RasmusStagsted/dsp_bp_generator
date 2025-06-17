@@ -11,14 +11,14 @@ A few small examples show how to run the parser and the serializer of blueprints
 
 (tested using Python 3.8.10)
 
-Install this python package frin [PyPi](https://pypi.org/project/dsp_bp_generator/):
+Install this python package from [PyPi](https://pypi.org/project/dsp_bp_generator/):
 ```
 pip install dsp_bp_generator
 ```
 
 ### Try the examples
 
-To run the blueprint parser, save your blueprint in a file, and run: 
+To run the blueprint parser, save your blueprint in a file, and run (obs. the blueprint parser only works with the older blueprint version):
 ```
 python parse.py --input_file=bp_input.txt --output_file=bp_output_data.txt
 ```
@@ -35,12 +35,12 @@ python generate_and_serialize.py --output_file=bp_output.txt
 
 ### Development
 
-To develop on this project, generate a virtual invironment using poetry:
+To develop on this project, clone the repo and generate a virtual invironment using poetry:
 ```
 poetry shell
 ```
 
-Install requirements:
+Install the requirements:
 ```
 poetry install
 ```
@@ -48,6 +48,10 @@ poetry install
 ## Blueprint encoding
 
 A blueprint in Dyson Sphere Program is a list of binary data blobs, each representing a building (this protocol is derived from the awsome work done in [dspbptk](https://github.com/johndoe31415/dspbptk)), with a few headers prepended.
+
+This project utilizes an old protocol of blueprints. This is not the same version as the one exported from the current version of Dyson Sphere Program. But the old blueprint version can be imported into the current game version.
+
+### Blueprint version 1
 
 <table>
 <tr><th> Building </th><th> Pose </th><th> Connection </th></tr>
@@ -140,6 +144,10 @@ Before this big datablob, represnting a list of buildings, is a couple of header
 
 This whole data blob is finnaly compressed using gzip and then base64 encoded.
 Furthermore a fixed string is prepended, and a hash is appended.
+
+### Blueprint verison 2
+
+Not supported yet!
 
 ### Bluepring structure
 
