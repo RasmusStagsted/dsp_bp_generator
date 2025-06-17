@@ -2,8 +2,10 @@ from dataclasses import dataclass
 from ..recipes import Recipe
 from ..proliferator import ProliferatorNone
 
+from .graphical_node import GraphicalNode
+
 @dataclass
-class Process:
+class Process(GraphicalNode):
     
     def __init__(self, name: str, recipe: Recipe, factory_count: int = 1, output_proliferator: str = ProliferatorNone):
         self.name = name
