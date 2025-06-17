@@ -1,7 +1,7 @@
 from enum import IntEnum
-from dsp_bp_generator.factory_generator.proliferator import ProliferatorNone
-
 from dataclasses import dataclass
+
+from ..proliferator import ProliferatorNone
 
 @dataclass
 class FactoryRouterInterface:

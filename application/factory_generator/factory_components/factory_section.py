@@ -1,12 +1,13 @@
+from dsp_bp_generator.blueprint import Blueprint, BlueprintBuildingV1
+from dsp_bp_generator.buildings import Building
+from dsp_bp_generator.utils import Vector
+
 from .factory_line import FactoryLine
-from .recipes import Recipe
-from ..blueprint import Blueprint, BlueprintBuildingV1
 from .factory_router_interface import FactoryRouterInterface, FactoryRouterBelt
 from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
-from ..buildings import Building
 from .factory_router import FactoryRouter
-from ..utils import Vector
-import enum
+
+from ..recipes import Recipe
 
 class FactorySection:
     

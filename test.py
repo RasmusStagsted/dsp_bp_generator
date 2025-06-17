@@ -28,20 +28,13 @@ def run(cmd, enable_output = False):
 print("\n\n\n")
 print("Running factory module tests...")
 success = True
-success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_block"])
-success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_line"])
-success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_router"])
-success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory_section"])
-#success = success and run(["python", "-m", "dsp_bp_generator.factory_generator.factory"])
+success = success and run(["python", "-m", "application.factory_generator.factory_components.factory_block"])
+success = success and run(["python", "-m", "application.factory_generator.factory_components.factory_line"])
+success = success and run(["python", "-m", "application.factory_generator.factory_components.factory_router"])
+success = success and run(["python", "-m", "application.factory_generator.factory_components.factory_section"])
+success = success and run(["python", "-m", "application.factory_designer", "--test"])
 
 if success:
     exit(0)
 else:
     exit(1)
-#print("Running other tests...")
-#run(["python3", "examples/buildings.py"])
-#run(["python3", "examples/generate_factory.py"])
-#run(["python3", "examples/oil_refinary.py"])
-#run(["python3", "examples/parse_edit_and_serialize.py", "--if=input.bp"])
-#run(["python3", "examples/parse.py", "--if=input.bp"])
-#run(["python3", "examples/sorter_example.py"])

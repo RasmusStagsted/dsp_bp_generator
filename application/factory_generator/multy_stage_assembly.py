@@ -1,9 +1,11 @@
-from .recipes import Recipe
-from ..enums import Item
-from .factory_section import FactorySection
-from ..buildings import ArcSmelter, AssemblingMachineMKI, OilRefinary, ChemicalPlant, MatrixLab
-from ..utils import Vector
 from math import ceil
+
+from dsp_bp_generator.buildings import ArcSmelter, AssemblingMachineMKI, OilRefinary, ChemicalPlant, MatrixLab
+from dsp_bp_generator.utils import Vector
+from dsp_bp_generator.enums import Item
+
+from .recipes import Recipe
+from .factory_components.factory_section import FactorySection
 
 class MultyStageAssembly:
 

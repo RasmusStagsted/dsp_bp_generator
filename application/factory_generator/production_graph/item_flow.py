@@ -1,5 +1,5 @@
-from dsp_bp_generator.factory_generator.production_graph.connection import Connection
-from dsp_bp_generator.factory_generator.proliferator import ProliferatorNone
+from .connection import Connection
+from ..proliferator import ProliferatorNone
 
 class ItemFlow:
 

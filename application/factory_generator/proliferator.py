@@ -1,4 +1,4 @@
-from dsp_bp_generator.factory_generator.recipes import Recipe
+from application.factory_generator.recipes import Recipe
 
 class ProliferatorNone:
     NUMBER_OF_SPRAYS = 0

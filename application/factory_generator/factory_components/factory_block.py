@@ -1,19 +1,18 @@
-from ..enums import Item
-from ..utils import Vector, Yaw
-from ..factory_generator.recipes import Recipe
+from dsp_bp_generator.enums import Item
+from dsp_bp_generator.utils import Vector, Yaw
+from dsp_bp_generator.blueprint import Blueprint, BlueprintBuildingV1
+from dsp_bp_generator.buildings import Building
+from dsp_bp_generator.buildings import ConveyorBelt
+from dsp_bp_generator.buildings import Sorter
+from dsp_bp_generator.buildings import ArcSmelter, PlaneSmelter, NegentrophySmelter
+from dsp_bp_generator.buildings import AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler
+from dsp_bp_generator.buildings import MatrixLab, SelfEvolutionLab
+from dsp_bp_generator.buildings import OilRefinary
+from dsp_bp_generator.buildings import ChemicalPlant, QuantumChemicalPlant
+
+from ..recipes import Recipe
 from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
-from ..factory_generator.proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
-from ..blueprint import Blueprint, BlueprintBuildingV1
-from ..buildings import Building
-from ..buildings import ConveyorBelt
-from ..buildings import Sorter
-from ..buildings import ArcSmelter, PlaneSmelter, NegentrophySmelter
-from ..buildings import AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler
-from ..buildings import MatrixLab, SelfEvolutionLab
-from ..buildings import OilRefinary
-from ..buildings import ChemicalPlant, QuantumChemicalPlant
-
-
+from ..proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
 
 class FactoryBlock:
     """
