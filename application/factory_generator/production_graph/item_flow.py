@@ -24,11 +24,6 @@ class ItemFlow(GraphicalNode):
             count_per_sec += connection.count_per_sec
         return count_per_sec
 
-
-
-
-
-
     def add_destination(self, destination):
         if destination.__hash__() in [conn.destination.__hash__() for conn in self.output_connections]:
             raise ValueError(f"Destination {destination.name} already exists in output connections.")
@@ -60,6 +55,7 @@ class ItemFlow(GraphicalNode):
         return (
             f"[ItemFlow] {self.name}\n"
             f"  Proliferator: {str(self.proliferator)}\n"
+            f"  Count per second: {self.count_per_second}\n"
             f"  Input connections: {', '.join([connection.name for connection in self.input_connections]) if self.input_connections else 'None'}\n"
             f"  Output connections: {', '.join([connection.name for connection in self.output_connections]) if self.output_connections else 'None'}"
         )

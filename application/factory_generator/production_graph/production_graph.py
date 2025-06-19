@@ -1,10 +1,11 @@
 import networkx as nx
+import logging
 from .connection import Connection
 
 from .graphical_graph import GraphicalGraph
 
 class ProductionGraph(GraphicalGraph):
-    
+    """
     class ProcessList:
 
         def __init__(self):
@@ -58,13 +59,11 @@ class ProductionGraph(GraphicalGraph):
         def __contains__(self, item_flow):
             return item_flow.__hash__() in self.flows.keys()
 
-        """
         def __getitem__(self, item_flow):
             return self.flows[item_flow.__hash__()]
 
         def __setitem__(self, item_flow, value):
             self.flows[item_flow.__hash__()] = value
-        """
         
         def __str__(self):
             text = "["
@@ -72,20 +71,38 @@ class ProductionGraph(GraphicalGraph):
                 text += str(input_flow) + "\n"
             text += "]"
             return text
-        
-    def __init__(self, graph = None, parent = None):
-        if graph is None:
-            graph = nx.DiGraph()
-        super().__init__(graph, parent)
-        self.output_flows = ProductionGraph.ItemFlowList()
-        self.input_flows = ProductionGraph.ItemFlowList()
+    """   
+    def __init__(self):
+        super().__init__()
+        #self.output_flows = ProductionGraph.ItemFlowList()
+        #self.input_flows = ProductionGraph.ItemFlowList()
         
         #self.forced_item_flows = ProductionGraph.ItemFlowList()
         #self.forced_output_flows = ProductionGraph.ItemFlowList()
 
-        self.processes = ProductionGraph.ProcessList()
-        self.item_flows = ProductionGraph.ItemFlowList()
-
+        #self.processes = ProductionGraph.ProcessList()
+        #self.item_flows = ProductionGraph.ItemFlowList()
+    
+    def add_node(self, node):
+        if node.name + node.proliferator in self.graph:
+            logging.info("Adding node:" + node.name)
+            self.graph.nodes[node.name + node.proliferator]["node"].count_per_second += node.count_per_second
+        else:
+            super().add_node(node)
+        
+        
+        
+    def remove_node(self, node):
+        if node.name + node.proliferator in self.graph:
+            logging.info("Removing node:" + node.name)
+            if self.graph.nodes[node.name + node.proliferator]["node"].count_per_second > node.count_per_second:
+                self.graph.nodes[node.name + node.proliferator]["node"].count_per_second -= node.count_per_second
+            else:
+                super().remove_node(node)
+        else:
+            raise ValueError(f"Node {node.name + node.proliferator} does not exist in the production graph.")
+        
+    """
     def add_process(self, process):
         if process.name not in self.processes.keys():
             self.processes[process.name] = process
@@ -93,7 +110,7 @@ class ProductionGraph(GraphicalGraph):
                 input_flow.add_destination(process)
             for output_flow in process.outputs:
                 output_flow.add_source(process)
-    """
+    
     def add_item_flow(self, item_flow):
         if item_flow.name not in self.item_flows.keys():
             self.item_flows[item_flow.name] = item_flow
@@ -101,7 +118,7 @@ class ProductionGraph(GraphicalGraph):
                 source.add_output(item_flow)
             for destination in item_flow.destinations:
                 destination.add_input(item_flow)
-    """
+    
     def __str__(self):
         text = ""
         text += "Processes:\n" + str(self.processes) + "\n\n"
@@ -214,6 +231,7 @@ class ProductionGraph(GraphicalGraph):
                 count_per_sec = count * factory_count / recipe.time,
                 destination = process
             )
+    """
     
 if __name__ == "__main__":
     from dsp_bp_generator.factory_generator.production_graph.process import Process

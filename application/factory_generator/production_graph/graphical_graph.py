@@ -7,9 +7,9 @@ from ..production_graph.graphical_edge import GraphicalEdge
 from ..production_graph.graphical_node import GraphicalNode
 
 class GraphicalGraph(QGraphicsView):
-    def __init__(self, graph: nx.DiGraph, parent=None):
+    def __init__(self):
         super().__init__()
-        self.graph = graph
+        self.graph = nx.DiGraph()
         self._scene = QGraphicsScene()
         self.setScene(self._scene)
 
@@ -31,7 +31,7 @@ class GraphicalGraph(QGraphicsView):
         }
 
         self.refresh()
-
+    
     def get_nx_layouts(self) -> list:
         return self._nx_layout.keys()
 
@@ -56,7 +56,7 @@ class GraphicalGraph(QGraphicsView):
                 self.animations.addAnimation(animation)
 
             self.animations.start()
-
+    
     def refresh(self):
         self.scene().clear()
         self._nodes_map.clear()
@@ -75,8 +75,8 @@ class GraphicalGraph(QGraphicsView):
         self.set_nx_layout("kamada_kawai_layout")
         
     def add_node(self, node):
-        self.graph.add_node(node)
+        self.graph.add_node(node.name + node.proliferator, node = node)
 
     def remove_node(self, node):
-        self.graph.remove_node(node)
+        self.graph.remove_node(node.name + node.proliferator)
         

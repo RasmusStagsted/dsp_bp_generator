@@ -3,9 +3,9 @@ from .recipes import Recipe
 
 class ItemFlow:
 
-    def __init__(self, name, count_pr_sec, proliferator = "None"):
+    def __init__(self, name, count_per_second, proliferator = "None"):
         self.name = name
-        self.count_pr_sec = count_pr_sec
+        self.count_per_second = count_per_second
         self.proliferator = proliferator
 
     def select_recipe(self, item_name):
@@ -35,7 +35,7 @@ class ItemFlow:
             return []
 
         for input_item, input_item_count in self.recipe.input_items.items():
-            ingredients.append(ItemFlow(input_item, input_item_count * self.count_pr_sec * scale / output_count))
+            ingredients.append(ItemFlow(input_item, input_item_count * self.count_per_second * scale / output_count))
 
         return ingredients
 
@@ -54,6 +54,6 @@ class ItemFlow:
             return []
 
         for output_item, output_item_count in self.recipe.output_items.items():
-            products.append(ItemFlow(output_item, output_item_count * self.count_pr_sec / output_count))
+            products.append(ItemFlow(output_item, output_item_count * self.count_per_second / output_count))
 
         return products

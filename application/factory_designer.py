@@ -1,5 +1,6 @@
 import sys
 import networkx as nx
+import logging
 
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
@@ -109,50 +110,49 @@ class GeneratorWidget(QWidget):
     def setup_callbacks(self):
         self.output_flows.set_callbacks(
             flow_created_callback = self.flow_created_callback,
-            #flow_deleted_callback = self.update,
+            flow_deleted_callback = self.flow_deleted_callback,
             item_changed_callback = self.item_changed_callback,
-            #flow_rate_changed_callback = self.update,
+            flow_rate_changed_callback = self.flow_rate_changed_callback,
             proliferator_changed_callback = self.proliferator_changed_callback,
             any_changed_callback = self.any_changed_callback
         )
         
-    def flow_created_callback(self, item, flow_rate, proliferator, index):
-        self.production_graph.add_output_item_flow(
-            ItemFlow(
-                item[index],
-                flow_rate[index],
-                proliferator[index]
-            )
-        )
-        self.graph_plot_widget.add_node(item[index].currentText())
+    def flow_created_callback(self, output_flows, index):
+        logging.info(f"Flow created callback {output_flows[index].item_combo.currentText()}")
+        self.graph_plot_widget.add_node(output_flows[index].get_item_flow())
+        
+    def flow_deleted_callback(self, output_flows, index):
+        logging.info("Flow deleted callback")
+        self.graph_plot_widget.remove_node(output_flows[index].get_item_flow())
     
-    def flow_deleted_callback(self, item, flow_rate, proliferator, index):
-        #self.production_graph.remove_output_item_flow()
-        self.graph_plot_widget.graph.remove_node(item[index].currentText())
-    
-    def item_changed_callback(self, item, flow_rate, proliferator, index):
-        old_item = self.output_flows.last_item_text[index]
-        new_item = item[index].currentText()
-        print(f"Item changed from {old_item} to {new_item}")
+    def item_changed_callback(self, output_flows, index):
+        old_item_flow = output_flows[index].get_old_item_flow()
+        new_item_flow = output_flows[index].get_item_flow()
+        logging.info(f"Item changed from {old_item_flow.name} to {new_item_flow.name}")
+        self.graph_plot_widget.remove_node(old_item_flow)
+        self.graph_plot_widget.add_node(new_item_flow)
         
-        #self.production_graph.remove_output_item_flow()
-        self.graph_plot_widget.remove_node(old_item)
+    def flow_rate_changed_callback(self, output_flows, index):
+        old_item_flow = output_flows[index].get_old_item_flow()
+        new_item_flow = output_flows[index].get_item_flow()
+        logging.info(f"Flow rate changed for {old_item_flow.name} from {old_item_flow.count_per_second} item/s to {new_item_flow.count_pr_sec} item/s")
+        self.graph_plot_widget.remove_node(old_item_flow)
+        self.graph_plot_widget.add_node(new_item_flow)
         
-        self.production_graph.add_output_item_flow(
-            ItemFlow(
-                item[index],
-                flow_rate[index],
-                proliferator[index]
-            )
-        )
-        self.graph_plot_widget.add_node(new_item)
-        self.output_flows.last_item_text[index] = new_item
+    def proliferator_changed_callback(self, output_flows, index):
+        old_item_flow = output_flows[index].get_old_item_flow()
+        new_item_flow = output_flows[index].get_item_flow()
+        logging.info(f"Proliferator changed for {old_item_flow.name} from {old_item_flow.proliferator} to {new_item_flow.proliferator}")
+        self.graph_plot_widget.remove_node(old_item_flow)
+        self.graph_plot_widget.add_node(new_item_flow)
+
+        output_flows = self.output_flows.output_flows
+        proliferators = [output_flows[i].get_item_flow().proliferator for i in range(len(output_flows))]
+        self.proliferator.update(proliferators)
         
-    def proliferator_changed_callback(self, item, flow_rate, proliferator, index):
-        self.proliferator.update(proliferator, index)
-        
-    def any_changed_callback(self):
-        self.graph_plot_widget.refresh()
+    def any_changed_callback(self, output_flows):
+        logging.info("Any changed callback")
+        self.graph_plot_widget.graph.refresh()
 
     def post_setup(self):
         self.output_flows.add_flow()
@@ -365,6 +365,21 @@ if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description='DSP Factory Blueprint Generator')
     parser.add_argument('--test', action='store_true', help='Run in test mode')
+    parser.add_argument('--log_level', type=str, default='DEBUG', help='Set logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)')
+
+    log_levels = {
+        'DEBUG': logging.DEBUG,
+        'INFO': logging.INFO,
+        'WARNING': logging.WARNING,
+        'ERROR': logging.ERROR,
+        'CRITICAL': logging.CRITICAL
+    }
+
+    log_level = log_levels[parser.parse_args().log_level.upper()]
+    logging.basicConfig(format = '%(levelname)s:\t%(message)s', level = log_level)
+    print(f"Log level set to {parser.parse_args().log_level.upper()}")
+
+
     args = parser.parse_args()
     if args.test:
         sys.exit(0)

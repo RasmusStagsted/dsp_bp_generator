@@ -10,16 +10,10 @@ class GraphPlotWidget(QWidget):
         self.layout = QVBoxLayout(self)
         self.layout.addWidget(self.graph)
         self.setLayout(self.layout)
-
-    def refresh(self):
-        self.graph.refresh()
-
-    def set_graph(self, graph: nx.DiGraph):
-        self._graph = graph
-        self._view.set_graph(graph)
         
     def add_node(self, node):
         self.graph.add_node(node)
         
     def remove_node(self, node):
         self.graph.remove_node(node)
+        

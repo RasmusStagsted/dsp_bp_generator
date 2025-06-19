@@ -38,8 +38,7 @@ class ProliferatorProductionOption(QWidget):
 
         self.setLayout(self.layout)
     
-    def update(self, proliferators, index):
-        proliferators = [proliferators[i].currentText() for i in range(len(proliferators))]
+    def update(self, proliferators):
         proliferators = list(set(proliferators))
         proliferators.sort()
         if "None" in proliferators:
