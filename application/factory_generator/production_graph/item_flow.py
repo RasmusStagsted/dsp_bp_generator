@@ -1,9 +1,7 @@
 from .connection import Connection
 from ..proliferator import ProliferatorNone
 
-from .graphical_node import GraphicalNode
-
-class ItemFlow(GraphicalNode):
+class ItemFlow:
 
     def __init__(self, name: str, count_per_second: float = 0, proliferator: str = ProliferatorNone):
         self.name = name

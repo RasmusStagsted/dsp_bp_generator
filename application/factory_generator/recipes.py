@@ -75,6 +75,22 @@ class Recipe:
         return None
 
     @staticmethod
+    def get_recipes_for_output_item(item_name):
+        recipes = []
+        for recipe in Recipe.recipes.values():
+            if item_name in recipe.output_items:
+                recipes.append(recipe)
+        return recipes
+
+    @staticmethod
+    def get_recipes_for_input_item(item_name):
+        recipes = []
+        for recipe in Recipe.recipes.values():
+            if item_name in recipe.input_items:
+                recipes.append(recipe)
+        return recipes
+
+    @staticmethod
     def select(item_name):
         if not item_name in Recipe.recipes:
             logging.debug("Recipe not found: " + item_name)
@@ -82,6 +98,10 @@ class Recipe:
         recipe = Recipe.recipes[item_name]
         return recipe
 
+    @staticmethod
+    def has_recipe(item_name):
+        return item_name in Recipe.recipes.keys()
+        
     def get_item_list_sorted_by_throughput(self):
         items = {**self.input_items, **self.output_items}
         return sorted(d, key=lambda k: d[k], reverse=True)

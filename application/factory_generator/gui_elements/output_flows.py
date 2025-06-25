@@ -14,10 +14,7 @@ class OutputFlows(QWidget):
     
     class OutputFlow:
         
-        def __init__(self):
-            pass
-        
-        def set(self, item, flow_rate, proliferator):
+        def __init__(self, item, flow_rate, proliferator):
             self.item_combo = item
             self.lasts_name = self.item_combo.currentText()
             self.flow_rate = flow_rate
@@ -91,7 +88,7 @@ class OutputFlows(QWidget):
         if not any_changed_callback is None:
             self.callbacks.any_changed_callback = any_changed_callback
 
-    def create_item_combo_box(self, row, item_name):
+    def create_item_combo_box(self, row, item_name = None):
         item = QComboBox()
         options = list(Recipe.recipes.keys())
         options.sort()
@@ -105,7 +102,7 @@ class OutputFlows(QWidget):
             item.setCurrentIndex(idx)
         return item
 
-    def create_flow_rate_spin_box(self, row, count_per_second):
+    def create_flow_rate_spin_box(self, row, count_per_second = 1.0):
         flow_rate = QDoubleSpinBox()
         flow_rate.setRange(0, 1e6)
         flow_rate.setSingleStep(1.0)
@@ -113,19 +110,14 @@ class OutputFlows(QWidget):
         flow_rate.textChanged.connect(lambda _, r = row: self.flow_rate_changed(r))
         return flow_rate
         
-    def create_proliferator_combo_box(self, row, proliferator_name):
+    def create_proliferator_combo_box(self, row, proliferator_name = "No-proliferator"):
         proliferator = QComboBox()
-        proliferator.addItems(["None", "MK.I", "MK.II", "MK.III"])
+        proliferator.addItems(["No-proliferator", "MK.I", "MK.II", "MK.III"])
         proliferator.currentIndexChanged.connect(lambda _, r = row: self.proliferator_changed(r))
         idx = proliferator.findText(proliferator_name)
         if idx != -1:
             proliferator.setCurrentIndex(idx)
         return proliferator
-    
-    def create_delete_button(self, row):
-        delete_button = QPushButton("Delete flow")
-        delete_button.clicked.connect(lambda _, btn = delete_button: self.remove_flow(btn))
-        return delete_button
     
     def set_flow(self, row, item_name, count_per_second, proliferator_name, update = True):
         item = self.create_item_combo_box(row, item_name)
@@ -133,27 +125,37 @@ class OutputFlows(QWidget):
         flow_rate = self.create_flow_rate_spin_box(row, count_per_second)
         self.table.setCellWidget(row, 1, flow_rate)
         proliferator = self.create_proliferator_combo_box(row, proliferator_name)
-        self.table.setCellWidget(row, 2, proliferator)        
-        self.delete_button.append(self.create_delete_button(row))
-        self.table.setCellWidget(row, 3, self.delete_button[row])
+        self.table.setCellWidget(row, 2, proliferator)
 
         self.output_flows[row].set(item, flow_rate, proliferator)
+        if update:
+            self.changed()
+    
+    def create_delete_button(self):
+        delete_button = QPushButton("Delete flow")
+        delete_button.clicked.connect(lambda _, btn = delete_button: self.remove_flow(self.get_row_from_button(btn)))
+        return delete_button
+
+    def add_flow(self, update = True):
+        row = self.table.rowCount()
+        self.table.insertRow(row)
+        
+        item = self.create_item_combo_box(row)
+        flow_rate = self.create_flow_rate_spin_box(row)
+        proliferator = self.create_proliferator_combo_box(row)
+        self.output_flows.append(OutputFlows.OutputFlow(item, flow_rate, proliferator))
+        self.table.setCellWidget(row, 0, item)
+        self.table.setCellWidget(row, 1, flow_rate)
+        self.table.setCellWidget(row, 2, proliferator)
+        
+        self.delete_button.append(self.create_delete_button())
+        self.table.setCellWidget(row, 3, self.delete_button[row])
+        
         self.flow_created(row, update = False)
         if update:
             self.changed()
-
-    def add_flow(self, update = True):
-        self.output_flows.append(OutputFlows.OutputFlow())
-        row = self.table.rowCount()
-        self.table.insertRow(row)
-        self.set_flow(row, None, 1.0, "None", update = False)
-        if update:
-            self.changed()
-        logging.debug(f"Added flow at row {row}")
         
-    def remove_flow(self, button, update = True):
-        flow_index = self.get_row_from_button(button)
-        logging.debug(f"Removed flow at row {flow_index}")
+    def remove_flow(self, flow_index, update = True):
         self.flow_deleted(flow_index)
         for col in range(4):
             widget = self.table.cellWidget(flow_index, col)
@@ -162,6 +164,7 @@ class OutputFlows(QWidget):
                 self.table.removeCellWidget(flow_index, col)
         self.table.removeRow(flow_index)
         self.delete_button.pop(flow_index)
+        self.output_flows.pop(flow_index)
         if update:
             self.changed()
 
@@ -209,3 +212,23 @@ class OutputFlows(QWidget):
     def changed(self):
         if self.callbacks.any_changed_callback is not None:
             self.callbacks.any_changed_callback(self.output_flows)
+
+    def print(self):
+        for i, flow in enumerate(self.output_flows):
+            logging.info(str(i) + ":" + (self.output_flows[i].item_combo.currentText() if self.output_flows[i].item_combo else "None"))
+            logging.info(str(i) + ":" + str(self.output_flows[i].flow_rate.value() if self.output_flows[i].flow_rate else "None"))
+            logging.info(str(i) + ":" + (self.output_flows[i].proliferator.currentText() if self.output_flows[i].proliferator else "No-proliferator"))
+
+if __name__ == "__main__":
+    
+    from PySide6.QtWidgets import QApplication
+    app = QApplication()
+    output_flows = OutputFlows()
+    output_flows.show()
+    output_flows.add_flow()
+    output_flows.add_flow()
+    output_flows.set_flow(0, "Iron Plate", 10.0, "MK.I")
+    output_flows.set_flow(1, "Copper Plate", 5.0, "MK.II")
+    output_flows.remove_flow(0)
+    output_flows.remove_flow(0)
+    print(0)

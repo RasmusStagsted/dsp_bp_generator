@@ -3,7 +3,7 @@ from .recipes import Recipe
 
 class ItemFlow:
 
-    def __init__(self, name, count_per_second, proliferator = "None"):
+    def __init__(self, name, count_per_second, proliferator = "No-proliferator"):
         self.name = name
         self.count_per_second = count_per_second
         self.proliferator = proliferator

@@ -2,14 +2,13 @@ from dataclasses import dataclass
 from ..recipes import Recipe
 from ..proliferator import ProliferatorNone
 
-from .graphical_node import GraphicalNode
-
 @dataclass
-class Process(GraphicalNode):
+class Process:
     
-    def __init__(self, name: str, recipe: Recipe, factory_count: int = 1, output_proliferator: str = ProliferatorNone):
+    def __init__(self, name: str, recipes: [Recipe], recipe: Recipe, factory_count: int = 1, output_proliferator: str = ProliferatorNone):
         self.name = name
-        self.recipe = recipe
+        self.recipes = recipes
+        self.selected_recipe = recipe
         self.factory_count = factory_count
         self.output_proliferator = output_proliferator
         self.input_connections = []

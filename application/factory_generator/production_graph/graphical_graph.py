@@ -42,20 +42,13 @@ class GraphicalGraph(QGraphicsView):
             # Compute node position from layout function
             positions = self._nx_layout_function(self.graph)
 
-            # Change position of all nodes using an animation
-            self.animations = QParallelAnimationGroup()
+            # Set node positions directly, no animation
             for node, pos in positions.items():
                 x, y = pos
                 x *= self._graph_scale
                 y *= self._graph_scale
                 item = self._nodes_map[node]
-                animation = QPropertyAnimation(item, b"pos")
-                animation.setDuration(1000)
-                animation.setEndValue(QPointF(x, y))
-                animation.setEasingCurve(QEasingCurve.Type.OutExpo)
-                self.animations.addAnimation(animation)
-
-            self.animations.start()
+                item.setPos(QPointF(x, y))
     
     def refresh(self):
         self.scene().clear()
@@ -63,7 +56,13 @@ class GraphicalGraph(QGraphicsView):
 
         # Add nodes
         for node in self.graph:
-            item = GraphicalNode(node)
+            color = "red" if "color" not in self.graph.nodes[node].keys() else self.graph.nodes[node]["color"]
+            item = GraphicalNode(
+                node,
+                label = self.generate_label(node),
+                label_color = "black",
+                color = color
+            )
             self.scene().addItem(item)
             self._nodes_map[node] = item
 
@@ -72,11 +71,17 @@ class GraphicalGraph(QGraphicsView):
             source = self._nodes_map[a]
             dest = self._nodes_map[b]
             self.scene().addItem(GraphicalEdge(source, dest))
-        self.set_nx_layout("kamada_kawai_layout")
+        
+        self.set_nx_layout("spring_layout")
         
     def add_node(self, node):
         self.graph.add_node(node.name + node.proliferator, node = node)
 
-    def remove_node(self, node):
+    def remove_item_flow(self, node):
         self.graph.remove_node(node.name + node.proliferator)
-        
+
+    def generate_label(self, name):
+        import re
+        label = re.sub(r'(?<!^)(?=[A-Z0-9])', '\n', name)
+        return label
+    

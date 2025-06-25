@@ -41,8 +41,8 @@ class ProliferatorProductionOption(QWidget):
     def update(self, proliferators):
         proliferators = list(set(proliferators))
         proliferators.sort()
-        if "None" in proliferators:
-            proliferators.remove("None")
+        if "No-proliferator" in proliferators:
+            proliferators.remove("No-proliferator")
         boxes = {
             "MK.I": self.mki,
             "MK.II": self.mkii,

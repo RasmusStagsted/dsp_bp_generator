@@ -16,6 +16,19 @@ Install this python package from [PyPi](https://pypi.org/project/dsp_bp_generato
 pip install dsp_bp_generator
 ```
 
+### Try the factory designer
+To develop on this project, clone this repository.
+
+Generate a virtual invironment using poetry:
+```
+poetry shell
+```
+
+Start the application
+```
+python -m application.factory_designer
+```
+
 ### Try the examples
 
 To run the blueprint parser, save your blueprint in a file, and run (obs. the blueprint parser only works with the older blueprint versions): 

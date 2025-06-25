@@ -14,10 +14,10 @@ class ProliferatorNone:
         return ProliferatorNone.SPEED
 
     @staticmethod
-    def get_process_output_multiplier():
+    def get_process_output_multiplier(proliferator):
         return ProliferatorNone.SPEED * ProliferatorNone.PRODUCTIVITY
         
-class ProliferatorMKI(ProliferatorNone):
+class ProliferatorMKI:
     NUMBER_OF_SPRAYS = 13
     PRODUCTIVITY = 1.125
     SPEED = 1.25
@@ -34,7 +34,7 @@ class ProliferatorMKI(ProliferatorNone):
     def get_process_output_multiplier():
         return ProliferatorMKI.SPEED * ProliferatorMKI.PRODUCTIVITY
     
-class ProliferatorMKII(ProliferatorNone):
+class ProliferatorMKII:
     NUMBER_OF_SPRAYS = 24
     PRODUCTIVITY = 1.2
     SPEED = 1.5
@@ -51,7 +51,7 @@ class ProliferatorMKII(ProliferatorNone):
     def get_process_output_multiplier():
         return ProliferatorMKII.SPEED * ProliferatorMKII.PRODUCTIVITY
     
-class ProliferatorMKIII(ProliferatorNone):
+class ProliferatorMKIII:
     NUMBER_OF_SPRAYS = 60
     PRODUCTIVITY = 1.25
     SPEED = 2
@@ -67,6 +67,27 @@ class ProliferatorMKIII(ProliferatorNone):
     @staticmethod
     def get_process_output_multiplier():
         return ProliferatorMKIII.SPEED * ProliferatorMKIII.PRODUCTIVITY
+
+class Proliferator:
+    
+    proliferator_map = {
+        "No-proliferator": ProliferatorNone,
+        "MK.I": ProliferatorMKI,
+        "MK.II": ProliferatorMKII,
+        "MK.III": ProliferatorMKIII
+    }
+    
+    @staticmethod
+    def get_process_input_multiplier(proliferator_name):
+        return Proliferator.proliferator_map[proliferator_name].get_process_input_multiplier()
+
+    @staticmethod
+    def get_process_output_multiplier(proliferator_name):
+        return Proliferator.proliferator_map[proliferator_name].get_process_output_multiplier()
+
+    @staticmethod
+    def get_productivity(proliferator_name):
+        return Proliferator.proliferator_map[proliferator_name].PRODUCTIVITY
 
 if __name__ == "__main__":
     

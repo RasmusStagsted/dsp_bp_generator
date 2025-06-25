@@ -6,13 +6,16 @@ from PySide6.QtWidgets import QGraphicsItem, QGraphicsObject, QStyleOptionGraphi
 
 class GraphicalNode(QGraphicsObject):
 
-    def __init__(self, name: str, parent=None):
+    def __init__(self, name: str, label: str, label_color: str, color = None, parent=None):
         super().__init__(parent)
         self._name = name
         self._edges = []
-        self._color = "#5AD469"
-        self._radius = 30
+        self._color = color
+        self._radius = 40
         self._rect = QRectF(0, 0, self._radius * 2, self._radius * 2)
+        self._shape = "s"
+        self.label = label
+        self.label_color = label_color
 
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemIsMovable)
         self.setFlag(QGraphicsItem.GraphicsItemFlag.ItemSendsGeometryChanges)
@@ -38,7 +41,8 @@ class GraphicalNode(QGraphicsObject):
         font = painter.font()
         font.setPointSize(8)  # Increase font size here
         painter.setFont(font)
-        painter.drawText(self.boundingRect(), Qt.AlignmentFlag.AlignCenter, self._name)
+        painter.setPen(QColor(self.label_color))
+        painter.drawText(self.boundingRect(), Qt.AlignmentFlag.AlignCenter, self.label)
 
     def add_edge(self, edge):
         self._edges.append(edge)

@@ -11,9 +11,9 @@ class GraphPlotWidget(QWidget):
         self.layout.addWidget(self.graph)
         self.setLayout(self.layout)
         
-    def add_node(self, node):
-        self.graph.add_node(node)
+    def increase_flow(self, node):
+        self.graph.increase_flow(node.name, node.count_per_second, node.proliferator)
         
-    def remove_node(self, node):
-        self.graph.remove_node(node)
+    def reduce_flow(self, node):
+        self.graph.decrease_flow(node.name, node.count_per_second, node.proliferator)
         
