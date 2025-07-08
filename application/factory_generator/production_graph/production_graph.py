@@ -5,7 +5,6 @@ from .connection import Connection
 from ..recipes import Recipe
 
 from .graphical_graph import GraphicalGraph
-from .process import Process
 from ..proliferator import Proliferator
 
 class ProductionGraph(GraphicalGraph):
@@ -13,42 +12,93 @@ class ProductionGraph(GraphicalGraph):
     def __init__(self):
         super().__init__()
     
-    def increase_flow(self, flow_name, count_per_second, proliferator):
+    def change_required_flow_rate(self, flow_name, items_per_second, proliferator):
+        print(flow_name)
         if not self.node_name_exists(flow_name + proliferator + "Flow"):
             logging.info("Node does not exist in the graph, adding node: " + flow_name + proliferator)
             self.add_flow(flow_name, proliferator)
-        logging.info("Increasing flow for node: " + flow_name + proliferator)
-        logging.error("Not implemented yet, need to handle flow increase logic.")
-        # TODO 
-        
-    def increase_process(self, process_name, count_per_second, proliferator):
-        if not self.node_name_exists(process_name + proliferator + "Process"):
-            logging.error(f"Process {process_name + proliferator} does not exist in the production graph.")
-            logging.debug(self.graph.nodes.keys())
-            return
-        logging.error("Not implemented yet, need to handle process increase logic.")
-        # TODO
-    
-    def decrease_flow(self, flow_name, count_per_second, proliferator):
-        if not self.node_name_exists(flow_name + proliferator + "Flow"):
-            logging.error(f"Flow {flow_name + proliferator} does not exist in the production graph.")
-            logging.debug(self.graph.nodes.keys())
-            return
-        logging.info("Decreasing flow: " + flow_name + proliferator)
         flow = self.graph.nodes.get(flow_name + proliferator + "Flow")
-        flow["count_per_second"] -= count_per_second
-        if flow["count_per_second"] < count_per_second:
+        if not "required_items_per_second" in flow:
+            flow["required_items_per_second"] = 0
+        flow["required_items_per_second"] += items_per_second
+        self.change_flow_rate(flow_name, items_per_second, proliferator)
+    
+    def change_flow_rate(self, flow_name, items_per_second, proliferator):
+        if not self.node_name_exists(flow_name + proliferator + "Flow"):
+            logging.info("Node does not exist in the graph, adding node: " + flow_name + proliferator)
+            self.add_flow(flow_name, proliferator)
+        flow = self.graph.nodes.get(flow_name + proliferator + "Flow")
+        old_flow_rate = flow["items_per_second"]
+        new_flow_rate = old_flow_rate + items_per_second
+        logging.info("Changing flow rate for " + flow_name + proliferator + " from " + str(old_flow_rate) + " to " + str(new_flow_rate))
+        flow["items_per_second"] += items_per_second
+        edges_to_edit = []
+        processes_to_edit = []
+        for node_name in self.graph.predecessors(flow_name + proliferator + "Flow"):
+            process_name = self.graph.nodes.get(node_name)["name"]
+            processes_to_edit.append({"name": process_name, "processes_per_second": items_per_second, "proliferator": proliferator})
+            edge_source = process_name + proliferator + "Process"
+            edge_destination = flow_name + proliferator + "Flow"
+            edges_to_edit.append({"source": edge_source, "destination": edge_destination, "items_per_second_diff": items_per_second})
+        for edge in edges_to_edit:
+            self.change_edge_flow_rate(edge["source"], edge["destination"], edge["items_per_second_diff"])
+        for process in processes_to_edit:
+            self.change_process_rate(process["name"], process["processes_per_second"], process["proliferator"])
+        if flow["items_per_second"] <= 0:
+            logging.info(f"Flow {flow_name + proliferator} has a flow rate of zero, removing flow.")
             self.remove_flow(flow_name, proliferator)
-        logging.error("Not implemented yet, need to handle flow decrease logic.")
-        # TODO Decrease connected processes
-        
-    def decrease_process(self, process_name, count_per_second, proliferator):
+    
+    def change_process_rate(self, process_name, processes_per_second, proliferator):
         if not self.node_name_exists(process_name + proliferator + "Process"):
             logging.error(f"Process {process_name + proliferator} does not exist in the production graph.")
             logging.debug(self.graph.nodes.keys())
             return
-        logging.error("Not implemented yet, need to handle process decrease logic.")
-        # TODO
+        process = self.graph.nodes.get(process_name + proliferator + "Process")
+        old_process_rate = process["processes_per_second"]
+        new_process_rate = old_process_rate + processes_per_second
+        logging.info("Changing process rate for: " + process_name + proliferator + " from " + str(old_process_rate) + " to " + str(new_process_rate))
+        productivity = Proliferator.get_productivity(proliferator)
+        output_item_count_per_process = process["selected_recipe"].output_items[process_name]
+        processes_per_second_diff = processes_per_second / output_item_count_per_process / productivity
+        process["processes_per_second"] += processes_per_second_diff
+        edges_to_edit = []
+        flows_to_edit = []
+        for node_name in self.graph.predecessors(process_name + proliferator + "Process"):
+            flow_name = self.graph.nodes.get(node_name)["name"]
+            input_item_count = process["selected_recipe"].input_items[flow_name]
+            items_per_second = processes_per_second_diff * input_item_count
+            flows_to_edit.append({"name": flow_name, "items_per_second": items_per_second, "proliferator": proliferator})
+            edge_source = flow_name + proliferator + "Flow"
+            edge_destination = process_name + proliferator + "Process"
+            edges_to_edit.append({"source": edge_source, "destination": edge_destination, "items_per_second_diff": items_per_second})
+        for edge in edges_to_edit:            
+            self.change_edge_flow_rate(edge["source"], edge["destination"], edge["items_per_second_diff"])
+        for flow in flows_to_edit:
+            self.change_flow_rate(flow["name"], flow["items_per_second"], flow["proliferator"])
+        if process["processes_per_second"] <= 0:
+            logging.info(f"Process {process_name + proliferator} has a process rate of zero, removing process.")
+            self.remove_process(process_name, proliferator)
+    
+    def change_edge_flow_rate(self, source_name, destination_name, items_per_second_diff):
+        if not self.node_name_exists(source_name):
+            logging.error(f"Source node {source_name} does not exist in the graph.")
+            return
+        if not self.node_name_exists(destination_name):
+            logging.error(f"Destination node {destination_name} does not exist in the graph.")
+            return
+        edge = self.graph.get_edge_data(source_name, destination_name)
+        old_items_per_second = edge["items_per_second"]
+        new_items_per_second = old_items_per_second + items_per_second_diff
+        logging.info(f"Changing edge flow rate from {source_name} to {destination_name} from {old_items_per_second} to {new_items_per_second}")
+        if edge is None:
+            logging.error(f"No edge exists between {source_name} and {destination_name}.")
+            return
+        edge["items_per_second"] = new_items_per_second
+        edge["color"] = self.generate_edge_color(edge["items_per_second"])
+        edge["label"] = str(round(new_items_per_second, 2))
+        if edge["items_per_second"] <= 0:
+            logging.info(f"Edge from {source_name} to {destination_name} has a flow rate of zero, removing edge.")
+            self.graph.remove_edge(source_name, destination_name)
     
     def add_flow(self, flow_name, proliferator):
         logging.info("Adding flow to the graph: " + flow_name + proliferator)
@@ -57,12 +107,12 @@ class ProductionGraph(GraphicalGraph):
             logging.debug(self.graph.nodes.keys())
             return
         node_id = flow_name + proliferator + "Flow"
-        label = self.generate_label(flow_name + proliferator)
+        label = self.generate_label(flow_name)
         self.graph.add_node(
             node_for_adding = node_id,
-            color = "#797979",
+            color = self.generate_node_color(proliferator, "flow"),
             name = flow_name,
-            count_per_second = 0,
+            items_per_second = 0,
             proliferator = proliferator,
             label = label
         )
@@ -74,24 +124,24 @@ class ProductionGraph(GraphicalGraph):
         if len(recipes) == 0:
             logging.warning(f"No recipes found for output item {flow_name}. Cannot create process.")
             return
-        recipes = recipes[0]            
-        self.add_process(recipes, proliferator)
-        self.connect_process_to_flow(recipes.name, flow_name, proliferator, 0)
+        process_name = flow_name
+        self.add_process(process_name, recipes, recipes[0], proliferator)
+        self.connect_process_to_flow(process_name, flow_name, proliferator, 0)
 
-    def add_process(self, recipe, proliferator):
-        process_name = recipe.name
+    def add_process(self, process_name, recipes, recipe, proliferator):
         logging.info("Adding process to the graph: " + process_name + proliferator)
         if self.node_name_exists(process_name + proliferator + "Process"):
             logging.error("Process already exists in the graph: " + process_name + proliferator)
             return
         name = process_name + proliferator + "Process"
-        label = self.generate_label(process_name + proliferator)
+        label = self.generate_label(process_name)
         self.graph.add_node(
             node_for_adding = name,
-            color = "#2F44FF",
+            color = self.generate_node_color(proliferator, "process"),
             name = process_name,
-            recipe = recipe,
-            process_count_per_sec = 0,
+            recipes = recipes,
+            selected_recipe = recipe,
+            processes_per_second = 0,
             proliferator = proliferator,
             label = label
         )
@@ -105,15 +155,17 @@ class ProductionGraph(GraphicalGraph):
         if not self.node_name_exists(flow_name + proliferator + "Flow"):
             logging.error("Flow does not exist in the graph, cannot remove: " + flow_name + proliferator + " from " + str(self.graph.nodes.keys()))
             return
-        if not self.graph.nodes.get(flow_name + proliferator + "Flow")["count_per_second"] == 0:
-            logging.error("Flow still has count per second greater than zero, cannot remove: " + flow_name + proliferator)
+        if not self.graph.nodes.get(flow_name + proliferator + "Flow")["items_per_second"] == 0:
+            logging.error("Flow still has a flow-rate greater than zero, cannot remove: " + flow_name + proliferator)
             return
-        for process_name in self.graph.predecessors(flow_name + proliferator + "Flow"):
-            process = self.graph.nodes.get(process_name)
-            if process["process_count_per_sec"] != 0:
-                logging.error(f"Process {process_name} is still connected to flow {flow_name + proliferator}, cannot remove flow.")
+        for node_name in self.graph.predecessors(flow_name + proliferator + "Flow"):
+            process_name = self.graph.nodes.get(node_name)["name"]
+            process = self.graph.nodes.get(process_name + proliferator + "Process")
+            if process["processes_per_second"] != 0:
+                logging.error(f"Process {process_name} is still having a flow-rate to flow {flow_name + proliferator}, cannot remove process.")
             else:
                 self.remove_process(process_name, proliferator)
+                self.disconnect_process_from_flow(process_name, flow_name, proliferator)
         self.graph.remove_node(flow_name + proliferator + "Flow")
         
     def remove_process(self, process_name, proliferator):
@@ -121,19 +173,19 @@ class ProductionGraph(GraphicalGraph):
         if not self.node_name_exists(process_name + proliferator + "Process"):
             logging.error("Process does not exist in the graph, cannot remove: " + process_name + proliferator + " from " + str(self.graph.nodes.keys()))
             return
-        if not self.graph.nodes.get(process_name + proliferator + "Process")["process_count_per_sec"] == 0:
-            logging.error("Process still has count per second greater than zero, cannot remove: " + process_name + proliferator)
+        if not self.graph.nodes.get(process_name + proliferator + "Process")["processes_per_second"] == 0:
+            logging.error("Process still has a flow-rate greater than zero, cannot remove: " + process_name + proliferator)
             return
-        self.graph.remove_node(process_name + proliferator + "Process")
         for flow_name in self.graph.predecessors(process_name + proliferator + "Process"):
             flow = self.graph.nodes.get(flow_name)
-            if flow["count_per_second"] != 0:
-                logging.error(f"Flow {flow_name} is still connected to process {process_name + proliferator}, cannot remove process.")
+            if flow["items_per_second"] != 0:
+                logging.error(f"Flow {flow_name} is still having a flow-rate to process {process_name + proliferator}, cannot remove process.")
             else:
+                self.disconnect_flow_from_process(flow_name, process_name, proliferator)
                 self.remove_flow(flow_name, proliferator)
         self.graph.remove_node(process_name + proliferator + "Process")
     
-    def connect_flow_to_process(self, flow_name, process_name, proliferator, count_per_second):
+    def connect_flow_to_process(self, flow_name, process_name, proliferator, items_per_second):
         logging.info(f"Connecting {flow_name}(flow) to {process_name}(process), proliferator: {proliferator}")
         if not self.node_name_exists(flow_name + proliferator + "Flow"):
             logging.error("Flow does not exist in the graph, cannot connect: " + flow_name + proliferator)
@@ -147,11 +199,12 @@ class ProductionGraph(GraphicalGraph):
             destination = self.graph.nodes[process_name + proliferator + "Process"],
             source = self.graph.nodes[flow_name + proliferator + "Flow"],
             name = f"{flow_name}(flow) to {process_name}(process), proliferator: {proliferator}",
-            color = self.generate_edge_color(count_per_second),
-            count_per_second = count_per_second
+            color = self.generate_edge_color(items_per_second),
+            items_per_second = items_per_second,
+            label = str(round(items_per_second, 2)),
         )
     
-    def connect_process_to_flow(self, process_name, flow_name, proliferator, count_per_second):
+    def connect_process_to_flow(self, process_name, flow_name, proliferator, items_per_second):
         logging.info(f"Connecting {process_name}(process) to {flow_name}(flow), proliferator: {proliferator}")
         if not self.node_name_exists(flow_name + proliferator + "Flow"):
             logging.error("Flow does not exist in the graph, cannot connect: " + flow_name + proliferator)
@@ -165,170 +218,81 @@ class ProductionGraph(GraphicalGraph):
             source = self.graph.nodes[process_name + proliferator + "Process"],
             destination = self.graph.nodes[flow_name + proliferator + "Flow"],
             name = f"{process_name}(process) to {flow_name}(flow), proliferator: {proliferator}",
-            color = self.generate_edge_color(count_per_second),
-            count_per_sec = count_per_second
-        )
-    
-    """
-    def increase_flow(self, flow_name, count_per_second, proliferator):
-
-        if self.node_name_exists(flow_name + proliferator + "Flow"):
-            logging.info("Increasing flow for node: " + flow_name + proliferator)
-            logging.error("Not implemented yet, need to handle flow increase logic.")
-            # TODO
-        else:
-            logging.info("Node does not exist in the graph, adding node: " + flow_name + proliferator)
-            self.add_flow(flow_name, count_per_second, proliferator)
-            
-    def add_flow(self, flow_name, count_per_second, proliferator):
-
-        if self.node_name_exists(flow_name + proliferator + "Flow"):
-            logging.error("Flow already exists in the graph: " + flow_name + proliferator)
-            logging.debug(self.graph.nodes.keys())
-            return
-        node_id = flow_name + proliferator + "Flow"
-        label = self.generate_label(flow_name + proliferator)
-        self.graph.add_node(
-            node_for_adding = node_id,
-            color = "#797979",
-            name = flow_name,
-            count_per_second = count_per_second,
-            proliferator = proliferator,
-            label = label
-        )
-        if not Recipe.has_recipe(flow_name):
-            logging.info("Adding raw item to the graph: " + flow_name + proliferator)
-            return
-        else:
-            self.add_process_to_flow(flow_name, count_per_second, proliferator)
-
-    def add_process_to_flow(self, flow_name, count_per_second, proliferator):
-
-        if self.node_name_exists(flow_name + proliferator + "Process"):
-            logging.error("Process already exists in the graph: " + flow_name + proliferator)
-        else:
-            recipes = Recipe.get_recipes_for_output_item(flow_name)
-            if len(recipes) == 0:
-                logging.warning(f"No recipes found for output item {flow_name}. Cannot create process.")
-            elif len(recipes) == 1:
-                recipe = recipes[0]
-                name = flow_name + proliferator + "Process"
-                process_name = flow_name
-                label = self.generate_label(process_name + proliferator)
-                output_multiplier = Proliferator.get_productivity(proliferator)
-                process_count_per_sec = count_per_second / recipe.output_items[flow_name] / output_multiplier
-                self.graph.add_node(
-                    node_for_adding = name,
-                    color = "#2F44FF",
-                    name = process_name,
-                    recipe = recipe,
-                    process_count_per_sec = process_count_per_sec,
-                    proliferator = proliferator,
-                    label = label
-                )
-                self.add_connection_from_process_to_flow(process_name, flow_name, proliferator, count_per_second)
-                logging.debug(f"Added connection from {process_name + proliferator + 'Process'} to {flow_name + proliferator + 'Flow'} with count_per_sec {count_per_second}")
-                for input_item, input_count in recipe.input_items.items():
-                    input_count_per_sec = input_count * process_count_per_sec
-                    self.increase_flow(input_item, input_count_per_sec, proliferator)
-                    self.add_connection_from_flow_to_process(input_item, process_name, proliferator, input_count_per_sec)
-            else:
-                logging.error(f"Multiple recipes found for output item {flow_name}. Cannot create process. Please specify a recipe.")
-                    
-            
-    def reduce_flow(self, flow_name, count_per_second, proliferator):
-
-        if not self.node_name_exists(flow_name + proliferator + "Flow"):
-            logging.error(f"Flow {flow_name + proliferator} does not exist in the production graph.")
-            logging.debug(self.graph.nodes.keys())
-            return
-        # Reduce the flow
-        logging.info("Reducing flow:" + flow_name + proliferator)
-        graph_flow = self.graph.nodes[flow_name + proliferator + "Flow"]
-        graph_flow["count_per_second"] -= count_per_second
-        # Reduce connected processes
-        processes_to_reduce = []
-        for process_name in self.graph.predecessors(graph_flow["name"] + proliferator + "Flow"):
-            process = self.graph.nodes.get(process_name)
-            processes_to_reduce.append(process)
-        for process in processes_to_reduce:
-            self.reduce_process(process["name"], flow_name, count_per_second, proliferator)
-        # Delete the flow if the count per second is zero or less
-        if graph_flow["count_per_second"] <= 0:
-            self.remove_flow(flow_name, count_per_second, proliferator, recursive = False)
-    
-    def reduce_process(self, process, flow_name, count_per_second, proliferator):
-
-        if not self.node_name_exists(process + proliferator + "Process"):
-            logging.error(f"Process {process + proliferator} does not exist in the production graph.")
-            logging.debug(self.graph.nodes.keys())
-            return
-        # Reduce the process
-        logging.info(f"Reducing process {process} for item flow {flow_name}")
-        graph_process = self.graph.nodes[process + proliferator + "Process"]
-        production_count_per_sec = graph_process["recipe"].output_items[process] / graph_process["recipe"].time
-        # Reduce connected item flows
-        item_flows_to_reduce = []
-        for item_flow_name in self.graph.predecessors(graph_process["name"] + proliferator + "Process"):
-            item_flow = self.graph.nodes.get(item_flow_name)
-            item_flows_to_reduce.append(item_flow)
-        for item_flow in item_flows_to_reduce:
-            print(item_flow["name"])
-            self.reduce_flow(item_flow["name"], , proliferator)
-        # Delete the process if the production count per second is zero or less
-        if production_count_per_sec <= 0:
-            self.remove_process(process, proliferator)
-
-    def remove_flow(self, flow_name, count_per_second, proliferator, recursive = True):
-        if not self.node_name_exists(flow_name + proliferator + "Flow"):
-            logging.error("Flow does not exist in the graph, cannot remove: " + flow_name + proliferator + " from " + str(self.graph.nodes.keys()))
-            return
-        logging.info("Removing flow from the graph: " + flow_name + proliferator)
-        if recursive:
-            graph_flow = self.graph.nodes[flow_name + proliferator + "Flow"]
-            for connection in self.graph.predecessors(graph_flow["name"]):
-                source = connection.source
-                self.reduce_process(source, flow_name, count_per_second, proliferator)
-        self.graph.remove_node(flow_name + proliferator + "Flow")
-    
-    def remove_process(self, process_name, proliferator):
-        if not self.node_name_exists(process_name + proliferator + "Process"):
-            logging.error("Process does not exist in the graph, cannot remove: " + process_name + proliferator + " from " + str(self.graph.nodes.keys()))
-            return
-        logging.info("Removing process from the graph: " + process_name + proliferator)
-        self.graph.remove_node(process_name + proliferator + "Process")
-    
-    def add_connection_from_process_to_flow(self, process_name, flow_name, proliferator, count_per_second):
-        logging.info("Adding process to the graph: " + flow_name + proliferator)
-        self.graph.add_edge(
-            flow_name + proliferator + "Flow",
-            process_name + proliferator + "Process",
-            name = f"{flow_name}(flow) to {flow_name}(process), proliferator: {proliferator}",
-            color = self.generate_edge_color(count_per_second),
-            source = self.graph.nodes[flow_name + proliferator + "Process"],
-            destination = self.graph.nodes[flow_name + proliferator + "Flow"],
-            count_per_sec = count_per_second
+            color = self.generate_edge_color(items_per_second),
+            items_per_second = items_per_second,
+            label = str(round(items_per_second, 2)),
         )
         
-    def add_connection_from_flow_to_process(self, flow_name, process_name, proliferator, count_per_second):
-        self.graph.add_edge(
-            flow_name + proliferator + "Process",
-            process_name + proliferator + "Flow",
-            name = f"{process_name}(process) to {flow_name}(flow), proliferator: {proliferator}",
-            color = self.generate_edge_color(count_per_second),
-            source = self.graph.nodes[flow_name + proliferator + "Flow"],
-            destination = self.graph.nodes[process_name + proliferator + "Process"],
-            count_per_second = count_per_second
+    def disconnect_flow_from_process(self, flow_name, process_name, proliferator):
+        logging.info(f"Disconnecting {flow_name}(flow) from {process_name}(process), proliferator: {proliferator}")
+        if not self.node_name_exists(flow_name + proliferator + "Flow"):
+            logging.error("Flow does not exist in the graph, cannot disconnect: " + flow_name + proliferator)
+            return
+        if not self.node_name_exists(process_name + proliferator + "Process"):
+            logging.error("Process does not exist in the graph, cannot disconnect: " + process_name + proliferator)
+            return
+        self.graph.remove_edge(
+            flow_name + proliferator + "Flow",
+            process_name + proliferator + "Process"
         )
-    """
+    
+    def disconnect_process_from_flow(self, process_name, flow_name, proliferator):
+        logging.info(f"Disconnecting {process_name}(process) from {flow_name}(flow), proliferator: {proliferator}")
+        if not self.node_name_exists(flow_name + proliferator + "Flow"):
+            logging.error("Flow does not exist in the graph, cannot disconnect: " + flow_name + proliferator)
+            return
+        if not self.node_name_exists(process_name + proliferator + "Process"):
+            logging.error("Process does not exist in the graph, cannot disconnect: " + process_name + proliferator)
+            return
+        self.graph.remove_edge(
+            process_name + proliferator + "Process",
+            flow_name + proliferator + "Flow"
+        )
+    
     def node_name_exists(self, node_name):
         return node_name in self.graph.nodes.keys()
     
-    def generate_edge_color(self, count_per_second):
-        red = int(255 * count_per_second / 30)
-        green = int(255 * (1 - count_per_second / 30))
-        return f"#{red:02X}{green:02X}00"
+    def generate_edge_color(self, items_per_second):
+        if items_per_second <= 6:
+            return "#f0c33c"
+        elif items_per_second <= 12:
+            return "#1ed14b"
+        elif items_per_second <= 30:
+            return "#72aee6"
+        else:
+            return "#ff0000"
+
+    def generate_node_color(self, proliferator, node_type):
+        if node_type == "flow":
+            if proliferator == "No-proliferator":
+                return "#a7aaad"
+            elif proliferator == "MK.I":
+                return "#f0c33c"
+            elif proliferator == "MK.II":
+                return "#1ed14b"
+            elif proliferator == "MK.III":
+                return "#72aee6"
+        elif node_type == "process":
+            if proliferator == "No-proliferator":
+                return "#646970"
+            elif proliferator == "MK.I":
+                return "#996b00"
+            elif proliferator == "MK.II":
+                return "#008a20"
+            elif proliferator == "MK.III":
+                return "#2271b1"
+        return "#ff0000"
     
+    def get_recipe(self, item_name):
+        if not Recipe.has_recipe(item_name):
+            logging.error(f"No recipe found for item {item_name}.")
+            return None
+        recipes = Recipe.get_recipes_for_output_item(item_name)
+        if len(recipes) == 0:
+            logging.error(f"No recipes found for output item {item_name}.")
+            return None
+        return recipes[0]
+
 if __name__ == "__main__":
     from dsp_bp_generator.factory_generator.production_graph.process import Process
     from dsp_bp_generator.factory_generator.production_graph.item_flow import ItemFlow

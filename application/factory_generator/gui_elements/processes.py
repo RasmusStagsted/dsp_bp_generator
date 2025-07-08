@@ -2,17 +2,22 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel,
     QComboBox, QLineEdit, QTableWidget, QHeaderView
 )
-from PySide6.QtGui import QDoubleValidator
 
-from ..recipes import Recipe
-
-class InputFlows(QWidget):
+class Processes(QWidget):
     
     def __init__(self):
         super().__init__()
 
         self.layout = QVBoxLayout()
         
+        self.proliferator_layout = QHBoxLayout()
+        self.proliferator_layout.addWidget(QLabel("Proliferator:"))
+        self.proliferator_selector = QComboBox()
+        self.proliferator_selector.addItems(["No-proliferator", "MK.I", "MK.II", "MK.III", "Individual"])
+        self.proliferator_selector.currentTextChanged.connect(self.proliferator_option_changed)
+        self.proliferator_layout.addWidget(self.proliferator_selector)
+        self.layout.addLayout(self.proliferator_layout)
+
         self.label = QLabel("Input flows:")
         self.layout.addWidget(self.label)
 

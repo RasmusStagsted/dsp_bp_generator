@@ -57,9 +57,10 @@ class GraphicalGraph(QGraphicsView):
         # Add nodes
         for node in self.graph:
             color = "red" if "color" not in self.graph.nodes[node].keys() else self.graph.nodes[node]["color"]
+            label = self.graph.nodes[node].get("label", node)
             item = GraphicalNode(
                 node,
-                label = self.generate_label(node),
+                label = label,
                 label_color = "black",
                 color = color
             )
@@ -70,7 +71,9 @@ class GraphicalGraph(QGraphicsView):
         for a, b in self.graph.edges:
             source = self._nodes_map[a]
             dest = self._nodes_map[b]
-            self.scene().addItem(GraphicalEdge(source, dest))
+            color = self.graph.edges[a, b].get("color", "#000000")
+            label = self.graph.edges[a, b].get("label", "")
+            self.scene().addItem(GraphicalEdge(source, dest, color=color, label=label))
         
         self.set_nx_layout("spring_layout")
         

@@ -2,6 +2,115 @@ import yaml
 import logging
 import pkgutil 
 
+class Item:
+    items = None
+
+    def __init__(self, name, item_id, product_recipes, ingredient_recipes):
+        self.name = name
+        self.item_id = item_id
+        self.product_recipes = product_recipes
+        self.ingredient_recipes = ingredient_recipes
+
+    @staticmethod
+    def load_from_yaml(filename):
+        data = pkgutil.get_data(__package__, filename)
+        if data is not None:
+            raw_items = yaml.safe_load(data)
+            items = {}
+            for key, value in raw_items.items():
+                items[key] = Item(
+                    name=value.get('Name', key),
+                    item_id=value.get('ItemID', None),
+                    product_recipes=value.get('ProductRecipes', []),
+                    ingredient_recipes=value.get('IngredientRecipes', [])
+                )
+            return items
+        else:
+            raise FileNotFoundError(f'{filename} not found in package')
+
+    def __str__(self):
+        return f'Name: {self.name} - Item ID: {self.item_id} - Product recipes: {self.product_recipes} - Ingredient recipes: {self.ingredient_recipes}'
+
+class Recipe:
+    
+    def __init__(self, name, input_items, output_items, time, tool, recipe_id):
+        self.name = name
+        self.input_items = input_items
+        self.output_items = output_items
+        self.time = time
+        self.tool = tool
+        self.recipe_id = recipe_id
+        
+    def load_from_yaml(filename):
+        data = pkgutil.get_data(__package__, filename)
+        if data is not None:
+            raw_recipes = yaml.safe_load(data)
+            recipes = {}
+            for key, value in raw_recipes.items():
+                if value is None:
+                    continue
+                if isinstance(value, list):
+                    value = value[0] if value else None
+                if value is None:
+                    continue
+                recipes[key] = Recipe(
+                    name=value.get('name', key),
+                    input_items=value.get('input_items', {}),
+                    output_items=value.get('output_items', {}),
+                    time=value.get('time', 1),
+                    tool=value.get('tool', ''),
+                    recipe_id=value.get('recipe_id', None)
+                )
+            return recipes
+        else:
+            raise FileNotFoundError(f'{filename} not found in package')
+
+    def __str__(self):
+        return f'Name: {self.name} - Input items: {self.input_items} - Output items: {self.output_items} - Time: {self.time}s - Tool: {self.tool} - Recipe ID: {self.recipe_id}'
+
+    @staticmethod
+    def get_recipes_for_output_item(item_name):
+        recipes = []
+        for recipe in Recipe.recipes.values():
+            if item_name in recipe.output_items:
+                recipes.append(recipe)
+        return recipes
+
+    @staticmethod
+    def get_recipes_for_input_item(item_name):
+        recipes = []
+        for recipe in Recipe.recipes.values():
+            if item_name in recipe.input_items:
+                recipes.append(recipe)
+        return recipes
+
+    @staticmethod
+    def select(item_name):
+        if not item_name in Recipe.recipes:
+            logging.debug("Recipe not found: " + item_name)
+            return None
+        recipe = Recipe.recipes[item_name]
+        return recipe
+
+    @staticmethod
+    def has_recipe(item_name):
+        return item_name in Recipe.recipes.keys()
+        
+    def get_item_list_sorted_by_throughput(self):
+        items = {**self.input_items, **self.output_items}
+        return sorted(d, key=lambda k: d[k], reverse=True)
+
+    def get_item_list_sorted_by_throughput(self):
+        items = {**self.input_items, **self.output_items}
+        return sorted(d, key=lambda k: d[k], reverse=True)
+
+    def get_input_flow_rate(self, input_item_name, output_item_name, output_flow_rate, proliferator = None):
+        return self.input_items.get(input_item_name, 0) * output_flow_rate / self.output_items.get(output_item_name, 1)
+
+    def compact_string(self):
+        return f"Recipe(name={self.name}, input_items={self.input_items}, output_items={self.output_items}, time={self.time}, tool={self.tool}, recipe_id={self.recipe_id})"
+
+"""
 class Recipe:
 
     recipes = None
@@ -115,9 +224,17 @@ class Recipe:
 
     def compact_string(self):
         return f"Recipe(name={self.name}, input_items={self.input_items}, output_items={self.output_items}, time={self.time}, tool={self.tool}, recipe_id={self.recipe_id})"
-
+"""
+Item.items = Item.load_from_yaml("data/items.yaml")
 Recipe.recipes = Recipe.load_from_yaml("data/recipes.yaml")
 
 if __name__ == "__main__":
     print(Recipe.recipes["Gear"])
     print(Recipe.recipes["Gear"].get_item_from_recipe("IronIngot"))
+    print(Recipe.has_recipe("Gear"))
+    print(Recipe.get_recipes_for_output_item("Gear"))
+    
+    for key, val in Item.items.items():
+        print(f"{key}: {val}")
+        
+    

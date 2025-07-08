@@ -1,0 +1,103 @@
+IronOre:
+  Name: Iron Ore
+  ProductRecipes:
+  IngredientRecipes:
+    - IronIngot
+    - Magnet
+CopperOre:
+  Name: Copper Ore
+  ProductRecipes:
+  IngredientRecipes:
+    - CopperIngot
+Stone:
+  Name: Stone
+  ProductRecipes:
+  IngredientRecipes:
+    - SulfuricAcid
+    - StoneBrick
+    - SiliconOre
+    - Glass
+Coal:
+  Name: Coal
+  ProductRecipes:
+  IngredientRecipes:
+    - ProliferatorMkI
+    - CombustibleUnit
+    - ReformedRefinement
+    - EnergeticGraphite
+SiliconOre:
+  Name: Silicon Ore
+  ProductRecipes:
+    - SiliconOre
+  IngredientRecipes:
+    - HighPuritySilicon
+TitaniumOre:
+  Name: Titanium Ore
+  ProductRecipes:
+  IngredientRecipes:
+    - TitaniumIngot
+Water:
+  Name: Water
+  ProductRecipes:
+  IngredientRecipes:
+    - TitaniumGlass (missing)
+    - OrganicCrystalOriginal (missing)
+    - SulfuricAcid (missing)
+    - OrganicCrystal (missing)
+CrudeOil:
+  Name: Crude Oil
+  ProductRecipes:
+  IngredientRecipes:
+    - PlasmaRefining
+Hydrogen:
+  Name: Hydrogen
+  ProductRecipes:
+    - GrapheneAdvanced
+    - DeuteriumFractionation
+    - MassEnergyStorage
+    - PlasmaRefining
+    - XRayCracking
+  IngredientRecipes:
+    - DeuteriumFractionation
+    - XRayCracking
+    - HydrogenFuelRod (missing)
+    - CasimirCrystal (missing)
+    - CasimirCrystalAdvanced (missing)
+    - AntimatterFuelRod (missing)
+    - AntimatterCapsule (missing)
+    - JammingCapsule (missing)
+    - Deuterium
+    - ReformedRefinement (missing)
+    - EnergyMatrix (missing)
+Deuterium:
+  Name: Deuterium
+  ProductRecipes:
+    - DeuteriumFractionation
+    - Deuterium
+  IngredientRecipes:
+    - DeuteronFuelRod (missing)
+    - PlasmaCapsule (missing)
+    - StrangeMatter (missing)
+Antimatter:
+  Name: Antimatter
+  ProductRecipes:
+    - MassEnergyStorage
+  IngredientRecipes:
+    - AntimatterFuelRod (missing)
+    - AntimatterCapsule (missing)
+    - UniverseMatrix (missing)
+CoreElement:
+  Name: Core Element
+  ProductRecipes:
+  IngredientRecipes:
+    - StrangeAnnihilationFuelRod (missing)
+CriticalPhoton:
+  Name: Critical Photon
+  ProductRecipes:
+  IngredientRecipes:
+    - MassEnergyStorage
+KimberliteOre:
+  Name: Kimberlite Ore
+  ProductRecipes:
+  IngredientRecipes:
+    - DiamondAdvanced (missing)

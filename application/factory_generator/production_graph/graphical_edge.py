@@ -7,13 +7,14 @@ from PySide6.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem
 from ..production_graph.graphical_node import GraphicalNode
 
 class GraphicalEdge(QGraphicsItem):
-    def __init__(self, source: GraphicalNode, dest: GraphicalNode, parent: QGraphicsItem = None):
+    def __init__(self, source: GraphicalNode, dest: GraphicalNode, parent: QGraphicsItem = None, color = None, label = "asdf"):
         super().__init__(parent)
         self._source = source
         self._dest = dest
 
         self._tickness = 2
-        self._color = "#2BB53C"
+        self._color = color
+        self.label = label
         self._arrow_size = 20
 
         self._source.add_edge(self)
@@ -94,3 +95,12 @@ class GraphicalEdge(QGraphicsItem):
             painter.drawLine(self._line)
             self._draw_arrow(painter, self._line.p1(), self._arrow_target())
             self._arrow_target()
+        midpoint = (self._line.p1() + self._line.p2()) / 2
+        painter.setPen(QPen(QColor("black")))  # Set label color
+
+        # Offset for text size
+        font_metrics = painter.fontMetrics()
+        text = self.label
+        text_rect = font_metrics.boundingRect(text)
+        offset = QPointF(text_rect.width() / 2, -text_rect.height() / 4)
+        painter.drawText(midpoint - offset, text)

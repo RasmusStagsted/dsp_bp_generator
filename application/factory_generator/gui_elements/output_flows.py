@@ -91,6 +91,7 @@ class OutputFlows(QWidget):
     def create_item_combo_box(self, row, item_name = None):
         item = QComboBox()
         options = list(Recipe.recipes.keys())
+        #options = ["IronIngot", "Gear"]
         options.sort()
         item.addItems(options)
         item.currentIndexChanged.connect(lambda _, r = row: self.item_changed(r))

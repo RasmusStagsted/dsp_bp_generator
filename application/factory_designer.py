@@ -13,6 +13,7 @@ from .factory_generator.gui_elements.input_flows import InputFlows
 from .factory_generator.gui_elements.proliferator_production_option import ProliferatorProductionOption
 from .factory_generator.gui_elements.blueprint_string_widget import BlueprintStringWidget
 from .factory_generator.gui_elements.graph_plot import GraphPlotWidget
+from .factory_generator.gui_elements.processes import Processes
 
 from .factory_generator.production_graph.production_graph import ProductionGraph
 
@@ -55,6 +56,9 @@ class GeneratorWidget(QWidget):
         self.insert_horizontal_line(self.factory_settings_layout)
         self.proliferator = ProliferatorProductionOption()
         self.factory_settings_layout.addWidget(self.proliferator)
+        self.insert_horizontal_line(self.factory_settings_layout)
+        self.intermediate_flows = Processes()
+        self.factory_settings_layout.addWidget(self.intermediate_flows)
         self.insert_horizontal_line(self.factory_settings_layout)
         self.input_flow_widget = InputFlows()
         self.factory_settings_layout.addWidget(self.input_flow_widget)
