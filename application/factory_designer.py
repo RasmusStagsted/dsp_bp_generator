@@ -16,6 +16,7 @@ from .factory_generator.gui_elements.graph_plot import GraphPlotWidget
 from .factory_generator.gui_elements.processes import Processes
 
 from .factory_generator.production_graph.production_graph import ProductionGraph
+from .factory_generator.factory_components.factory import Factory
 
 VERSION = "0.1.0"
 
@@ -64,6 +65,7 @@ class GeneratorWidget(QWidget):
         self.factory_settings_layout.addWidget(self.input_flow_widget)
         self.insert_horizontal_line(self.factory_settings_layout)
         self.blueprint = BlueprintStringWidget()
+        self.blueprint.set_callbacks(self.generate_blueprint)
         self.factory_settings_layout.addWidget(self.blueprint)
         self.insert_horizontal_line(self.factory_settings_layout)
 
@@ -141,6 +143,11 @@ class GeneratorWidget(QWidget):
     def any_changed_callback(self, output_flows):
         logging.info("Any changed callback")
         self.graph_plot_widget.graph.refresh()
+
+    def generate_blueprint(self):
+        factory = Factory()
+        factory.generate(self.graph_plot_widget.graph)
+        print(factory.generate_bp_string())
 
     def post_setup(self):
         self.output_flows.add_flow()

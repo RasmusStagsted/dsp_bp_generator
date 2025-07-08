@@ -89,6 +89,13 @@ class Proliferator:
     def get_productivity(proliferator_name):
         return Proliferator.proliferator_map[proliferator_name].PRODUCTIVITY
 
+    @staticmethod
+    def get_proliferator(proliferator_name):
+        if proliferator_name in Proliferator.proliferator_map:
+            return Proliferator.proliferator_map[proliferator_name]
+        else:
+            raise ValueError(f"Unknown proliferator: {proliferator_name}. Available options: {list(Proliferator.proliferator_map.keys())}")
+
 if __name__ == "__main__":
     
     # Example usage

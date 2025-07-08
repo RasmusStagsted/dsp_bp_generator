@@ -59,7 +59,7 @@ class FactoryLine:
         """Select the appropriate factory type based on the recipe's tool."""
         if recipe.tool == "Smelting Facility":
             return ArcSmelter
-        elif recipe.tool == "Assembling Machine":
+        elif recipe.tool == "Assembler":
             return AssemblingMachineMKI
         else:
             raise ValueError(f"Unknown tool: {recipe.tool}, Recipe: {recipe.name}, ID: {recipe.recipe_id}")

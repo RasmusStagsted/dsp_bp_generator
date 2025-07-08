@@ -38,6 +38,11 @@ class FactoryRouterInterface:
         for belt in self.belts:
             text += str(belt) + "\n"
         return text.strip()
+    
+    def add_belt(self, belt):
+        if self.belts == None:
+            self.belts = []
+        self.belts.append(belt)
 
 class FactoryRouterBelt:
 

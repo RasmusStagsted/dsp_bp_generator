@@ -21,6 +21,7 @@ class FactoryRouter:
     def generate_splitters(self, pos, factory_router_interface):
         self.splitters = {}
         for connection in factory_router_interface.belts:
+            print(type(pos), type(connection.pos), type(self.splitter_offset))
             self.splitters[connection] = Splitter(
                 name = f"{connection.name}",
                 pos = pos + connection.pos + self.splitter_offset,

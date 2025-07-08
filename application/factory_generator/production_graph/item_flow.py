@@ -3,7 +3,7 @@ from ..proliferator import ProliferatorNone
 
 class ItemFlow:
 
-    def __init__(self, name: str, count_per_second: float = 0, proliferator: str = ProliferatorNone):
+    def __init__(self, name: str, count_per_second: float = 0, proliferator = ProliferatorNone):
         self.name = name
         self.count_per_second = count_per_second
         self.proliferator = proliferator

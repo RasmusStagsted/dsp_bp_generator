@@ -41,7 +41,7 @@ class FactoryBlockInterface:
         return len(self.belts)
 
     @staticmethod
-    def generate_interface(recipe: Recipe, factory_count: int = 1, proliferator: ProliferatorNone = None):
+    def generate_interface(recipe: Recipe, factory_count: int = 1, proliferator = ProliferatorNone):
         belts = []
         for item_name, flow_rate in recipe.input_items.items():
             belts.append(FactoryBlockBelt(
