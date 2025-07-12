@@ -73,6 +73,9 @@ class Factory(Building):
 
 class Factory3x3(Factory):
 
+    def get_belt_sorter_position_offset(self):
+        return 0
+
 #          slot 0  slot 1  slot 2
 #         ┌───────────────────────┐
 #         │                       │
@@ -119,5 +122,65 @@ class Factory3x3(Factory):
             delta_pos = Vector(x = -0.8, y = 0.0)
         elif slot == 11:
             delta_pos = Vector(x = -0.8, y = 0.75)
+
+        return self.pos + delta_pos
+
+class Factory5x5(Factory):
+    
+    
+#                 slot 2  slot 1  slot 0
+#         ┌─────────────────────────────────────┐
+#         │                                     │
+#         │                                     │
+#         │                                     │
+# slot 3  │                                     │ slot 11
+#         │                                     │
+#         │                                     │
+# slot 4  │                  X                  │ slot 10
+#         │                                     │
+#         │                                     │
+# slot 5  │                                     │ slot 9
+#         │                                     │
+#         │                                     │
+#         │                                     │
+#         │                                     │
+#         └─────────────────────────────────────┘
+#                  slot 6  slot 7  slot 8  
+    
+    def get_belt_sorter_position_offset(self):
+        return 1
+    
+    def number_of_slots(self):
+        return 12
+    
+    def __init__(self, name = "Unknown", **kwargs):
+        super().__init__(name, **kwargs)
+        
+    def get_position_of_slot(self, slot):
+        assert slot >= 0 and slot <= 11, f"slot index needs to be: slot >= 0 and slot <= 11 (slot was {slot})"
+        if slot == 2:
+            delta_pos = Vector(x = -1.75, y = 1.8)
+        elif slot == 1:
+            delta_pos = Vector(x = 1.0, y = 1.8)
+        elif slot == 0:
+            delta_pos = Vector(x = 1.75, y = 1.8)
+        elif slot == 11:
+            delta_pos = Vector(x = 1.8, y = 1.75)
+        elif slot == 10:
+            delta_pos = Vector(x = 1.8, y = 1.0)
+        elif slot == 9:
+            delta_pos = Vector(x = 1.8, y = -1.75)
+        elif slot == 8:
+            delta_pos = Vector(x = 1.75, y = -1.8)
+        elif slot == 7:
+            delta_pos = Vector(x = 1.0, y = -1.8)
+        elif slot == 6:
+            delta_pos = Vector(x = -1.75, y = -1.8)
+        elif slot == 5:
+            delta_pos = Vector(x = -1.8, y = -1.75)
+        elif slot == 4:
+            delta_pos = Vector(x = -1.8, y = 1.0)
+        elif slot == 3:
+            delta_pos = Vector(x = -1.8, y = 1.75)
 
         return self.pos + delta_pos
