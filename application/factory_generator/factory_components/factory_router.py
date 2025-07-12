@@ -6,6 +6,7 @@ from dsp_bp_generator.buildings import Building
 
 from .factory_router_interface import FactoryRouterInterface, FactoryRouterBelt
 from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
+from ..proliferator import ProliferatorNone
 
 class FactoryRouter:
     """Handles the routing of routing belts and splitters for factory layouts."""
@@ -45,7 +46,7 @@ class FactoryRouter:
                         name = f"{connection.name}:BusBelt",
                         pos = pos + connection.pos + Vector(y = self.splitter_offset.y, z = 1.0),
                         yaw = Yaw.South,
-                        length = self.height + self.splitter_offset.y
+                        length = self.height + self.splitter_offset.y - 2
                     ),
                 }
                 self.bus_belts[connection]["top"][-1].connect_to_splitter(self.splitters[connection])
@@ -61,9 +62,9 @@ class FactoryRouter:
                     ),
                     "bottom": belt_type.generate_belt(
                         name = f"{connection.name}:BusBelt",
-                        pos = pos + connection.pos + Vector(y = -self.height + 1, z = 1.0),
+                        pos = pos + connection.pos + Vector(y = -self.height + 3, z = 1.0),
                         yaw = Yaw.North,
-                        length = self.height + self.splitter_offset.y
+                        length = self.height + self.splitter_offset.y - 2
                     ),
                 }
                 self.splitters[connection].connect_to_belt(self.bus_belts[connection]["top"][0])
@@ -76,7 +77,12 @@ class FactoryRouter:
         for block_connection in factory_block_interface.belts:
             for router_connection in factory_router_interface.belts:
                 if block_connection.item_type == router_connection.item_type:
-                    self.route_splitter_to_factory_line(pos, router_connection, block_connection, proliferator)
+                    if block_connection.direction == FactoryBlockBelt.Direction.INGREDIENT:
+                        self.route_splitter_to_factory_line(pos, router_connection, block_connection, proliferator)
+                    elif block_connection.direction == FactoryBlockBelt.Direction.PRODUCT:
+                        self.route_factory_line_to_splitter(pos, router_connection, block_connection, proliferator)
+                    else:
+                        raise ValueError(f"Unknown direction: {block_connection.direction} for block connection: {block_connection.name}")
                     break
                 elif router_connection == factory_router_interface.belts[-1]:
                     raise ValueError(f"Unable to find {block_connection.item_type} on the bus. {[belt.item_type for belt in factory_router_interface.belts]}")
@@ -96,11 +102,33 @@ class FactoryRouter:
             name = f"{block_connection.name}:RouterBelt",
             pos = pos + router_connection.pos,
             yaw = [initial_direction, Yaw.East],
-            length = [2 + block_connection.belt_index, 5 + self.width - router_connection.pos.x],
+            length = [2 + block_connection.belt_index, 3 + self.width - router_connection.pos.x],
             belt_type = belt_type
         )
         self.splitters[router_connection].connect_to_belt(self.router_belts[block_connection][0])
 
+    def route_factory_line_to_splitter(self, pos, router_connection, block_connection, proliferator):
+        end_direction = Yaw.Unknown
+        if block_connection.placement == FactoryBlockBelt.Placement.TOP:
+            end_direction = Yaw.South
+        elif block_connection.placement == FactoryBlockBelt.Placement.BOTTOM:
+            end_direction = Yaw.North            
+        else:
+            raise ValueError(f"Unknown placement: {block_connection.placement} for block connection: {block_connection.name}")
+        
+        belt_type = ConveyorBelt.get_minimum_required_belt_type(block_connection.throughput)
+        
+        y_dir = 1 if block_connection.placement == FactoryBlockBelt.Placement.TOP else -1
+        start_pos = Vector(2 + self.width - router_connection.pos.x, (2 + block_connection.belt_index) * y_dir)
+        self.router_belts[block_connection] = ConveyorBelt.generate_belt(
+            name = f"{block_connection.name}:RouterBelt",
+            pos = pos + router_connection.pos + start_pos,
+            yaw = [Yaw.West, end_direction],
+            length = [2 + self.width - router_connection.pos.x, 3 + block_connection.belt_index],
+            belt_type = belt_type
+        )
+        self.router_belts[block_connection][-1].connect_to_splitter(self.splitters[router_connection])
+        
 if __name__ == "__main__":
     
     pos = Vector(x = 0, y = 0)
@@ -115,7 +143,7 @@ if __name__ == "__main__":
             direction = INGREDIENT,
             pos = Vector(0, 0),
             throughput = 6,
-            proliferator = None,
+            proliferator = ProliferatorNone(),
         ),
         FactoryRouterBelt(
             name = "Belt router interface copper ore",
@@ -123,7 +151,7 @@ if __name__ == "__main__":
             direction = INGREDIENT,
             pos = Vector(2, 0),
             throughput = 10,
-            proliferator = None,
+            proliferator = ProliferatorNone(),
         ),
         FactoryRouterBelt(
             name = "Belt router interface iron ingot",
@@ -131,7 +159,7 @@ if __name__ == "__main__":
             direction = PRODUCT,
             pos = Vector(4, 0),
             throughput = 20,
-            proliferator = None,
+            proliferator = ProliferatorNone(),
         ),
     ])
     

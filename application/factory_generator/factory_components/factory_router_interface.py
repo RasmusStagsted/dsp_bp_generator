@@ -65,5 +65,5 @@ class FactoryRouterBelt:
             f"  Direction: {self.direction.name.title()}\n"
             f"  Position: {self.pos.x}, {self.pos.y}, {self.pos.z}\n"
             f"  Throughput: {self.throughput} items/s\n"
-            f"  Proliferator: {self.proliferator.name if self.proliferator else 'None'}\n"
+            f"  Proliferator: {type(self.proliferator)}\n"
         )

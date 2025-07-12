@@ -33,11 +33,13 @@ class FactoryBlock:
         
         top_belt_pos = pos + Vector(y = 1 - interface.get_top_belt_count())
         buttom_belt_pos = pos + Vector(y = -factory_type.get_height() - interface.get_top_belt_count())
+        
         self.generate_belts_and_sorters(interface, recipe, top_belt_pos, buttom_belt_pos, belt_type, sorter_type, self.factory)
 
     def generate_belts_and_sorters(self, interface, recipe, top_belt_pos, buttom_belt_pos, requested_belt_type, requested_sorter_type, factory):
         """Generate ingredient and product belts and connect them to the factory."""
         width = int(type(factory).get_size().x)
+        print(width)
         self.ingredient_belts = []
         self.product_belts = []
         
@@ -91,27 +93,32 @@ class FactoryBlock:
             )
             
             # Connect the belts to the factory using sorters
+            """
             if belt.direction == FactoryBlockBelt.Direction.PRODUCT:
-                sorter_belt_index = width - 1 - belt.belt_index
+                sorter_belt_index = width - 1 - belt.belt_index - factory.get_belt_sorter_position_offset()
+                print(sorter_belt_index)
                 sorter_type.generate_sorter_from_belt_to_building(
                     name = "Sorter",
                     belt = belts[sorter_belt_index],
                     building = factory
                 )
                 self.product_belts.append(belts)
-            elif belt.direction == FactoryBlockBelt.Direction.INGREDIENT:
-                sorter_belt_index = belt.belt_index
+            """
+            if belt.direction == FactoryBlockBelt.Direction.INGREDIENT:
+                sorter_belt_index = belt.belt_index + factory.get_belt_sorter_position_offset()
+                print("Index", sorter_belt_index)
                 sorter_type.generate_sorter_from_building_to_belt(
                     name = "Sorter",
                     building = factory,
                     belt = belts[sorter_belt_index]
                 )
                 self.ingredient_belts.append(belts)
-            else:
-                raise ValueError(f"Unknown direction: {belt.direction}")
+            #else:
+            #    raise ValueError(f"Unknown direction: {belt.direction}")
 
     def generate_factory(self, pos, factory_type, recipe):
         """Instantiate the factory building for this block."""
+        print(factory_type)
         self.factory = factory_type(
             name = "FactoryBlock",
             pos = pos,
@@ -239,7 +246,9 @@ class FactoryBlock:
         """Get the factory offset vector for a given factory type."""
         if factory_type in (ArcSmelter, PlaneSmelter, NegentrophySmelter, AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler):
             return Vector(x = 1, y = -1)
-        elif factory_type in (MatrixLab, SelfEvolutionLab):
+        elif factory_type == MatrixLab:
+            return Vector(x = 2, y = -2)
+        elif factory_type == SelfEvolutionLab:
             raise NotImplementedError("Labs aren't supported yet")
         elif factory_type == OilRefinary:
             raise NotImplementedError("Oil refinaries aren't supported yet")

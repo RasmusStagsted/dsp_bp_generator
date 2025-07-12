@@ -7,6 +7,8 @@ from .factory_router_interface import FactoryRouterInterface, FactoryRouterBelt
 from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
 from .factory_router import FactoryRouter
 
+from ..proliferator import ProliferatorNone, Proliferator
+
 from ..recipes import Recipe
 
 class FactorySection:
@@ -32,12 +34,13 @@ class FactorySection:
         factory_line_pos = pos + Vector(x = 2 * (factory_router_interface.get_belt_count() + len(recipe.output_items)) - 2)
         self.factory_line = FactoryLine(factory_line_pos, factory_block_interfaces, recipe, factory_count)
 
+        print(pos)
         self.factory_router = FactoryRouter(
             pos = pos,
             factory_router_interface = factory_router_interface,
             factory_block_interface = factory_block_interfaces,
             height = 8, 
-            splitter_offset = Vector(y = -2),
+            splitter_offset = Vector(y = -1 - factory_block_interfaces.get_top_belt_count()),
             proliferator = None
         )
         
@@ -105,5 +108,165 @@ if __name__ == "__main__":
         
     blueprint = Blueprint()
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version=BlueprintBuildingV1)
-    print(f"Blueprint string: {output_blueprint_string}")
+    print(f"Blueprint string:\n{output_blueprint_string}")
     
+    Building.buildings = []  # Reset the buildings list to avoid duplicates
+
+    pos = Vector(x = 0, y = 10)
+    
+    factory_router_interface = FactoryRouterInterface([
+        FactoryRouterBelt(
+            name = "Belt router interface iron ore",
+            item_type = "IronOre",
+            direction = INGREDIENT,
+            pos = Vector(0, 0),
+            throughput = 6,
+            proliferator = ProliferatorNone,
+        ),
+        FactoryRouterBelt(
+            name = "Belt router interface copper ore",
+            item_type = "CopperOre",
+            direction = INGREDIENT,
+            pos = Vector(2, 0),
+            throughput = 10,
+            proliferator = ProliferatorNone,
+        ),
+        FactoryRouterBelt(
+            name = "Belt router interface iron ingot",
+            item_type = "IronIngot",
+            direction = PRODUCT,
+            pos = Vector(4, 0),
+            throughput = 6,
+            proliferator = ProliferatorNone,
+        ),
+        FactoryRouterBelt(
+            name = "Belt router interface copper ingot",
+            item_type = "CopperIngot",
+            direction = PRODUCT,
+            pos = Vector(6, 0),
+            throughput = 10,
+            proliferator = ProliferatorNone,
+        ),
+        FactoryRouterBelt(
+            name = "Belt router interface circuit board",
+            item_type = "CircuitBoard",
+            direction = PRODUCT,
+            pos = Vector(8, 0),
+            throughput = 20,
+            proliferator = ProliferatorNone,
+        ),
+    ])
+    factory_block_interfaces = FactoryBlockInterface([
+        FactoryBlockBelt(
+            name = "FactoryBlock",
+            item_type = "IronIngot",
+            direction = INGREDIENT,
+            placement = FactoryBlockBelt.Placement.TOP,
+            throughput = 2.0,
+            belt_index = 0,
+            proliferator = None
+        ),
+        FactoryBlockBelt(
+            name = "FactoryBlock",
+            item_type = "CircuitBoard",
+            direction = PRODUCT,
+            placement = FactoryBlockBelt.Placement.BOTTOM,
+            throughput = 4.5,
+            belt_index = 0,
+            proliferator = None
+        ),
+        FactoryBlockBelt(
+            name = "FactoryBlock",
+            item_type = "CopperIngot",
+            direction = INGREDIENT,
+            placement = FactoryBlockBelt.Placement.TOP,
+            throughput = 4.5,
+            belt_index = 1,
+            proliferator = None
+        ),
+    ])
+        
+    recipe = Recipe.recipes["CircuitBoard"]
+    factory_count = 1
+    proliferator = ProliferatorNone # Not implemented yet, set to None for now
+    FactorySection(pos, factory_router_interface, factory_block_interfaces, recipe, factory_count, proliferator)
+    
+    blueprint = Blueprint()
+    output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version=BlueprintBuildingV1)
+    print(f"Blueprint string:\n{output_blueprint_string}")
+    
+    Building.buildings = []  # Reset the buildings list to avoid duplicates
+
+    
+    
+    pos = Vector(x = 0, y = 0)
+    
+    INGREDIENT = FactoryBlockBelt.Direction.INGREDIENT
+    PRODUCT = FactoryBlockBelt.Direction.PRODUCT
+    
+    factory_router_interface = FactoryRouterInterface([
+        FactoryRouterBelt(
+            name = "Belt router interface circuit board",
+            item_type = "CircuitBoard",
+            direction = INGREDIENT,
+            pos = Vector(0, 0),
+            throughput = 1,
+            proliferator = None,
+        ),
+        FactoryRouterBelt(
+            name = "Belt router interface magnetic coil",
+            item_type = "MagneticCoil",
+            direction = INGREDIENT,
+            pos = Vector(2, 0),
+            throughput = 1,
+            proliferator = None,
+        ),
+        FactoryRouterBelt(
+            name = "Belt router interface electromagnetic matrix",
+            item_type = "ElectromagneticMatrix",
+            direction = PRODUCT,
+            pos = Vector(4, 0),
+            throughput = 1,
+            proliferator = None,
+        ),
+    ])
+    factory_block_interfaces = FactoryBlockInterface([
+        FactoryBlockBelt(
+            name = "FactoryBlock",
+            item_type = "CircuitBoard",
+            direction = INGREDIENT,
+            placement = FactoryBlockBelt.Placement.BOTTOM,
+            throughput = 1,
+            belt_index = 0,
+            proliferator = None
+        ),
+        FactoryBlockBelt(
+            name = "FactoryBlock",
+            item_type = "MagneticCoil",
+            direction = INGREDIENT,
+            placement = FactoryBlockBelt.Placement.BOTTOM,
+            throughput = 1,
+            belt_index = 1,
+            proliferator = None
+        ),
+        FactoryBlockBelt(
+            name = "FactoryBlock",
+            item_type = "ElectromagneticMatrix",
+            direction = PRODUCT,
+            placement = FactoryBlockBelt.Placement.TOP,
+            throughput = 1,
+            belt_index = 0,
+            proliferator = None
+        ),
+    ])
+
+    recipe = Recipe.recipes["ElectromagneticMatrix"]
+    factory_count = 1
+    proliferator = None # Not implemented yet, set to None for now
+    FactorySection(pos, factory_router_interface, factory_block_interfaces, recipe, factory_count, proliferator)
+    
+    blueprint = Blueprint()
+    output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version=BlueprintBuildingV1)
+    print(f"Blueprint string:\n{output_blueprint_string}")
+    
+    Building.buildings = []  # Reset the buildings list to avoid duplicates

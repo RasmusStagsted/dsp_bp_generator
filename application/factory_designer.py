@@ -39,7 +39,6 @@ class GeneratorWidget(QWidget):
         self.generate_about_tab()
         self.setup_callbacks()
         self.post_setup()
-        self.update()
 
     def generate_factory_tab(self):
         self.factory_tab = QWidget()
@@ -152,18 +151,6 @@ class GeneratorWidget(QWidget):
     def post_setup(self):
         self.output_flows.add_flow()
 
-    def update(self):
-
-        pass
-        #self.update_process_graph()
-        #self.plot_process_graph()
-
-        #self.generate_factories()
-        
-        #blueprint = Blueprint()
-        #blueprint_string = blueprint.serialize(Building.buildings)
-        #self.blueprint.blueprint.setText(blueprint_string)
-
 class AlignedColorFormatter(logging.Formatter):
     def format(self, record):
         # Compose and pad custom field
@@ -203,7 +190,8 @@ if __name__ == "__main__":
     handler.setFormatter(AlignedColorFormatter('%(asctime)s, %(levelname)-8s %(loc)s %(message)s'))
     handler.setLevel(logging.DEBUG)
     log_level = log_levels[parser.parse_args().log_level.upper()]
-    logging.basicConfig(handlers = [handler], level = logging.DEBUG)
+    print(log_level)
+    logging.basicConfig(handlers = [handler], level = log_level)
     print(f"Log level set to {parser.parse_args().log_level.upper()}")
 
     args = parser.parse_args()

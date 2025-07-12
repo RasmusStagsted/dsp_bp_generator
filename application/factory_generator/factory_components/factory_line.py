@@ -1,7 +1,7 @@
 from copy import deepcopy
 import math
 
-from dsp_bp_generator.buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI, SorterMKI
+from dsp_bp_generator.buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI, SorterMKI, MatrixLab
 from dsp_bp_generator.enums import Item
 from dsp_bp_generator.utils import Yaw, Vector
 from dsp_bp_generator.blueprint import Blueprint, BlueprintBuildingV1
@@ -18,10 +18,12 @@ class FactoryLine:
     def __init__(self, pos, block_interface, recipe, factory_count, factory_type = None, belt_type = None, sorter_type = None):
         """Initialize the factory line and generate its factory blocks."""
         block_interface = deepcopy(block_interface)
-        self.height = 6
         if factory_type is None:
             factory_type = FactoryLine.select_factory(recipe)
         self.block_width = int(factory_type.get_size().x)
+        self.calculate_height(block_interface, factory_type)
+
+        print("Factory type:", factory_type)
 
         # Generate factory_blocks
         self.factory_blocks = []
@@ -29,7 +31,7 @@ class FactoryLine:
             temp_pos = pos + Vector(x = i * self.block_width)
             factory_block = FactoryBlock(temp_pos, block_interface, recipe, factory_type, belt_type, sorter_type)
             self.factory_blocks.append(factory_block)
-            FactoryLine.reduce_throughput(block_interface, recipe)
+            FactoryLine.reduce_block_interface_throughput(block_interface, recipe)
 
         # Connect factory_blocks
         for i in range(len(self.factory_blocks) - 1):
@@ -39,8 +41,14 @@ class FactoryLine:
                 self.factory_blocks[i + 1]
             )
         
+    def calculate_height(self, block_interface, factory_type):
+        self.height = factory_type.get_size().y
+        for interface in block_interface.belts:
+            self.height += 1
+        print("Calculated height:", self.height)
+        
     @staticmethod
-    def reduce_throughput(block_interface, recipe):
+    def reduce_block_interface_throughput(block_interface, recipe):
         for interface in block_interface.belts:
             speed = 1 if interface.proliferator is None else interface.proliferator.SPEED
             productivity = 1 if interface.proliferator is None else interface.proliferator.PRODUCTIVITY
@@ -61,6 +69,8 @@ class FactoryLine:
             return ArcSmelter
         elif recipe.tool == "Assembler":
             return AssemblingMachineMKI
+        elif recipe.tool == "Research Facility":
+            return MatrixLab
         else:
             raise ValueError(f"Unknown tool: {recipe.tool}, Recipe: {recipe.name}, ID: {recipe.recipe_id}")
 

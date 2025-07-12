@@ -15,7 +15,7 @@ from copy import deepcopy
 class Factory:
 
     def __init__(self):
-        pass
+        buildings.Building.buildings = []
 
     def generate(self, graph):
         self.graph = graph
@@ -29,7 +29,7 @@ class Factory:
             node = self.graph.graph.nodes[node_name]
             
             self.bus.add_belt(FactoryRouterBelt(
-                name = "",
+                name = node_name + "Bus",
                 item_type = node["name"],
                 direction = FactoryRouterBelt.Direction.INGREDIENT,
                 pos = Vector(x_offset, 0),
@@ -37,26 +37,13 @@ class Factory:
                 proliferator = node["proliferator"]
             ))
             x_offset += 2
-            
         
         for node_name in self.factory_line_list:
             print("Node name", node_name)
-            if node_name[-4:] == "Flow" and node_name not in self.input_list:
-                node = self.graph.graph.nodes[node_name]
-                self.bus.add_belt(FactoryRouterBelt(
-                    name = "",
-                    item_type = node["name"],
-                    direction = FactoryRouterBelt.Direction.PRODUCT,
-                    pos = Vector(x_offset, 0),
-                    throughput = node["items_per_second"],
-                    proliferator = node["proliferator"]
-                ))
-                x_offset += 2
-            elif node_name[-7:] == "Process":
+            if node_name[-7:] == "Process":
                 node = self.graph.graph.nodes[node_name]
                 for product_node_name in self.graph.graph.successors(node_name):
                     product_node = self.graph.graph.nodes[product_node_name]
-                    print(product_node)
                     self.bus.add_belt(FactoryRouterBelt(
                         name = product_node["name"],
                         item_type = product_node["name"],
@@ -65,23 +52,26 @@ class Factory:
                         throughput = product_node["items_per_second"],
                         proliferator = product_node["proliferator"]
                     ))
+                    x_offset += 2
+                
+                recipe_time = node["selected_recipe"].time
+                factory_count = int(recipe_time * node["processes_per_second"]) # TODO: Fix
                 
                 factory_block_interface = FactoryBlockInterface.generate_interface(
                     recipe = node["selected_recipe"],
-                    factory_count = 1,
-                    proliferator = Proliferator.get_proliferator(node["proliferator"])
+                    factory_count = factory_count,
+                    proliferator = node["proliferator"]
                 )
                 
                 self.factory_section_list.append(FactorySection(
                     pos = Vector(0, y_offset),
                     factory_router_interface = deepcopy(self.bus),
-                    factory_block_interfaces = factory_block_interface,  # TODO: Fix
+                    factory_block_interfaces = factory_block_interface,
                     recipe = node["selected_recipe"],
-                    factory_count = 1, # TODO: Fix
-                    proliferator = None # TODO: Fix
+                    factory_count = factory_count,
+                    proliferator = ProliferatorNone # TODO: Fix
                 ))
-                y_offset += 10
-                
+                y_offset += self.factory_section_list[-1].get_height()
         
         
     def generate_factory_line_lists(self):
