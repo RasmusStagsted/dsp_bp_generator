@@ -148,7 +148,7 @@ class BuildingItem(enum.IntEnum):
     Splitter = 2020 # TODO implement
     
     TrafficMonitor = 2030 # TODO implement
-    
+    MatrixLab = 2901 # TODO implement
     DepotMKI = 2101 # TODO implement
     DepotMKII = 2102 # TODO implement
     
@@ -170,6 +170,8 @@ class BuildingItem(enum.IntEnum):
     AssemblingMachineMKII = 2304
     AssemblingMachineMKIII = 2305
     
+    WaterPump = 2306 # TODO implement
+    OilExtractor = 2307 # TODO implement
     OilRefinary = 2308 # TODO implement
     ChemicalPlant = 2309 # TODO implement
     MiniatureParticleCollider = 2310 # TODO implement
@@ -199,13 +201,15 @@ class BuildingModel(enum.IntEnum):
     ThermalPowerPlant = 54
     SolarPanel = 55
     
+    WaterPump = 60
+    OilExtractor = 61
     ArcSmelter = 62
     OilRefinary = 63
     ChemicalPlant = 64
     
     SateliteSubstation = 68
     MiniatureParticleCollider = 69
-    
+    MatrixLab = 70
     WirelessPowerTower = 71
     
     AssemblingMachineMKI = 65

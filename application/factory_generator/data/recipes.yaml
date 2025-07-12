@@ -1,4 +1,29 @@
 ---
+ArcSmelter:
+  name: Arc Smelter
+  input_items:
+    IronIngot: 4
+    StoneBrick: 4
+    CircuitBoard: 4
+    MagneticCoil: 2
+  output_items:
+    ArcSmelter: 1
+  time: 3
+  tool: Assembler
+  recipe_id: 56
+
+AssemblingMachineMkI:
+  name: Assembling Machine Mk.I
+  input_items:
+    IronIngot: 4
+    Gear: 8
+    CircuitBoard: 4
+  output_items:
+    AssemblingMachineMkI: 1
+  time: 2
+  tool: Assembler
+  recipe_id: 45
+
 CircuitBoard:
   name: Circuit Board
   input_items:
@@ -8,7 +33,7 @@ CircuitBoard:
     CircuitBoard: 2
   time: 1
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 50
 
 CombustibleUnit:
   name: Combustible Unit
@@ -18,7 +43,41 @@ CombustibleUnit:
     CombustibleUnit: 1
   time: 3
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+ConveyorBeltMkI:
+  name: Conveyor Belt Mk.I
+  input_items:
+    IronIngot: 2
+    Gear: 1
+  output_items:
+    ConveyorBeltMkI: 1
+  time: 1
+  tool: Assembler
+  recipe_id: 84
+
+ConveyorBeltMkII:
+  name: Conveyor Belt Mk.II
+  input_items:
+    ConveyorBeltMkI: 3
+    ElectromagneticTurbine: 1
+  output_items:
+    ConveyorBeltMkII: 3
+  time: 1
+  tool: Assembler
+  recipe_id: 0 # TODO
+
+ConveyorBeltMkIII:
+  name: Conveyor Belt Mk.III
+  input_items:
+    ConveyorBeltMkII: 3
+    SuperMagneticRing: 1
+    Graphene: 1
+  output_items:
+    ConveyorBeltMkIII: 3
+  time: 1
+  tool: Assembler
+  recipe_id: 0 # TODO
 
 CopperIngot:
   name: Copper Ingot
@@ -28,7 +87,7 @@ CopperIngot:
     CopperIngot: 1
   time: 1
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 3
 
 CrystalSilicon:
   name: Crystal Silicon
@@ -38,7 +97,7 @@ CrystalSilicon:
     CrystalSilicon: 1
   time: 2
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 CrystalSiliconAdvanced:
   name: Crystal Silicon (Advanced)
@@ -48,7 +107,18 @@ CrystalSiliconAdvanced:
     CrystalSilicon: 2
   time: 1.5
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+DepotMKI:
+  name: Depot Mk.I
+  input_items:
+    IronIngot: 4
+    StoneBrick: 4
+  output_items:
+    DepotMkI: 1
+  time: 2
+  tool: Assembler
+  recipe_id: 86
 
 Deuterium:
   - name: Deuterium
@@ -58,7 +128,7 @@ Deuterium:
       Deuterium: 5
     time: 2.5
     tool: Particle Collider
-    recipe_id: 0
+    recipe_id: 0 # TODO
 
 DeuteriumFractionation:
   name: Deuterium Fractionation
@@ -69,7 +139,7 @@ DeuteriumFractionation:
     Deuterium: 0.01
   time: 0.017
   tool: Fractionation Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 Diamond:
   name: Diamond
@@ -79,7 +149,7 @@ Diamond:
     Diamond: 1
   time: 2
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 DiamondAdvanced:
   name: Diamond (Advanced)
@@ -89,7 +159,7 @@ DiamondAdvanced:
     Diamond: 2
   time: 1.5
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 ElectricMotor:
   name: Electric Motor
@@ -101,7 +171,7 @@ ElectricMotor:
     ElectricMotor: 1
   time: 2
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 ElectromagneticMatrix:
   name: Electromagnetic Matrix
@@ -112,8 +182,8 @@ ElectromagneticMatrix:
     ElectromagneticMatrix: 1
   time: 3
   tool: Research Facility
-  recipe_id: 0
-
+  recipe_id: 9
+  
 ElectromagneticTurbine:
   name: Electromagnetic Turbine
   input_items:
@@ -123,7 +193,7 @@ ElectromagneticTurbine:
     ElectromagneticTurbine: 1
   time: 2
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 EnergeticGraphite:
   name: Energetic Graphite
@@ -133,7 +203,7 @@ EnergeticGraphite:
     EnergeticGraphite: 1
   time: 2
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 EnergyMatrix:
   name: Energy Matrix
@@ -144,7 +214,7 @@ EnergyMatrix:
     EnergyMatrix: 1
   time: 6
   tool: Research Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 Foundation:
   name: Foundation
@@ -155,7 +225,20 @@ Foundation:
     Foundation: 1
   time: 1
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+GaussTurret:
+  name: Gauss Turret
+  input_items:
+    IronIngot: 8
+    Gear: 8
+    CircuitBoard: 2
+    MagneticCoil: 4
+  output_items:
+    GaussTurret: 1
+  time: 4
+  tool: Assembler
+  recipe_id: 0 # TODO
 
 Gear:
   name: Gear
@@ -165,7 +248,7 @@ Gear:
     Gear: 1
   time: 1
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 5
 
 Glass:
   name: Glass
@@ -175,7 +258,7 @@ Glass:
     Glass: 1
   time: 2
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 57
 
 Graphene:
   name: Graphene
@@ -186,7 +269,7 @@ Graphene:
     Graphene: 2
   time: 3
   tool: Chemical Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 GrapheneAdvanced:
   name: Graphene (Advanced)
@@ -197,7 +280,7 @@ GrapheneAdvanced:
     Hydrogen: 1
   time: 2
   tool: Chemical Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 GravitationLens:
   name: Graviton Lens
@@ -208,7 +291,7 @@ GravitationLens:
     GravitonLens: 1
   time: 6
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 GravityMatrix:
   name: Gravity Matrix
@@ -219,7 +302,7 @@ GravityMatrix:
     GravityMatrix: 2
   time: 24
   tool: Research Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 HighPuritySilicon:
   name: High-Purity Silicon
@@ -229,7 +312,20 @@ HighPuritySilicon:
     HighPuritySilicon: 1
   time: 2
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+ImplosionCanon:
+  name: Implosion Cannon
+  input_items:
+    Steel: 10
+    ElectricMotor: 8
+    CircuitBoard: 10
+    SuperMagneticRing: 2
+  output_items:
+    ImplosionCannon: 1
+  time: 5
+  tool: Assembler
+  recipe_id: 0 # TODO
 
 InformationMatrix:
   name: Information Matrix
@@ -240,7 +336,7 @@ InformationMatrix:
     InformationMatrix: 1
   time: 10
   tool: Research Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 InterstellarLogisticsVessel:
   name: Interstellar Logistics Vessel
@@ -252,7 +348,7 @@ InterstellarLogisticsVessel:
     InterstellarLogisticsVessel: 1
   time: 6
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 IronIngot:
   name: Iron Ingot
@@ -262,7 +358,7 @@ IronIngot:
     IronIngot: 1
   time: 1
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 1
 
 LogisticBot:
   name: Logistic Bot
@@ -274,7 +370,7 @@ LogisticBot:
     LogisticBot: 1
   time: 2
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 LogisticDrone:
   name: Logistic Drone
@@ -286,7 +382,7 @@ LogisticDrone:
     LogisticDrone: 1
   time: 4
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 Magnet:
   name: Magnet
@@ -296,7 +392,7 @@ Magnet:
     Magnet: 1
   time: 1.5
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 2
 
 MagneticCoil:
   name: Magnetic Coil
@@ -307,7 +403,7 @@ MagneticCoil:
     MagneticCoil: 2
   time: 1
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 6
 
 MassEnergyStorage:
   name: Mass-Energy Storage
@@ -318,7 +414,20 @@ MassEnergyStorage:
     Hydrogen: 2
   time: 2
   tool: Particale Collider
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+MatrixLab:
+  name: Matrix Lab
+  input_items:
+    IronIngot: 8
+    Glass: 4
+    CircuitBoard: 4
+    MagneticCoil: 4
+  output_items:
+    MatrixLab: 1
+  time: 3
+  tool: Assembler
+  recipe_id: 10
 
 MicrocrystallineComponent:
   name: Microcrystalline Component
@@ -329,7 +438,46 @@ MicrocrystallineComponent:
     MicrocrystallineComponent: 1
   time: 2
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+MiningMachine:
+  name: Mining Machine
+  input_items:
+    IronIngot: 4
+    CircuitBoard: 2
+    MagneticCoil: 2
+    Gear: 2
+  output_items:
+    MiningMachine: 1
+  time: 3
+  tool: Assembler
+  recipe_id: 48
+
+MissileTurret:
+  name: Missile Turret
+  input_items:
+    Steel: 8
+    ElectricMotor: 6
+    CircuitBoard: 12
+    Engine: 6
+  output_items:
+    MissileTurret: 1
+  time: 4
+  tool: Assembler
+  recipe_id: 0 # TODO
+
+OilExtractor:
+  name: Oil Extractor
+  input_items:
+    Steel: 12
+    StoneBrick: 12
+    CircuitBoard: 6
+    PlasmaExciter: 4
+  output_items:
+    OilExtractor: 1
+  time: 8
+  tool: Assembler
+  recipe_id: 14
 
 ParticleContainer:
   name: Particle Container
@@ -341,7 +489,7 @@ ParticleContainer:
     ParticleContainer: 1
   time: 4
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 ParticleContainerAdvanced:
   name: Particle Container (Advanced)
@@ -352,7 +500,7 @@ ParticleContainerAdvanced:
     ParticleContainer: 1
   time: 4
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 PhotonCombiner:
   name: Photon Combiner
@@ -363,7 +511,7 @@ PhotonCombiner:
     PhotonCombiner: 1
   time: 3
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 PhotonCombinerAdvanced:
   name: Photon Combiner (Advanced)
@@ -374,7 +522,20 @@ PhotonCombinerAdvanced:
     PhotonCombiner: 1
   time: 3
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+PlaneSmelter:
+  name: Plane Smelter
+  input_items:
+    ArcSmelter: 1
+    FrameMaterial: 5
+    PlaneFilter: 4
+    UnipolarMagnet: 15
+  output_items:
+    PlaneSmelter: 1
+  time: 5
+  tool: Assembler
+  recipe_id: 0 # TODO
 
 PlasmaExciter:
   name: Plasma Exciter
@@ -385,7 +546,7 @@ PlasmaExciter:
     PlasmaExciter: 1
   time: 2
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 12
 
 PlasmaRefining:
   name: Plasma Refining
@@ -396,7 +557,7 @@ PlasmaRefining:
     RefinedOil: 2
   time: 4
   tool: Plasma Refinery
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 Prism:
   name: Prism
@@ -406,7 +567,7 @@ Prism:
     Prism: 2
   time: 2
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 11
 
 Processor:
   name: Processor
@@ -417,7 +578,7 @@ Processor:
     Processor: 1
   time: 3
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 ProliferatorMkI:
   name: Proliferator Mk.I
@@ -427,7 +588,7 @@ ProliferatorMkI:
     ProliferatorMkI: 1
   time: 0.5
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 ProliferatorMkII:
   name: Proliferator Mk.II
@@ -438,7 +599,7 @@ ProliferatorMkII:
     ProliferatorMkII: 1
   time: 1
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 ProliferatorMkIII:
   name: Proliferator Mk.III
@@ -449,7 +610,7 @@ ProliferatorMkIII:
     ProliferatorMkIII: 1
   time: 2
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 ReformedRefinement:
   name: Reformed Refinement
@@ -461,7 +622,7 @@ ReformedRefinement:
     RefinedOil: 3
   time: 4
   tool: Refining Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 ReinformedThruster:
   name: Reinforced Thruster
@@ -472,7 +633,19 @@ ReinformedThruster:
     ReinforcedThruster: 1
   time: 6
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+SateliteSubstation:
+  name: Satellite Substation
+  input_items:
+    WirelessPowerTower: 1
+    SuperMagneticRing: 10
+    FrameMaterial: 2
+  output_items:
+    SatelliteSubstation: 1
+  time: 5
+  tool: Assembler
+  recipe_id: 0 # TODO
 
 SiliconOre:
   name: Silicon Ore
@@ -482,7 +655,40 @@ SiliconOre:
     SiliconOre: 1
   time: 10
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+SorterMK1:
+  name: Sorter Mk.I
+  input_items:
+    IronIngot: 1
+    CircuitBoard: 1
+  output_items:
+    SorterMkI: 1
+  time: 1
+  tool: Assembler
+  recipe_id: 85
+
+SorterMKII:
+  name: Sorter Mk.II
+  input_items:
+    SorterMK1: 2
+    ElectricMotor: 1
+  output_items:
+    SorterMkII: 2
+  time: 1
+  tool: Assembler
+  recipe_id: 0 # TODO
+
+SorterMKIII:
+  name: Sorter Mk.III
+  input_items:
+    SorterMKII: 2
+    ElectromagneticTurbine: 1
+  output_items:
+    SorterMkIII: 2
+  time: 1
+  tool: Assembler
+  recipe_id: 0 # TODO
 
 SpaceWraper:
   name: Space Warper
@@ -492,7 +698,7 @@ SpaceWraper:
     SpaceWarper: 1
   time: 10
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 SpaceWraperAdvanced:
   name: Space Warper (Advanced)
@@ -502,7 +708,7 @@ SpaceWraperAdvanced:
     SpaceWarper: 8
   time: 10
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 Steel:
   name: Steel
@@ -512,7 +718,7 @@ Steel:
     Steel: 1
   time: 3
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 StoneBrick:
   name: Stone Brick
@@ -522,7 +728,19 @@ StoneBrick:
     StoneBrick: 1
   time: 1
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 4
+
+StorageTank:
+  name: Storage Tank
+  input_items:
+    IronIngot: 8
+    StoneBrick: 4
+    Glass: 4
+  output_items:
+    StorageTank: 1
+  time: 2
+  tool: Assembler
+  recipe_id: 114
 
 StructureMatrix:
   name: Structure Matrix
@@ -533,7 +751,7 @@ StructureMatrix:
     StructureMatrix: 1
   time: 8
   tool: Research Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 SulfuricAcid:
   name: Sulfuric Acid
@@ -545,7 +763,7 @@ SulfuricAcid:
     SulfuricAcid: 4
   time: 6
   tool: Chemical Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 SuperMagneticRing:
   name: Super Magnetic Ring
@@ -557,7 +775,31 @@ SuperMagneticRing:
     SuperMagneticRing: 1
   time: 3
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+TeslaTower:
+  name: Tesla Tower
+  input_items:
+    IronIngot: 2
+    MagneticCoil: 1
+  output_items:
+    TeslaTower: 1
+  time: 1
+  tool: Assembler
+  recipe_id: 8
+
+ThermalPowerPlant:
+  name: Thermal Power Plant
+  input_items:
+    IronIngot: 10
+    StoneBrick: 4
+    Gear: 4
+    MagneticCoil: 4
+  output_items:
+    ThermalPowerPlant: 1
+  time: 5
+  tool: Assembler
+  recipe_id: 64
 
 Thruster:
   name: Thruster
@@ -568,7 +810,7 @@ Thruster:
     Thruster: 1
   time: 4
   tool: Assembler
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 TitaniumIngot:
   name: Titanium Ingot
@@ -578,7 +820,7 @@ TitaniumIngot:
     TitaniumIngot: 1
   time: 2
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 TitaniumAlloy:
   name: Titanium Alloy
@@ -590,7 +832,7 @@ TitaniumAlloy:
     TitaniumAlloy: 4
   time: 12
   tool: Smelting Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
 
 UniverseMatrix:
   name: Universe Matrix
@@ -605,7 +847,43 @@ UniverseMatrix:
     UniverseMatrix: 1
   time: 15
   tool: Research Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
+
+WaterPump:
+  name: Water Pump
+  input_items:
+    IronIngot: 8
+    StoneBrick: 4
+    ElectricMotor: 4
+    CircuitBoard: 2
+  output_items:
+    WaterPump: 1
+  time: 3
+  tool: Assembler
+  recipe_id: 49
+
+WindTurbine:
+  name: Wind Turbine
+  input_items:
+    IronIngot: 6
+    Gear: 1
+    MagneticCoil: 3
+  output_items:
+    WindTurbine: 1
+  time: 4
+  tool: Assembler
+  recipe_id: 7
+
+WirelessPowerTower:
+  name: Wireless Power Tower
+  input_items:
+    TeslaTower: 1
+    PlasmaExciter: 3
+  output_items:
+    WirelessPowerTower: 1
+  time: 3
+  tool: Assembler
+  recipe_id: 13
 
 XRayCracking:
   name: X-Ray Cracking
@@ -617,4 +895,4 @@ XRayCracking:
     EnergeticGraphite: 1
   time: 4
   tool: Refining Facility
-  recipe_id: 0
+  recipe_id: 0 # TODO
