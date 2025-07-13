@@ -44,7 +44,6 @@ class FactoryBlockInterface:
     def generate_interface(recipe: Recipe, factory_count: int = 1, proliferator = ProliferatorNone):
         belts = []
         for item_name, flow_rate in recipe.input_items.items():
-            print("Generating input belt for", item_name, "with flow rate", flow_rate)
             belts.append(FactoryBlockBelt(
                 name = f"{item_name} input",
                 item_type = item_name,
@@ -57,7 +56,6 @@ class FactoryBlockInterface:
             if proliferator is not None:
                 belts[-1].throughput *= proliferator.SPEED
         for item_name, flow_rate in recipe.output_items.items():
-            print("Generating output belt for", item_name, "with flow rate", flow_rate)
             belts.append(FactoryBlockBelt(
                 name = f"{item_name} output",
                 item_type = item_name,

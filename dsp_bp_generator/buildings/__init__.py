@@ -9,3 +9,5 @@ from .lab import MatrixLab, SelfEvolutionLab
 from .oil_refinary import OilRefinary
 from .chemical_plant import ChemicalPlant, QuantumChemicalPlant
 from .depot import DepotMKI, DepotMKII, LogisticDistributor
+from .chemical_plant import ChemicalPlant, QuantumChemicalPlant
+from .planetary_logistics_station import PlanetaryLogisticsStation

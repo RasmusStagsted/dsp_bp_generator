@@ -33,13 +33,12 @@ class FactorySection:
 
         factory_line_pos = pos + Vector(x = 2 * (factory_router_interface.get_belt_count() + len(recipe.output_items)) - 2)
         self.factory_line = FactoryLine(factory_line_pos, factory_block_interfaces, recipe, factory_count)
-
-        print(pos)
+        pos += Vector(y = self.factory_line.get_height())
         self.factory_router = FactoryRouter(
             pos = pos,
             factory_router_interface = factory_router_interface,
             factory_block_interface = factory_block_interfaces,
-            height = 8, 
+            height = self.factory_line.get_height(),
             splitter_offset = Vector(y = -1 - factory_block_interfaces.get_top_belt_count()),
             proliferator = None
         )
@@ -110,7 +109,7 @@ if __name__ == "__main__":
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version=BlueprintBuildingV1)
     print(f"Blueprint string:\n{output_blueprint_string}")
     
-    Building.buildings = []  # Reset the buildings list to avoid duplicates
+    Building.buildings.clear()
 
     pos = Vector(x = 0, y = 10)
     
@@ -195,7 +194,7 @@ if __name__ == "__main__":
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version=BlueprintBuildingV1)
     print(f"Blueprint string:\n{output_blueprint_string}")
     
-    Building.buildings = []  # Reset the buildings list to avoid duplicates
+    Building.buildings.clear()
 
     
     
@@ -261,7 +260,7 @@ if __name__ == "__main__":
     ])
 
     recipe = Recipe.recipes["ElectromagneticMatrix"]
-    factory_count = 1
+    factory_count = 2
     proliferator = None # Not implemented yet, set to None for now
     FactorySection(pos, factory_router_interface, factory_block_interfaces, recipe, factory_count, proliferator)
     
@@ -269,4 +268,4 @@ if __name__ == "__main__":
     output_blueprint_string = blueprint.serialize(Building.buildings, blueprint_building_version=BlueprintBuildingV1)
     print(f"Blueprint string:\n{output_blueprint_string}")
     
-    Building.buildings = []  # Reset the buildings list to avoid duplicates
+    Building.buildings.clear()

@@ -1,7 +1,7 @@
 from copy import deepcopy
 import math
 
-from dsp_bp_generator.buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI, SorterMKI, MatrixLab
+from dsp_bp_generator.buildings import TeslaTower, ArcSmelter, AssemblingMachineMKI, ConveyorBeltMKI, SorterMKI, MatrixLab, ChemicalPlant
 from dsp_bp_generator.enums import Item
 from dsp_bp_generator.utils import Yaw, Vector
 from dsp_bp_generator.blueprint import Blueprint, BlueprintBuildingV1
@@ -22,8 +22,7 @@ class FactoryLine:
             factory_type = FactoryLine.select_factory(recipe)
         self.block_width = int(factory_type.get_size().x)
         self.calculate_height(block_interface, factory_type)
-
-        print("Factory type:", factory_type)
+        pos += Vector(y = self.height)
 
         # Generate factory_blocks
         self.factory_blocks = []
@@ -42,10 +41,7 @@ class FactoryLine:
             )
         
     def calculate_height(self, block_interface, factory_type):
-        self.height = factory_type.get_size().y
-        for interface in block_interface.belts:
-            self.height += 1
-        print("Calculated height:", self.height)
+        self.height = factory_type.get_size().y + block_interface.get_belt_count()
         
     @staticmethod
     def reduce_block_interface_throughput(block_interface, recipe):
@@ -71,6 +67,8 @@ class FactoryLine:
             return AssemblingMachineMKI
         elif recipe.tool == "Research Facility":
             return MatrixLab
+        elif recipe.tool == "Chemical Facility":
+            return ChemicalPlant
         else:
             raise ValueError(f"Unknown tool: {recipe.tool}, Recipe: {recipe.name}, ID: {recipe.recipe_id}")
 

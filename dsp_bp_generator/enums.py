@@ -151,6 +151,7 @@ class BuildingItem(enum.IntEnum):
     MatrixLab = 2901 # TODO implement
     DepotMKI = 2101 # TODO implement
     DepotMKII = 2102 # TODO implement
+    PlanetaryLogisticsStation = 2103 # TODO implement
     
     StorageTank = 2106 # TODO implement
     LogisticDistributor = 2107
@@ -194,6 +195,8 @@ class BuildingModel(enum.IntEnum):
     TeslaTower = 44
     
     Accumulator = 46
+    
+    PlanetaryLogisticsStation = 49
     
     DepotMKI = 51
     DepotMKII = 52

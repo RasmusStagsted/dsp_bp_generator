@@ -83,6 +83,9 @@ class ConveyorBelt(Building):
                 return belt_type
         raise ValueError(f"Required throughput {required_throughput}/s exceeds maximum throughput of all belt types.")
 
+    def set_z_pos(self, z: float):
+        self.pos.z = z
+        self.pos2.z = z
         
 class ConveyorBeltMKI(ConveyorBelt):
     MAX_THROUGHPUT = 6.0

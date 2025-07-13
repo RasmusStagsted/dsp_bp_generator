@@ -158,29 +158,29 @@ class Factory5x5(Factory):
         
     def get_position_of_slot(self, slot):
         assert slot >= 0 and slot <= 11, f"slot index needs to be: slot >= 0 and slot <= 11 (slot was {slot})"
-        if slot == 2:
-            delta_pos = Vector(x = -1.75, y = 1.8)
+        if slot == 0:
+            delta_pos = Vector(x = 0.75, y = 1.8)
         elif slot == 1:
-            delta_pos = Vector(x = 1.0, y = 1.8)
-        elif slot == 0:
-            delta_pos = Vector(x = 1.75, y = 1.8)
-        elif slot == 11:
-            delta_pos = Vector(x = 1.8, y = 1.75)
-        elif slot == 10:
-            delta_pos = Vector(x = 1.8, y = 1.0)
-        elif slot == 9:
-            delta_pos = Vector(x = 1.8, y = -1.75)
-        elif slot == 8:
-            delta_pos = Vector(x = 1.75, y = -1.8)
-        elif slot == 7:
-            delta_pos = Vector(x = 1.0, y = -1.8)
-        elif slot == 6:
-            delta_pos = Vector(x = -1.75, y = -1.8)
-        elif slot == 5:
-            delta_pos = Vector(x = -1.8, y = -1.75)
-        elif slot == 4:
-            delta_pos = Vector(x = -1.8, y = 1.0)
+            delta_pos = Vector(x = 0.0, y = 1.8)
+        elif slot == 2:
+            delta_pos = Vector(x = -0.75, y = 1.8)
         elif slot == 3:
-            delta_pos = Vector(x = -1.8, y = 1.75)
-
+            delta_pos = Vector(x = -1.8, y = 0.75)
+        elif slot == 4:
+            delta_pos = Vector(x = -1.8, y = 0.0)
+        elif slot == 5:
+            delta_pos = Vector(x = -1.8, y = -0.75)
+        elif slot == 6:
+            delta_pos = Vector(x = -0.75, y = -1.8)
+        elif slot == 7:
+            delta_pos = Vector(x = 0.0, y = -1.8)
+        elif slot == 8:
+            delta_pos = Vector(x = 0.75, y = -1.8)
+        elif slot == 9:
+            delta_pos = Vector(x = 1.8, y = -0.75)
+        elif slot == 10:
+            delta_pos = Vector(x = 1.8, y = 0.0)
+        elif slot == 11:
+            delta_pos = Vector(x = 1.8, y = 0.75)
+        
         return self.pos + delta_pos

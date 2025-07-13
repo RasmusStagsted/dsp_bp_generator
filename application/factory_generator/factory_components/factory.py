@@ -7,15 +7,15 @@ from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
 from dsp_bp_generator.blueprint import Blueprint
 from dsp_bp_generator import buildings
 from dsp_bp_generator.blueprint import BlueprintBuildingV1
-
 from ..proliferator import ProliferatorNone, Proliferator
 from ..recipes import Recipe
 from copy import deepcopy
+import math
 
 class Factory:
 
     def __init__(self):
-        buildings.Building.buildings = []
+        buildings.Building.buildings.clear()
 
     def generate(self, graph):
         self.graph = graph
@@ -39,7 +39,6 @@ class Factory:
             x_offset += 2
         
         for node_name in self.factory_line_list:
-            print("Node name", node_name)
             if node_name[-7:] == "Process":
                 node = self.graph.graph.nodes[node_name]
                 for product_node_name in self.graph.graph.successors(node_name):
@@ -55,7 +54,7 @@ class Factory:
                     x_offset += 2
                 
                 recipe_time = node["selected_recipe"].time
-                factory_count = int(recipe_time * node["processes_per_second"]) # TODO: Fix
+                factory_count = int(math.ceil(recipe_time * node["processes_per_second"])) # TODO: Fix
                 
                 factory_block_interface = FactoryBlockInterface.generate_interface(
                     recipe = node["selected_recipe"],
@@ -72,6 +71,8 @@ class Factory:
                     proliferator = ProliferatorNone # TODO: Fix
                 ))
                 y_offset += self.factory_section_list[-1].get_height()
+                if len(self.factory_section_list) > 1:
+                    self.factory_section_list[-1].factory_router.connect_router_to_router(self.factory_section_list[-2].factory_router)
         
         
     def generate_factory_line_lists(self):

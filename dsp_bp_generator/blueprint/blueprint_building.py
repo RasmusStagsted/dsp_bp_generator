@@ -142,7 +142,7 @@ class BlueprintBuildingV1(BlueprintBuilding):
         packet.serialize_int16(self.parameter_count)
         for param in self.parameters:
             packet.serialize_int32(param)
-        assert len(packet.data) == self.get_size(), "Wrong amount of data serialized!"
+        assert len(packet.data) == self.get_size(), f"Wrong amount of data serialized! Expected: {self.get_size()}, got: {len(packet.data)}"
         return packet
 
     def __str__(self):

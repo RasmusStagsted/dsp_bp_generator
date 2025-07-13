@@ -12,7 +12,9 @@ from dsp_bp_generator.buildings import ChemicalPlant, QuantumChemicalPlant
 
 from ..recipes import Recipe
 from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
-from ..proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
+from ..proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII, ProliferatorNone
+
+import logging
 
 class FactoryBlock:
     """
@@ -24,7 +26,7 @@ class FactoryBlock:
     - One to three output sorters
     """
 
-    def __init__(self, pos, interface: FactoryBlockInterface, recipe, factory_type, belt_type, sorter_type):
+    def __init__(self, pos, interface: FactoryBlockInterface, recipe, factory_type, selected_belt_type, selected_sorter_type):
         """Initialize the factory block and generate its components."""
         if factory_type is None:
             factory_type = FactoryBlock.select_factory(recipe)
@@ -33,13 +35,13 @@ class FactoryBlock:
         
         top_belt_pos = pos + Vector(y = 1 - interface.get_top_belt_count())
         buttom_belt_pos = pos + Vector(y = -factory_type.get_height() - interface.get_top_belt_count())
-        
-        self.generate_belts_and_sorters(interface, recipe, top_belt_pos, buttom_belt_pos, belt_type, sorter_type, self.factory)
+        self.height = factory_type.get_height() + interface.get_top_belt_count() + interface.get_bottom_belt_count()
 
-    def generate_belts_and_sorters(self, interface, recipe, top_belt_pos, buttom_belt_pos, requested_belt_type, requested_sorter_type, factory):
+        self.generate_belts_and_sorters(interface, recipe, top_belt_pos, buttom_belt_pos, selected_belt_type, selected_sorter_type, self.factory)
+
+    def generate_belts_and_sorters(self, interface, recipe, top_belt_pos, buttom_belt_pos, selected_belt_type, selected_sorter_type, factory):
         """Generate ingredient and product belts and connect them to the factory."""
         width = int(type(factory).get_size().x)
-        print(width)
         self.ingredient_belts = []
         self.product_belts = []
         
@@ -62,14 +64,14 @@ class FactoryBlock:
                 throughput *= proliferator_productivity
 
             # Determine belt and sorter types based on throughput and connection properties
-            if requested_belt_type is None:
+            if selected_belt_type is None:
                 belt_type = FactoryBlock.select_belt_type(throughput)
             else:
-                belt_type = requested_belt_type
-            if requested_sorter_type is None:
+                belt_type = selected_belt_type
+            if selected_sorter_type is None:
                 sorter_type = FactoryBlock.select_sorter_type(belt, recipe)
             else:
-                sorter_type = requested_sorter_type
+                sorter_type = selected_sorter_type
 
             # Generate the belt based on the connection properties
             if belt.placement == FactoryBlockBelt.Placement.TOP:
@@ -93,32 +95,27 @@ class FactoryBlock:
             )
             
             # Connect the belts to the factory using sorters
-            """
             if belt.direction == FactoryBlockBelt.Direction.PRODUCT:
                 sorter_belt_index = width - 1 - belt.belt_index - factory.get_belt_sorter_position_offset()
-                print(sorter_belt_index)
-                sorter_type.generate_sorter_from_belt_to_building(
-                    name = "Sorter",
-                    belt = belts[sorter_belt_index],
-                    building = factory
-                )
-                self.product_belts.append(belts)
-            """
-            if belt.direction == FactoryBlockBelt.Direction.INGREDIENT:
-                sorter_belt_index = belt.belt_index + factory.get_belt_sorter_position_offset()
-                print("Index", sorter_belt_index)
                 sorter_type.generate_sorter_from_building_to_belt(
                     name = "Sorter",
                     building = factory,
-                    belt = belts[sorter_belt_index]
+                    belt = belts[sorter_belt_index],
+                )
+                self.product_belts.append(belts)
+            elif belt.direction == FactoryBlockBelt.Direction.INGREDIENT:
+                sorter_belt_index = belt.belt_index + factory.get_belt_sorter_position_offset()
+                sorter_type.generate_sorter_from_belt_to_building(
+                    name = "Sorter",
+                    belt = belts[sorter_belt_index],
+                    building = factory,
                 )
                 self.ingredient_belts.append(belts)
-            #else:
-            #    raise ValueError(f"Unknown direction: {belt.direction}")
+            else:
+                raise ValueError(f"Unknown direction: {belt.direction}")
 
     def generate_factory(self, pos, factory_type, recipe):
         """Instantiate the factory building for this block."""
-        print(factory_type)
         self.factory = factory_type(
             name = "FactoryBlock",
             pos = pos,
@@ -126,7 +123,7 @@ class FactoryBlock:
         )
 
     def get_height(self):
-        return 0#int(self.factory.get_size().y + max(self.))
+        return self.height
 
     @staticmethod
     def select_belt_type(required_throughput):
@@ -158,90 +155,6 @@ class FactoryBlock:
             factory_block2.product_belts[i][-1].connect_to_belt(factory_block1.product_belts[i][0])
 
     @staticmethod
-    def get_inserter_offset(factory_type, side, index):
-        """Get the offset for an inserter based on factory type and side."""
-        assert side in ("top", "buttom"), 'Side needs to be "top" or "buttom"'
-        if factory_type in (Item.ArcSmelter, Item.PlaneSmelter, Item.NegentrophySmelter):
-            return Vector(x=-0.8 + 0.8 * index, y=1.2 if side == "top" else -1.2)
-        elif factory_type in (Item.AssemblingMachineMKI, Item.AssemblingMachineMKII, Item.AssemblingMachineMKIII, Item.ReComposingAssembler):
-            return Vector(x=-0.8 + 0.8 * index, y=1.2 if side == "buttom" else -1.2) # TODO: Check if this is correct, or if the side == "top" should be used
-        elif factory_type in (Item.MatrixLab, Item.SelfEvolutionLab):
-            raise NotImplementedError("Labs aren't supported yet")
-        elif factory_type == Item.OilRefinary:
-            raise NotImplementedError("Oil refinaries aren't supported yet")
-        elif factory_type in (Item.ChemicalPlant, Item.QuantumChemicalPlant):
-            raise NotImplementedError("Chemical plants aren't supported yet")
-        else:
-            raise NotImplementedError(f"Unsupported factory type: {factory_type}")
-
-    @staticmethod
-    def get_inserter_slot(factory_type, side, index):
-        """Get the slot index for an inserter based on factory type and side."""
-        assert side in ("top", "buttom", "left", "right"), 'Side needs to be "top", "buttom", "left" or "right"'
-        if factory_type in (Item.ArcSmelter, Item.PlaneSmelter, Item.NegentrophySmelter):
-            return index if side == "top" else 8 - index
-        elif factory_type in (Item.AssemblingMachineMKI, Item.AssemblingMachineMKII, Item.AssemblingMachineMKIII, Item.ReComposingAssembler):
-            return index if side == "buttom" else 8 - index # TODO: Check if this is correct, or if the side == "top" should be used
-        elif factory_type in (Item.MatrixLab, Item.SelfEvolutionLab):
-            raise NotImplementedError("Labs aren't supported yet")
-        elif factory_type == Item.OilRefinary:
-            raise NotImplementedError("Oil refinaries aren't supported yet")
-        elif factory_type in (Item.ChemicalPlant, Item.QuantumChemicalPlant):
-            raise NotImplementedError("Chemical plants aren't supported yet")
-        else:
-            raise NotImplementedError(f"Unsupported factory type: {factory_type}")
-
-    @staticmethod
-    def get_belt_index_offset(factory_type):
-        """Get the belt index offset for a given factory type."""
-        if factory_type in (Item.ArcSmelter, Item.PlaneSmelter, Item.NegentrophySmelter, Item.AssemblingMachineMKI, Item.AssemblingMachineMKII, Item.AssemblingMachineMKIII, Item.ReComposingAssembler):
-            return 0
-        elif factory_type in (Item.MatrixLab, Item.SelfEvolutionLab):
-            raise NotImplementedError("Labs aren't supported yet")
-        elif factory_type == Item.OilRefinary:
-            raise NotImplementedError("Oil refinaries aren't supported yet")
-        elif factory_type in (Item.ChemicalPlant, Item.QuantumChemicalPlant):
-            raise NotImplementedError("Chemical plants aren't supported yet")
-        else:
-            raise NotImplementedError(f"Unsupported factory type: {factory_type}")
-
-    @staticmethod
-    def get_belt_offset(factory_type, side):
-        """Get the belt offset vector for a given factory type and side."""
-        if side == "top":
-            return Vector(y = FactoryBlock.get_top_belt_y_offset(factory_type))
-        elif side == "buttom":
-            return Vector(y = FactoryBlock.get_buttom_belt_y_offset(factory_type))
-
-    @staticmethod
-    def get_top_belt_offset(factory_type):
-        """Get the top belt offset vector for a given factory type."""
-        if factory_type in (ArcSmelter, PlaneSmelter, NegentrophySmelter, AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler):
-            return Vector(y = 2)
-        elif factory_type in (MatrixLab, SelfEvolutionLab):
-            raise NotImplementedError("Labs aren't supported yet")
-        elif factory_type == OilRefinary:
-            raise NotImplementedError("Oil refinaries aren't supported yet")
-        elif factory_type in (ChemicalPlant, QuantumChemicalPlant):
-            raise NotImplementedError("Chemical plants aren't supported yet")
-        else:
-            raise NotImplementedError(f"Unsupported factory type: {factory_type}")
-
-    @staticmethod
-    def get_buttom_belt_offset(factory_type):
-        """Get the bottom belt offset vector for a given factory type."""
-        if factory_type in (ArcSmelter, PlaneSmelter, NegentrophySmelter, AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler):
-            return Vector(y = -2)
-        elif factory_type in (MatrixLab, SelfEvolutionLab):
-            raise NotImplementedError("Labs aren't supported yet")
-        elif factory_type == OilRefinary:
-            raise NotImplementedError("Oil refinaries aren't supported yet")
-        elif factory_type in (ChemicalPlant, QuantumChemicalPlant):
-            raise NotImplementedError("Chemical plants aren't supported yet")
-        else:
-            raise NotImplementedError(f"Unsupported factory type: {factory_type}")
-
-    @staticmethod
     def get_factory_offset(factory_type):
         """Get the factory offset vector for a given factory type."""
         if factory_type in (ArcSmelter, PlaneSmelter, NegentrophySmelter, AssemblingMachineMKI, AssemblingMachineMKII, AssemblingMachineMKIII, ReComposingAssembler):
@@ -253,7 +166,7 @@ class FactoryBlock:
         elif factory_type == OilRefinary:
             raise NotImplementedError("Oil refinaries aren't supported yet")
         elif factory_type in (ChemicalPlant, QuantumChemicalPlant):
-            raise NotImplementedError("Chemical plants aren't supported yet")
+            return Vector(x = 3, y = -2)
         else:
             raise NotImplementedError(f"Unsupported factory type: {factory_type}")
 
@@ -262,6 +175,43 @@ if __name__ == "__main__":
     PRODUCT = FactoryBlockBelt.Direction.PRODUCT
     BUTTOM = FactoryBlockBelt.Placement.BOTTOM
     TOP = FactoryBlockBelt.Placement.TOP
+    
+    """
+    pos = Vector(x = 0, y = 0)
+    interface = FactoryBlockInterface(belts = [
+        FactoryBlockBelt(
+            name = "Iron ore interface",
+            item_type = "IronOre",
+            direction = INGREDIENT,
+            placement = BUTTOM,
+            throughput = 1.0,
+            belt_index = 0,
+            proliferator = ProliferatorMKIII
+        ),
+        FactoryBlockBelt(
+            name = "Iron ingot interface",
+            item_type = "IronIngot",
+            direction = PRODUCT,
+            placement = TOP,
+            throughput = 1.0,
+            belt_index = 0,
+            proliferator = ProliferatorMKIII
+        ),
+    ])
+    recipe = Recipe.recipes["IronIngot"]
+    factory_type = ArcSmelter
+    belt_type = None  # Let FactoryBlock select the belt type based on throughput
+    sorter_type = None  # Let FactoryBlock select the sorter type based on throughput
+    interface = FactoryBlockInterface.generate_interface(recipe = recipe)
+    block = FactoryBlock(pos, interface, recipe, factory_type, belt_type, sorter_type)
+
+    blueprint = Blueprint()
+    output_blueprint_string = blueprint.serialize(
+        blueprint_buildings = Building.buildings,
+        blueprint_building_version = BlueprintBuildingV1
+    )
+    print(f"Smeltery block created:\n{output_blueprint_string}")
+    Building.buildings.clear()  # Clear the buildings
     
     pos = Vector(x = 0, y = 0)
     interface = FactoryBlockInterface(belts = [
@@ -305,42 +255,48 @@ if __name__ == "__main__":
         blueprint_building_version = BlueprintBuildingV1
     )
     print(f"\nAssembly block created:\n{output_blueprint_string}\n")
-    Building.buildings.clear()  # Clear the buildings for the next example
-    
+    Building.buildings.clear()  # Clear the buildings for the next 
+    """
     pos = Vector(x = 0, y = 0)
     interface = FactoryBlockInterface(belts = [
         FactoryBlockBelt(
-            name = "Iron ore interface",
-            item_type = "IronOre",
+            name = "Magnetic coil interface",
+            item_type = "MagneticCoil",
             direction = INGREDIENT,
             placement = BUTTOM,
             throughput = 1.0,
             belt_index = 0,
-            proliferator = ProliferatorMKIII
+            proliferator = ProliferatorNone
         ),
         FactoryBlockBelt(
-            name = "Iron ingot interface",
-            item_type = "IronIngot",
+            name = "Circuit board interface",
+            item_type = "CircuitBoard",
+            direction = INGREDIENT,
+            placement = BUTTOM,
+            throughput = 1.0,
+            belt_index = 1,
+            proliferator = ProliferatorNone
+        ),
+        FactoryBlockBelt(
+            name = "Electromagnetic martix interface",
+            item_type = "ElectromagneticMatrix",
             direction = PRODUCT,
             placement = TOP,
             throughput = 1.0,
             belt_index = 0,
-            proliferator = ProliferatorMKIII
+            proliferator = ProliferatorNone
         ),
     ])
-    recipe = Recipe.recipes["IronIngot"]
-    factory_type = ArcSmelter
+    recipe = Recipe.recipes["ElectromagneticMatrix"]
+    factory_type = MatrixLab
     belt_type = None  # Let FactoryBlock select the belt type based on throughput
     sorter_type = None  # Let FactoryBlock select the sorter type based on throughput
-    interface = FactoryBlockInterface.generate_interface(recipe = recipe)
+    #interface = FactoryBlockInterface.generate_interface(recipe = recipe)
     block = FactoryBlock(pos, interface, recipe, factory_type, belt_type, sorter_type)
-
     blueprint = Blueprint()
-    print(2)
     output_blueprint_string = blueprint.serialize(
         blueprint_buildings = Building.buildings,
         blueprint_building_version = BlueprintBuildingV1
     )
-    print(1)
-    print(f"Smeltery block created:\n{output_blueprint_string}")
+    print(f"Matrix lab block created:\n{output_blueprint_string}")
     Building.buildings.clear()  # Clear the buildings

@@ -18,7 +18,7 @@ class AssemblingMachine(Factory3x3):
         self.parameters = [0]
         
     def get_size():
-        return Vector(4.0, 4.0)
+        return Vector(4.0, 3.0)
     
     @staticmethod
     def get_height():

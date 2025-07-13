@@ -13,7 +13,6 @@ class ProductionGraph(GraphicalGraph):
         super().__init__()
     
     def change_required_flow_rate(self, flow_name, items_per_second, proliferator_name):
-        print(flow_name)
         if not self.node_name_exists(flow_name + proliferator_name + "Flow"):
             logging.info("Node does not exist in the graph, adding node: " + flow_name + proliferator_name)
             self.add_flow(flow_name, proliferator_name)
@@ -117,7 +116,7 @@ class ProductionGraph(GraphicalGraph):
             label = label
         )
         if not Recipe.has_recipe(flow_name):
-            if not (flow_name in ["IronOre", "CopperOre", "Stone", "Coal", "Water", "CrudeOil"]):
+            if not (flow_name in ["IronOre", "CopperOre", "Stone", "Coal", "Water", "CrudeOil", "TitaniumOre", "UnipolarMagnet"]):
                 logging.warning(f"No recipe found for the flow ({flow_name}), cannot add process.")
             logging.info("Adding raw item to the graph: " + flow_name + proliferator_name)
             return
@@ -157,8 +156,9 @@ class ProductionGraph(GraphicalGraph):
         if not self.node_name_exists(flow_name + proliferator_name + "Flow"):
             logging.error("Flow does not exist in the graph, cannot remove: " + flow_name + proliferator_name + " from " + str(self.graph.nodes.keys()))
             return
-        if not self.graph.nodes.get(flow_name + proliferator_name + "Flow")["items_per_second"] == 0:
-            logging.error("Flow still has a flow-rate greater than zero, cannot remove: " + flow_name + proliferator_name)
+        flow_rate = self.graph.nodes.get(flow_name + proliferator_name + "Flow")["items_per_second"]
+        if flow_rate > 0.001:
+            logging.error("Flow still has a flow-rate greater than zero, cannot remove: " + flow_name + proliferator_name + ": " + str(flow_rate))
             return
         for node_name in self.graph.predecessors(flow_name + proliferator_name + "Flow"):
             process_name = self.graph.nodes.get(node_name)["name"]
@@ -175,8 +175,9 @@ class ProductionGraph(GraphicalGraph):
         if not self.node_name_exists(process_name + proliferator_name + "Process"):
             logging.error("Process does not exist in the graph, cannot remove: " + process_name + proliferator_name + " from " + str(self.graph.nodes.keys()))
             return
-        if not self.graph.nodes.get(process_name + proliferator_name + "Process")["processes_per_second"] == 0:
-            logging.error("Process still has a flow-rate greater than zero, cannot remove: " + process_name + proliferator_name)
+        flow_rate = self.graph.nodes.get(process_name + proliferator_name + "Process")["processes_per_second"]
+        if flow_rate > 0.001:
+            logging.error("Process still has a flow-rate greater than zero, cannot remove: " + process_name + proliferator_name + ": " + str(flow_rate))
             return
         for flow_name in self.graph.predecessors(process_name + proliferator_name + "Process"):
             flow = self.graph.nodes.get(flow_name)

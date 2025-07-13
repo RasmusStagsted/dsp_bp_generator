@@ -15,7 +15,7 @@ class MatrixLab(Factory5x5):
         self.input_object_index = -1
         self.recipe_id = recipe_id
         self.parameter_count = 1
-        self.parameters = [0]
+        self.parameters = [1 if recipe_id > 0 else 0]
 
     def get_size():
         return Vector(5.0, 5.0)
