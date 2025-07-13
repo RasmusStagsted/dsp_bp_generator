@@ -38,11 +38,7 @@ class InputFlows(QWidget):
         self.table.setCellWidget(0, 2, self.proliferator)
 
         self.setLayout(self.layout)
-    
-    def update(self, input_flows):
-        for flow in input_flows:
-            print(flow)
-    
+        
     def proliferator_option_changed(self):
         pass
     
