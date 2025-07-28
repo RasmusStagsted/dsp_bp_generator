@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox
+from PySide6.QtWidgets import QSizePolicy
 
 class ProliferatorProductionOption(QWidget):
     def __init__(self, update_callback = None):
@@ -37,7 +38,8 @@ class ProliferatorProductionOption(QWidget):
             self.mkiii.currentTextChanged.connect(lambda: update_callback("MK.III"))
 
         self.setLayout(self.layout)
-    
+        self.setSizePolicy(self.sizePolicy().horizontalPolicy(), QSizePolicy.Fixed)
+
     def update(self, proliferators):
         proliferators = list(set(proliferators))
         proliferators.sort()

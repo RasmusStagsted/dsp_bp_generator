@@ -3,6 +3,8 @@ from PySide6.QtWidgets import (
     QWidget, QVBoxLayout, QPushButton, QLabel,
     QComboBox, QDoubleSpinBox, QTableWidget, QHeaderView
 )
+from PySide6.QtWidgets import QSizePolicy
+
 from PySide6.QtGui import QDoubleValidator
 from PySide6.QtCore import Qt
 import logging
@@ -57,17 +59,27 @@ class OutputFlows(QWidget):
         self.layout = QVBoxLayout()
         self.table_label = QLabel("Select output flows:")
         self.layout.addWidget(self.table_label)
-        self.table = QTableWidget(0, 4)
-        self.table.setHorizontalHeaderLabels(["Item", "Flow rate [items/s]", "Proliferator", "Add/Delete flow"])
+        self.table = QTableWidget(0, 5)
+        header_labels = ["Item", "Flow rate [items/s]", "Proliferator", "Destination", "Add/Delete flow"]
+        self.table.setHorizontalHeaderLabels(header_labels)
+
+        font_metrics = self.table.fontMetrics()
+        for col, label in enumerate(header_labels):
+            width = font_metrics.horizontalAdvance(label) + 24  # Add some padding
+            self.table.setColumnWidth(col, width)
+            self.table.horizontalHeader().setMinimumSectionSize(width)
+
         self.table.setSizePolicy(self.table.sizePolicy().horizontalPolicy(), self.table.sizePolicy().verticalPolicy())
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setVisible(True)
+
         self.layout.addWidget(self.table)
         self.add_button = QPushButton("Add flow")
         self.add_button.clicked.connect(lambda: self.add_flow())
         self.layout.addWidget(self.add_button)
         self.setLayout(self.layout)
+        self.setSizePolicy(self.sizePolicy().horizontalPolicy(), QSizePolicy.Fixed)
 
     def set_proliferator_change_callback(self, callback = None):
         self.proliferator_update_callback = callback
@@ -110,9 +122,9 @@ class OutputFlows(QWidget):
         flow_rate.textChanged.connect(lambda _, r = row: self.flow_rate_changed(r))
         return flow_rate
         
-    def create_proliferator_combo_box(self, row, proliferator_name = "No-proliferator"):
+    def create_proliferator_combo_box(self, row, proliferator_name = "No-Proliferator"):
         proliferator = QComboBox()
-        proliferator.addItems(["No-proliferator", "MK.I", "MK.II", "MK.III"])
+        proliferator.addItems(["No-Proliferator", "MK.I", "MK.II", "MK.III"])
         proliferator.currentIndexChanged.connect(lambda _, r = row: self.proliferator_changed(r))
         idx = proliferator.findText(proliferator_name)
         if idx != -1:
@@ -136,6 +148,14 @@ class OutputFlows(QWidget):
         delete_button.clicked.connect(lambda _, btn = delete_button: self.remove_flow(self.get_row_from_button(btn)))
         return delete_button
 
+    def adjust_table_height(self):
+        header_height = self.table.horizontalHeader().height()
+        row_count = self.table.rowCount()
+        row_height = self.table.verticalHeader().defaultSectionSize()
+        total_height = header_height + (row_height * max(1, row_count)) + 4  # Add a small margin
+        self.table.setMinimumHeight(total_height)
+        self.table.setMaximumHeight(total_height)
+
     def add_flow(self, update = True):
         row = self.table.rowCount()
         self.table.insertRow(row)
@@ -143,15 +163,18 @@ class OutputFlows(QWidget):
         item = self.create_item_combo_box(row)
         flow_rate = self.create_flow_rate_spin_box(row)
         proliferator = self.create_proliferator_combo_box(row)
+        destination = QComboBox()
+        destination.addItems(["Belt", "PLS", "ILS"])
         self.output_flows.append(OutputFlows.OutputFlow(item, flow_rate, proliferator))
         self.table.setCellWidget(row, 0, item)
         self.table.setCellWidget(row, 1, flow_rate)
         self.table.setCellWidget(row, 2, proliferator)
-        
+        self.table.setCellWidget(row, 3, destination)
         self.delete_button.append(self.create_delete_button())
-        self.table.setCellWidget(row, 3, self.delete_button[row])
+        self.table.setCellWidget(row, 4, self.delete_button[row])
         
         self.flow_created(row, update = False)
+        self.adjust_table_height()
         if update:
             self.changed()
         
@@ -165,6 +188,7 @@ class OutputFlows(QWidget):
         self.table.removeRow(flow_index)
         self.delete_button.pop(flow_index)
         self.output_flows.pop(flow_index)
+        self.adjust_table_height()
         if update:
             self.changed()
 
@@ -175,6 +199,18 @@ class OutputFlows(QWidget):
                 row = r
                 break
         return row
+    
+    def get_output_destination(self):
+        output_destinations = {}
+        for row in range(self.table.rowCount()):
+            item = self.table.cellWidget(row, 0).currentText().strip()
+            proliferator = self.table.cellWidget(row, 2).currentText().strip()
+            destination = {
+                "type": self.table.cellWidget(row, 3).currentText(),
+                "items_per_second": float(self.table.cellWidget(row, 1).text().strip())   
+            }
+            output_destinations[item + proliferator] = destination
+        return output_destinations
     
     def flow_created(self, index, update = True):
         if self.callbacks.flow_created_callback is not None:

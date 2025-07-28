@@ -1,4 +1,5 @@
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLineEdit, QLabel
+from PySide6.QtWidgets import QSizePolicy
 
 class BlueprintStringWidget(QWidget):
     
@@ -15,7 +16,8 @@ class BlueprintStringWidget(QWidget):
         self.copy.clicked.connect(self.copy_blueprint)
         self.layout.addWidget(self.copy)
         self.setLayout(self.layout)
-        
+        self.setSizePolicy(self.sizePolicy().horizontalPolicy(), QSizePolicy.Fixed)
+
     def set_callbacks(self, generate_blueprint_callback = None):
         self.generator_button.clicked.connect(generate_blueprint_callback)
 

@@ -1,9 +1,9 @@
 from dsp_bp_generator.utils import Vector
 
 from .factory_router_interface import FactoryRouterInterface, FactoryRouterBelt
-from .factory_block_interface import FactoryBlockInterface
 from .factory_section import FactorySection
 from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
+from .factory_interface import FactoryInterface
 from dsp_bp_generator.blueprint import Blueprint
 from dsp_bp_generator import buildings
 from dsp_bp_generator.blueprint import BlueprintBuildingV1
@@ -17,8 +17,10 @@ class Factory:
     def __init__(self):
         buildings.Building.buildings.clear()
 
-    def generate(self, graph):
+    def generate(self, graph, input_sources, output_destinations):
         self.graph = graph
+        self.input_sources = input_sources
+        self.output_destinations = output_destinations
         self.bus = FactoryRouterInterface()
         self.factory_line_list, self.input_list = self.generate_factory_line_lists()
         self.factory_section_list = []
@@ -73,7 +75,17 @@ class Factory:
                 y_offset += self.factory_section_list[-1].get_height()
                 if len(self.factory_section_list) > 1:
                     self.factory_section_list[-1].factory_router.connect_router_to_router(self.factory_section_list[-2].factory_router)
+        self.factory_interface = FactoryInterface(
+            pos = Vector(y = y_offset),
+            bus_interface = self.bus,
+            input_sources = self.input_sources,
+            output_destinations = self.output_destinations
+        )
         
+        self.factory_interface.connect_to_bus(
+            self.factory_section_list[-1].factory_router.top_interface,
+            self.input_list,
+            self.graph)
         
     def generate_factory_line_lists(self):
         available_items = []

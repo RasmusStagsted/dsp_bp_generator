@@ -53,6 +53,12 @@ class Vector:
     def r(self):
         return math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
 
+    def closest_grid_point(self):
+        x = round(self.x)
+        y = round(self.y)
+        z = round(self.z)
+        return Vector(x, y, z)
+
 class Yaw:
     North = 0.0
     NorthEast = 45.0

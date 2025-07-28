@@ -16,6 +16,10 @@ class ConveyorBelt(Building):
         self.input_to_slot = 1
         self.input_from_slot = 0
         
+    def set_height(self, height: float):
+        self.pos.z = height
+        self.pos2.z = height
+        
     def connect_to_belt(belt1, belt2):
         dir = Yaw.direction_to_unit_vector(belt1.yaw)
         if ((int(belt1.pos.x + dir.x) == belt2.pos.x) and (int(belt1.pos.y + dir.y) == belt2.pos.y) and belt1.yaw == belt2.yaw):

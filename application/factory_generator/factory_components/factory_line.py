@@ -12,6 +12,8 @@ from .factory_block_interface import FactoryBlockInterface, FactoryBlockBelt
 from ..proliferator import ProliferatorMKI, ProliferatorMKII, ProliferatorMKIII
 from ..recipes import Recipe
 
+import logging
+
 class FactoryLine:
     """Represents a line of factory blocks with connected belts and sorters."""
 
@@ -70,7 +72,8 @@ class FactoryLine:
         elif recipe.tool == "Chemical Facility":
             return ChemicalPlant
         else:
-            raise ValueError(f"Unknown tool: {recipe.tool}, Recipe: {recipe.name}, ID: {recipe.recipe_id}")
+            logging.error(f"Factory not supported: {recipe.tool}, Recipe: {recipe.name}, ID: {recipe.recipe_id}")
+            raise ValueError(f"Factory not supported: {recipe.tool}, Recipe: {recipe.name}, ID: {recipe.recipe_id}")
 
     def get_height(self):
         return self.height

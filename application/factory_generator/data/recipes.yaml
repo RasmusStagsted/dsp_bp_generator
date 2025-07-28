@@ -134,7 +134,7 @@ CrystalSiliconAdvanced:
   tool: Assembler
   recipe_id: 0 # TODO
 
-DepotMKI:
+DepotMkI:
   name: Depot Mk.I
   input_items:
     IronIngot: 4
@@ -145,7 +145,7 @@ DepotMKI:
   tool: Assembler
   recipe_id: 86
 
-DepotMKII:
+DepotMkII:
   name: Depot Mk.II
   input_items:
     Steel: 8
@@ -156,15 +156,15 @@ DepotMKII:
   tool: Assembler
   recipe_id: 91
 
-Deuterium:
-  - name: Deuterium
-    input_items:
-      Hydrogen: 10
-    output_items:
-      Deuterium: 5
-    time: 2.5
-    tool: Particle Collider
-    recipe_id: 0 # TODO
+#Deuterium:
+#  - name: Deuterium
+#    input_items:
+#      Hydrogen: 10
+#    output_items:
+#      Deuterium: 5
+#    time: 2.5
+#    tool: Particle Collider
+#    recipe_id: 0 # TODO
 
 DeuteriumFractionation:
   name: Deuterium Fractionation
@@ -654,7 +654,7 @@ PlasmaRefining:
     Hydrogen: 1
     RefinedOil: 2
   time: 4
-  tool: Plasma Refinery
+  tool: Oil Refinery
   recipe_id: 16
 
 Plastic:
@@ -789,7 +789,7 @@ SolarSail:
   tool: Assembler
   recipe_id: 70
 
-SorterMK1:
+SorterMk1:
   name: Sorter Mk.I
   input_items:
     IronIngot: 1
@@ -800,10 +800,10 @@ SorterMK1:
   tool: Assembler
   recipe_id: 85
 
-SorterMKII:
+SorterMkII:
   name: Sorter Mk.II
   input_items:
-    SorterMK1: 2
+    SorterMk1: 2
     ElectricMotor: 1
   output_items:
     SorterMkII: 2
@@ -811,10 +811,10 @@ SorterMKII:
   tool: Assembler
   recipe_id: 88
 
-SorterMKIII:
+SorterMkIII:
   name: Sorter Mk.III
   input_items:
-    SorterMKII: 2
+    SorterMkII: 2
     ElectromagneticTurbine: 1
   output_items:
     SorterMkIII: 2
@@ -1052,4 +1052,4 @@ XRayCracking:
     EnergeticGraphite: 1
   time: 4
   tool: Refining Facility
-  recipe_id: 58
+  recipe_id: 58Ore

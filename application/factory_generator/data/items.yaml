@@ -1,4 +1,12 @@
-ArcSmelter:
+Antimatter:
+  name: Antimatter
+  ProductRecipes:
+    - MassEnergyStorage
+  IngredientRecipes:
+    - AntimatterFuelRod (missing)
+    - AntimatterCapsule (missing)
+    - UniverseMatrix (missing)
+  ArcSmelter:
   name: Arc Smelter
   ProductRecipes:
     - ArcSmelter
@@ -11,25 +19,12 @@ AssemblingMachineMKI:
   IngredientRecipes:
     - AssemblingMachineMkII
   item_id: 2303
-IronOre:
-  name: Iron Ore
+CircuitBoard:
+  name: Circuit Board
   ProductRecipes:
+    - CircuitBoard
   IngredientRecipes:
-    - IronIngot
-    - Magnet
-CopperOre:
-  name: Copper Ore
-  ProductRecipes:
-  IngredientRecipes:
-    - CopperIngot
-Stone:
-  name: Stone
-  ProductRecipes:
-  IngredientRecipes:
-    - SulfuricAcid
-    - StoneBrick
-    - SiliconOre
-    - Glass
+  item_id: 1301
 Coal:
   name: Coal
   ProductRecipes:
@@ -38,42 +33,135 @@ Coal:
     - CombustibleUnit
     - ReformedRefinement
     - EnergeticGraphite
-MatrixLab:
-  name: Matrix Lab
+  item_id: 1006
+CopperIngot:
+  name: Copper Ingot
   ProductRecipes:
-    - MatrixLab
+    - CopperIngot
   IngredientRecipes:
-  item_id: 2901
-MiningMachine:
-  name: Mining Machine
-  ProductRecipes:
-    - MiningMachine
-  IngredientRecipes:
-  item_id: 2301
-SiliconOre:
-  name: Silicon Ore
-  ProductRecipes:
-    - SiliconOre
-  IngredientRecipes:
-    - HighPuritySilicon
-TitaniumOre:
-  name: Titanium Ore
+  item_id: 1104
+CopperOre:
+  name: Copper Ore
   ProductRecipes:
   IngredientRecipes:
-    - TitaniumIngot
-Water:
-  name: Water
+    - CopperIngot
+  item_id: 1002
+ConveyorBeltMKI:
+  name: Conveyor Belt Mk.I
+  ProductRecipes:
+    - ConveyorBeltMkI
+  IngredientRecipes:
+    - ConveyorBeltMkII
+  item_id: 2001
+CoreElement:
+  name: Core Element
   ProductRecipes:
   IngredientRecipes:
-    - TitaniumGlass (missing)
-    - OrganicCrystalOriginal (missing)
-    - SulfuricAcid (missing)
-    - OrganicCrystal (missing)
+    - StrangeAnnihilationFuelRod (missing)
 CrudeOil:
   name: Crude Oil
   ProductRecipes:
   IngredientRecipes:
     - PlasmaRefining
+  item_id: 1007
+CrystalSilicon:
+  name: Crystal Silicon
+  ProductRecipes:
+    - CrystalSilicon
+  IngredientRecipes:
+  item_id: 1113
+DepotMKI:
+  name: Depot Mk.I
+  ProductRecipes:
+    - DepotMkI
+  IngredientRecipes:
+  item_id: 2101
+Deuterium:
+  name: Deuterium
+  ProductRecipes:
+    - DeuteriumFractionation
+    - Deuterium
+  IngredientRecipes:
+    - DeuteronFuelRod (missing)
+    - PlasmaCapsule (missing)
+    - StrangeMatter (missing)
+  item_id: 1121
+Diamond:
+  name: Diamond
+  ProductRecipes:
+    - Diamond
+  IngredientRecipes:
+  item_id: 1112
+ElectricMotor:
+  name: Electric Motor
+  ProductRecipes:
+    - ElectricMotor
+  IngredientRecipes:
+  item_id: 1203
+ElectromagneticMatrix:
+  name: Electromagnetic Matrix
+  ProductRecipes:
+    - ElectromagneticMatrix
+  IngredientRecipes:
+  item_id: 6001
+ElectromagneticTurbine:
+  name: Electromagnetic Turbine
+  ProductRecipes:
+    - ElectromagneticTurbine
+  IngredientRecipes:
+  item_id: 1204
+EnergeticGraphite:
+  name: Energetic Graphite
+  ProductRecipes:
+    - EnergeticGraphite
+  IngredientRecipes:
+  item_id: 1109
+EnergyMatrix:
+  name: Energy Matrix
+  ProductRecipes:
+    - EnergyMatrix
+  IngredientRecipes:
+  item_id: 6002
+FireIce:
+  name: Fire Ice
+  ProductRecipes:
+  IngredientRecipes:
+  item_id: 1011
+Foundation:
+  name: Foundation
+  ProductRecipes:
+    - Foundation
+  IngredientRecipes:
+  item_id: 1131
+FractalSilicon:
+  name: Fractal Silicon
+  ProductRecipes:
+  IngredientRecipes:
+  item_id: 1013
+Gear:
+  name: Gear
+  ProductRecipes:
+    - Gear
+  IngredientRecipes:
+  item_id: 1201
+Glass:
+  name: Glass
+  ProductRecipes:
+    - Glass
+  IngredientRecipes:
+  item_id: 1110
+Graphene:
+  name: Graphene
+  ProductRecipes:
+    - Graphene
+  IngredientRecipes:
+  item_id: 1123
+HighPuritySilicon:
+  name: High Purity Silicon
+  ProductRecipes:
+    - HighPuritySilicon
+  IngredientRecipes:
+  item_id: 1105
 Hydrogen:
   name: Hydrogen
   ProductRecipes:
@@ -94,53 +182,151 @@ Hydrogen:
     - Deuterium
     - ReformedRefinement (missing)
     - EnergyMatrix (missing)
-Deuterium:
-  name: Deuterium
+  item_id: 1120
+HydrogenFuelRod:
+  name: Hydrogen Fuel Rod
   ProductRecipes:
-    - DeuteriumFractionation
-    - Deuterium
+    - HydrogenFuelRod
   IngredientRecipes:
-    - DeuteronFuelRod (missing)
-    - PlasmaCapsule (missing)
-    - StrangeMatter (missing)
-Antimatter:
-  name: Antimatter
+  item_id: 1801
+IronIngot:
+  name: Iron Ingot
   ProductRecipes:
-    - MassEnergyStorage
+    - IronIngot
   IngredientRecipes:
-    - AntimatterFuelRod (missing)
-    - AntimatterCapsule (missing)
-    - UniverseMatrix (missing)
-ConveyorBeltMKI:
-  name: Conveyor Belt Mk.I
-  ProductRecipes:
-    - ConveyorBeltMkI
-  IngredientRecipes:
-    - ConveyorBeltMkII
-  item_id: 2001
-CoreElement:
-  name: Core Element
+  item_id: 1101
+IronOre:
+  name: Iron Ore
   ProductRecipes:
   IngredientRecipes:
-    - StrangeAnnihilationFuelRod (missing)
-CriticalPhoton:
-  name: Critical Photon
-  ProductRecipes:
-  IngredientRecipes:
-    - 
-DepotMKI:
-  name: Depot Mk.I
-  ProductRecipes:
-    - DepotMkI
-  IngredientRecipes:
-  item_id: 2101
-
+    - IronIngot
+    - Magnet
+  item_id: 1001
 KimberliteOre:
   name: Kimberlite Ore
   ProductRecipes:
   IngredientRecipes:
     - DiamondAdvanced (missing)
-
+  item_id: 1012
+Log:
+  name: Log
+  ProductRecipes:
+  IngredientRecipes:
+  item_id: 1030
+LogisticDrone:
+  name: Logistic Drone
+  ProductRecipes:
+    - LogisticDrone
+  IngredientRecipes:
+  item_id: 5001
+Magnet:
+  name: Magnet
+  ProductRecipes:
+    - Magnet
+  IngredientRecipes:
+  item_id: 1102
+MagneticCoil:
+  name: Magnetic Coil
+  ProductRecipes:
+    - MagneticCoil
+  IngredientRecipes:
+  item_id: 1202
+MatrixLab:
+  name: Matrix Lab
+  ProductRecipes:
+    - MatrixLab
+  IngredientRecipes:
+  item_id: 2901
+MicrocrystallineComponent:
+  name: Microscopic Crystal
+  ProductRecipes:
+    - MicroscopicCrystal
+  IngredientRecipes:
+  item_id: 1302
+MiningMachine:
+  name: Mining Machine
+  ProductRecipes:
+    - MiningMachine
+  IngredientRecipes:
+  item_id: 2301
+OpticalGratingCrystal:
+  name: Optical Grating Crystal
+  ProductRecipes:
+    - OpticalGratingCrystal
+  IngredientRecipes:
+  item_id: 1014
+OrganicCrystal:
+  name: Organic Crystal
+  ProductRecipes:
+    - OrganicCrystal
+  IngredientRecipes:
+  item_id: 1117
+ParticleContainer:
+  name: Particle Container
+  ProductRecipes:
+    - ParticleContainer
+  IngredientRecipes:
+  item_id: 1206
+PhotonCombiner:
+  name: Photon Combiner
+  ProductRecipes:
+    - PhotonCombiner
+  IngredientRecipes:
+  item_id: 1404
+PlantFuel:
+  name: Plant Fuel
+  ProductRecipes:
+  IngredientRecipes:
+  item_id: 1031
+PlasmaExciter:
+  name: Plasma Exciter
+  ProductRecipes:
+    - PlasmaExciter
+  IngredientRecipes:
+  item_id: 1401
+Plastic:
+  name: Plastic
+  ProductRecipes:
+    - Plastic
+  IngredientRecipes:
+  item_id: 1115
+Prism:
+  name: Prism
+  ProductRecipes:
+    - Prism
+  IngredientRecipes:
+  item_id: 1111
+Processor:
+  name: Processor
+  ProductRecipes:
+    - Processor
+  IngredientRecipes:
+  item_id: 1303
+ProliferatorMkI:
+  name: Proliferator Mk.I
+  ProductRecipes:
+    - ProliferatorMkI
+  IngredientRecipes:
+  item_id: 1141
+RefinedOil:
+  name: Refined Oil
+  ProductRecipes:
+    - RefinedOil
+  IngredientRecipes:
+  item_id: 1114
+SiliconOre:
+  name: Silicon Ore
+  ProductRecipes:
+    - SiliconOre
+  IngredientRecipes:
+    - HighPuritySilicon
+  item_id: 1003
+SolarSail:
+  name: Solar Sail
+  ProductRecipes:
+    - SolarSail
+  IngredientRecipes:
+  item_id: 1501
 SorterMK1:
   name: Sorter Mk.I
   ProductRecipes:
@@ -148,17 +334,97 @@ SorterMK1:
   IngredientRecipes:
     - SorterMkII
   item_id: 2011
-
-WindTubine:
-  name: Wind Turbine
+SpiniformStalagmiteCrystal:
+  name: Spiniform Stalagmite Crystal
   ProductRecipes:
   IngredientRecipes:
-    - WindTurbine
-  item_id: 2203
-
+  item_id: 1015
+Steel:
+  name: Steel
+  ProductRecipes:
+    - Steel
+  IngredientRecipes:
+  item_id: 1103
+Stone:
+  name: Stone
+  ProductRecipes:
+  IngredientRecipes:
+    - SulfuricAcid
+    - StoneBrick
+    - SiliconOre
+    - Glass
+  item_id: 1005
+StoneBrick:
+  name: Stone Brick
+  ProductRecipes:
+    - StoneBrick
+  IngredientRecipes:
+  item_id: 1108
+StructureMatrix:
+  name: Structure Matrix
+  ProductRecipes:
+    - StructureMatrix
+  IngredientRecipes:
+  item_id: 6003
+SulfuricAcid:
+  name: Sulfuric Acid
+  ProductRecipes:
+    - SulfuricAcid
+  IngredientRecipes:
+  item_id: 1116
+SuperMagneticRing:
+  name: Super Magnetic Ring
+  ProductRecipes:
+    - SuperMagneticRing
+  IngredientRecipes:
+  item_id: 1205
 TeslaTower:
   name: Tesla Tower
   ProductRecipes:
   IngredientRecipes:
     - TeslaTower
   item_id: 2201
+Thruster:
+  name: Thruster
+  ProductRecipes:
+    - Thruster
+  IngredientRecipes:
+  item_id: 1405
+TitaniumCrystal:
+  name: Titanium Crystal
+  ProductRecipes:
+    - TitaniumCrystal
+  IngredientRecipes:
+  item_id: 1118
+TitaniumIngot:
+  name: Titanium Ingot
+  ProductRecipes:
+    - TitaniumIngot
+  IngredientRecipes:
+  item_id: 1106
+TitaniumOre:
+  name: Titanium Ore
+  ProductRecipes:
+  IngredientRecipes:
+    - TitaniumIngot
+  item_id: 1004
+UnipolarMagnet:
+  name: Unipolar Magnet
+  ProductRecipes:
+  IngredientRecipes:
+  item_id: 1016
+Water:
+  name: Water
+  ProductRecipes:
+  IngredientRecipes:
+    - TitaniumGlass (missing)
+    - OrganicCrystalOriginal (missing)
+    - SulfuricAcid (missing)
+    - OrganicCrystal (missing)
+  item_id: 1000
+WindTubine:
+  name: Wind Turbine
+  ProductRecipes:
+  IngredientRecipes:
+    - WindTurbine
+  item_id: 2203

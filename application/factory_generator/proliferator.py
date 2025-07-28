@@ -71,7 +71,7 @@ class ProliferatorMKIII:
 class Proliferator:
     
     proliferator_map = {
-        "No-proliferator": ProliferatorNone,
+        "No-Proliferator": ProliferatorNone,
         "MK.I": ProliferatorMKI,
         "MK.II": ProliferatorMKII,
         "MK.III": ProliferatorMKIII

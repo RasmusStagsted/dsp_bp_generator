@@ -4,7 +4,7 @@ import logging
 
 from PySide6.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-    QComboBox, QTabWidget, QFrame
+    QComboBox, QTabWidget, QFrame, QSizePolicy
 )
 from PySide6.QtCore import Qt
 
@@ -50,16 +50,22 @@ class GeneratorWidget(QWidget):
 
     def generate_factory_settings_layout(self, layout):
         self.factory_settings_layout = QVBoxLayout()
-        layout.addLayout(self.factory_settings_layout)
+        # Set minimum width policy for the settings layout's parent widget
+        parent_widget = QWidget()
+        parent_widget.setLayout(self.factory_settings_layout)
+        parent_widget.setSizePolicy(parent_widget.sizePolicy().horizontalPolicy(), parent_widget.sizePolicy().verticalPolicy())
+        parent_widget.setSizePolicy(QSizePolicy.Policy.Fixed, parent_widget.sizePolicy().verticalPolicy())
+        parent_widget.setMinimumWidth(740)
+        layout.addWidget(parent_widget)
         self.output_flows = OutputFlows()
         self.factory_settings_layout.addWidget(self.output_flows)
         self.insert_horizontal_line(self.factory_settings_layout)
         self.proliferator = ProliferatorProductionOption()
         self.factory_settings_layout.addWidget(self.proliferator)
         self.insert_horizontal_line(self.factory_settings_layout)
-        self.intermediate_flows = Processes()
-        self.factory_settings_layout.addWidget(self.intermediate_flows)
-        self.insert_horizontal_line(self.factory_settings_layout)
+        #self.intermediate_flows = Processes()
+        #self.factory_settings_layout.addWidget(self.intermediate_flows)
+        #self.insert_horizontal_line(self.factory_settings_layout)
         self.input_flow_widget = InputFlows()
         self.factory_settings_layout.addWidget(self.input_flow_widget)
         self.insert_horizontal_line(self.factory_settings_layout)
@@ -67,7 +73,8 @@ class GeneratorWidget(QWidget):
         self.blueprint.set_callbacks(self.generate_blueprint)
         self.factory_settings_layout.addWidget(self.blueprint)
         self.insert_horizontal_line(self.factory_settings_layout)
-
+        self.expandable_dummy_widget = QWidget()
+        self.factory_settings_layout.addWidget(self.expandable_dummy_widget)
         # TODO: Add trash output settings
         
     def insert_horizontal_line(self, layout):
@@ -109,10 +116,12 @@ class GeneratorWidget(QWidget):
     def flow_deleted_callback(self, output_flows, index):
         logging.info("Flow deleted callback")
         self.graph_plot_widget.reduce_flow(output_flows[index].get_item_flow())
+        self.input_flow_widget.update(self.graph_plot_widget.graph)
     
     def flow_created_callback(self, output_flows, index):
         logging.info(f"Flow created callback {output_flows[index].item_combo.currentText()}")
         self.graph_plot_widget.increase_flow(output_flows[index].get_item_flow())
+        self.input_flow_widget.update(self.graph_plot_widget.graph)
         
     def item_changed_callback(self, output_flows, index):
         old_item_flow = output_flows[index].get_old_item_flow()
@@ -120,6 +129,7 @@ class GeneratorWidget(QWidget):
         logging.info(f"Item changed from {old_item_flow.name} to {new_item_flow.name}")
         self.graph_plot_widget.reduce_flow(old_item_flow)
         self.graph_plot_widget.increase_flow(new_item_flow)
+        self.input_flow_widget.update(self.graph_plot_widget.graph)
         
     def flow_rate_changed_callback(self, output_flows, index):
         old_item_flow = output_flows[index].get_old_item_flow()
@@ -127,6 +137,7 @@ class GeneratorWidget(QWidget):
         logging.info(f"Flow rate changed for {old_item_flow.name} from {old_item_flow.count_per_second} item/s to {new_item_flow.count_per_second} item/s")
         self.graph_plot_widget.reduce_flow(old_item_flow)
         self.graph_plot_widget.increase_flow(new_item_flow)
+        self.input_flow_widget.update(self.graph_plot_widget.graph)
         
     def proliferator_changed_callback(self, output_flows, index):
         old_item_flow = output_flows[index].get_old_item_flow()
@@ -134,6 +145,7 @@ class GeneratorWidget(QWidget):
         logging.info(f"Proliferator changed for {old_item_flow.name} from {old_item_flow.proliferator} to {new_item_flow.proliferator}")
         self.graph_plot_widget.reduce_flow(old_item_flow)
         self.graph_plot_widget.increase_flow(new_item_flow)
+        self.input_flow_widget.update(self.graph_plot_widget.graph)
 
         output_flows = self.output_flows.output_flows
         proliferators = [output_flows[i].get_item_flow().proliferator for i in range(len(output_flows))]
@@ -145,7 +157,12 @@ class GeneratorWidget(QWidget):
 
     def generate_blueprint(self):
         factory = Factory()
-        factory.generate(self.graph_plot_widget.graph)
+        
+        factory.generate(
+            graph = self.graph_plot_widget.graph,
+            input_sources = self.input_flow_widget.get_input_sources(),
+            output_destinations = self.output_flows.get_output_destination(),
+        )
         print(factory.generate_bp_string())
 
     def post_setup(self):
@@ -200,6 +217,6 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     widget = GeneratorWidget()
     widget.setWindowTitle('Factory generator')
-    widget.resize(1000, 800)
+    widget.resize(1400, 800)
     widget.show()
     sys.exit(app.exec())

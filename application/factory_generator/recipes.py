@@ -20,7 +20,7 @@ class Item:
             for key, value in raw_items.items():
                 items[key] = Item(
                     name=value.get('Name', key),
-                    item_id=value.get('ItemID', None),
+                    item_id=value.get('item_id', None),
                     product_recipes=value.get('ProductRecipes', []),
                     ingredient_recipes=value.get('IngredientRecipes', [])
                 )
@@ -230,11 +230,15 @@ Recipe.recipes = Recipe.load_from_yaml("data/recipes.yaml")
 
 if __name__ == "__main__":
     print(Recipe.recipes["Gear"])
-    print(Recipe.recipes["Gear"].get_item_from_recipe("IronIngot"))
     print(Recipe.has_recipe("Gear"))
     print(Recipe.get_recipes_for_output_item("Gear"))
     
-    for key, val in Item.items.items():
-        print(f"{key}: {val}")
+    for key1, val1 in Item.items.items():
+        for key2, val2 in Item.items.items():
+            if val1.item_id == val2.item_id and key1 != key2:
+                print("Dupplicate:", key1, key2, val1.item_id)
+    
+    #for key, val in Item.items.items():
+    #    print(f"{key}: {val}")
         
     

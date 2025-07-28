@@ -43,7 +43,7 @@ class ProductionGraph(GraphicalGraph):
             self.change_edge_flow_rate(edge["source"], edge["destination"], edge["items_per_second_diff"])
         for process in processes_to_edit:
             self.change_process_rate(process["name"], process["processes_per_second"], process["proliferator_name"])
-        if flow["items_per_second"] <= 0:
+        if flow["items_per_second"] <= 1.e-6:  
             logging.info(f"Flow {flow_name + proliferator_name} has a flow rate of zero, removing flow.")
             self.remove_flow(flow_name, proliferator_name)
     
@@ -74,7 +74,7 @@ class ProductionGraph(GraphicalGraph):
             self.change_edge_flow_rate(edge["source"], edge["destination"], edge["items_per_second_diff"])
         for flow in flows_to_edit:
             self.change_flow_rate(flow["name"], flow["items_per_second"], flow["proliferator_name"])
-        if process["processes_per_second"] <= 0:
+        if process["processes_per_second"] <= 1.e-6:
             logging.info(f"Process {process_name + proliferator_name} has a process rate of zero, removing process.")
             self.remove_process(process_name, proliferator_name)
     
@@ -98,7 +98,7 @@ class ProductionGraph(GraphicalGraph):
         if edge["items_per_second"] <= 0:
             logging.info(f"Edge from {source_name} to {destination_name} has a flow rate of zero, removing edge.")
             self.graph.remove_edge(source_name, destination_name)
-    
+
     def add_flow(self, flow_name, proliferator_name):
         logging.info("Adding flow to the graph: " + flow_name + proliferator_name)
         if self.node_name_exists(flow_name + proliferator_name + "Flow"):
@@ -115,7 +115,9 @@ class ProductionGraph(GraphicalGraph):
             proliferator = Proliferator.get_proliferator(proliferator_name),
             label = label
         )
-        if not Recipe.has_recipe(flow_name):
+        recipies = Recipe.get_recipes_for_output_item(flow_name)
+        logging.debug(f"Recipes for flow {flow_name}: {recipies}")
+        if recipies == []:
             if not (flow_name in ["IronOre", "CopperOre", "Stone", "Coal", "Water", "CrudeOil", "TitaniumOre", "UnipolarMagnet"]):
                 logging.warning(f"No recipe found for the flow ({flow_name}), cannot add process.")
             logging.info("Adding raw item to the graph: " + flow_name + proliferator_name)
@@ -182,7 +184,7 @@ class ProductionGraph(GraphicalGraph):
         for flow_name in self.graph.predecessors(process_name + proliferator_name + "Process"):
             flow = self.graph.nodes.get(flow_name)
             if flow["items_per_second"] != 0:
-                logging.error(f"Flow {flow_name} is still having a flow-rate to process {process_name + proliferator_name}, cannot remove process.")
+                logging.warning(f"Flow {flow_name} is still having a flow-rate to process {process_name + proliferator_name}, cannot remove process.")
             else:
                 self.disconnect_flow_from_process(flow_name, process_name, proliferator_name)
                 self.remove_flow(flow_name, proliferator_name)
@@ -267,7 +269,7 @@ class ProductionGraph(GraphicalGraph):
 
     def generate_node_color(self, proliferator, node_type):
         if node_type == "flow":
-            if proliferator == "No-proliferator":
+            if proliferator == "No-Proliferator":
                 return "#a7aaad"
             elif proliferator == "MK.I":
                 return "#f0c33c"
@@ -276,7 +278,7 @@ class ProductionGraph(GraphicalGraph):
             elif proliferator == "MK.III":
                 return "#72aee6"
         elif node_type == "process":
-            if proliferator == "No-proliferator":
+            if proliferator == "No-Proliferator":
                 return "#646970"
             elif proliferator == "MK.I":
                 return "#996b00"
